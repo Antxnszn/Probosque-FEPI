@@ -1,0 +1,16 @@
+{
+  "name": "Probosque Auditoría Forestal",
+  "short_name": "Probosque",
+  "description": "Sistema Digital de Auditoría Forestal y Subsidios de Probosque",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
