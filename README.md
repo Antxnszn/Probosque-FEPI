@@ -1,4 +1,4 @@
-# 🌲 Sistema Probosque - Auditoría y Telemetría Ambiental
+# Sistema Probosque - Auditoría y Telemetría Ambiental
 
 **Probosque** es una plataforma integral offline-first para la auditoría de predios, telemetría ambiental y toma de decisiones automatizada para la asignación de subsidios forestales. 
 
@@ -6,7 +6,7 @@ El sistema está diseñado para operar en entornos de nula conectividad (bosques
 
 ---
 
-## 🚀 Características Principales
+## Características Principales
 
 1. **PWA Offline-First (Frontend):**
    - Captura de datos de campo y telemetría de dispositivos (GPS, salud de almacenamiento).
@@ -32,19 +32,19 @@ El sistema está diseñado para operar en entornos de nula conectividad (bosques
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 El sistema utiliza una arquitectura híbrida que separa la captura robusta offline de la inteligencia analítica central.
 
 ```mermaid
 graph TD
-    subgraph "🏕️ Edge (Offline-First PWA)"
+    subgraph "Edge (Offline-First PWA)"
         A[Dispositivo Móvil] --> B(Dexie.js / IndexedDB)
         A --> C(Telemetría GPS / Hardware)
         B --> D{Sincronizador}
     end
 
-    subgraph "🌐 Backend (FastAPI)"
+    subgraph "Backend (FastAPI)"
         D -- "Red REST (TLS)" --> E[API Gateway & Auth]
         E --> F[Protocolo Idempotente]
         F --> G[(PostgreSQL + PostGIS)]
@@ -54,7 +54,7 @@ graph TD
         H --> I((Decisión de Subsidio))
     end
 
-    subgraph "🛰️ Satélite & GIS"
+    subgraph "Satélite y GIS"
         J[Sentinel-2 API] --> K[Pipeline Satelital]
         K --> L(Calculadora de Carbono)
         L --> G
@@ -89,7 +89,7 @@ stateDiagram-v2
 
 ---
 
-## 🛠️ Requisitos Previos
+## Requisitos Previos
 
 - **Docker y Docker Compose:** Para infraestructura (PostgreSQL, Redis, MinIO).
 - **uv:** Gestor de paquetes y entornos virtuales ultra rápido para Python.
@@ -98,7 +98,7 @@ stateDiagram-v2
 
 ---
 
-## 📦 Instalación y Despliegue Local
+## Instalación y Despliegue Local
 
 ### 1. Levantar la Infraestructura
 
@@ -144,7 +144,7 @@ npm run dev -- --host
 
 ---
 
-## 🔐 Protocolo de Sincronización y Seguridad
+## Protocolo de Sincronización y Seguridad
 
 Para evitar ataques de replay (repetición) y alteraciones en los datos levantados en campo, el sistema implementa un protocolo robusto:
 
@@ -154,18 +154,18 @@ Para evitar ataques de replay (repetición) y alteraciones en los datos levantad
 
 ---
 
-## 📚 Documentación de Referencia
+## Documentación de Referencia
 
 La documentación detallada se encuentra en la carpeta `docs/`. Recomendamos revisar los siguientes archivos para un entendimiento profundo del sistema:
 
-- 🏗️ [Arquitectura Detallada](docs/architecture.md)
-- 🧮 [Metodología de Campo y Estimación Estadística](docs/field_methodology.md)
-- 🔄 [Protocolo de Sincronización Idempotente](docs/sync_protocol.md)
-- ⚖️ [Motor de Reglas de Decisión](docs/decision_rules.md)
+- [Arquitectura Detallada](docs/architecture.md)
+- [Metodología de Campo y Estimación Estadística](docs/field_methodology.md)
+- [Protocolo de Sincronización Idempotente](docs/sync_protocol.md)
+- [Motor de Reglas de Decisión](docs/decision_rules.md)
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Para ejecutar la batería de pruebas:
 
@@ -177,4 +177,4 @@ uv run pytest
 
 ---
 
-*Desarrollado con arquitectura sólida para garantizar el futuro verde de nuestros bosques.* 🌲
+*Desarrollado con arquitectura sólida para garantizar el futuro verde de nuestros bosques.*
