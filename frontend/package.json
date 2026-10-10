@@ -10,10 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@turf/turf": "^7.4.0",
+    "@types/geojson": "^7946.0.16",
+    "@types/leaflet": "^1.9.22",
     "dexie": "^4.4.6",
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.52.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
