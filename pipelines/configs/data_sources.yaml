@@ -1,0 +1,49 @@
+# Data sources configuration for Probosque Multitemporal Forest Viewer
+sources:
+  mapbiomas_mexico:
+    key: "mapbiomas_mexico"
+    provider: "Iniciativa MapBiomas México (IPN, WRI México, et al.)"
+    product: "Colección 1.0 — Cobertura y Uso del Suelo"
+    collection_version: "1.0"
+    asset_id: "projects/mapbiomas-public/assets/mexico/lulc/collection1/mapbiomas_mexico_collection1_coverage_v1"
+    territories_asset_id: "projects/mapbiomas-territories/assets/TERRITORIES/MEXICO/WORKSPACE/POLITICAL_LEVEL_3/POLITICAL_LEVEL_3_v1"
+    first_year: 1985
+    last_year: 2025
+    mvp_first_year: 2010
+    mvp_last_year: 2025
+    resolution_m: 30
+    sensor: "Landsat (TM, ETM+, OLI)"
+    license: "CC BY-SA 4.0"
+    citation: "MapBiomas México Colección 1.0 (1985-2025)"
+    methodology_url: "https://mexico.mapbiomas.org/iniciativas-y-productos/metodologia-mapbiomas/vision-general/"
+    legend_url: "https://raw.githubusercontent.com/mapbiomas/user-toolkit/master/legend-colors/coverage/mexico-collection-1.0.sld"
+
+  hansen_gfc:
+    key: "hansen_gfc"
+    provider: "Hansen / UMD / GLAD / Google"
+    product: "Global Forest Change v1.13 (2000-2025)"
+    collection_version: "v1.13"
+    asset_id: "UMD/hansen/global_forest_change_2025_v1_13"
+    first_year: 2000
+    last_year: 2025
+    mvp_first_year: 2010
+    mvp_last_year: 2025
+    resolution_m: 30
+    license: "CC BY 4.0"
+    citation: "Hansen, M. C., et al. (2013). High-Resolution Global Maps of 21st-Century Forest Cover Change. Science 342: 850–53."
+    methodology_url: "https://developers.google.com/earth-engine/datasets/catalog/UMD_hansen_global_forest_change_2025_v1_13"
+    reference_canopy_cover_threshold_pct: 30
+    scientific_disclaimer: "Gross tree cover loss does not equal net deforestation or permanent land use change. It measures canopy disturbance."
+
+  inegi_marco_geoestadistico:
+    key: "inegi_mg"
+    provider: "Instituto Nacional de Estadística y Geografía (INEGI)"
+    product: "Marco Geoestadístico"
+    version: "Diciembre 2023"
+    upc: "794551067314"
+    state_code: "15"
+    state_name: "Estado de México"
+    expected_municipalities_count: 125
+    source_url: "https://www.inegi.org.mx/contenidos/productos/prod_serv/contenidos/espanol/bvinegi/productos/geografia/marcogeo/794551067314/15_mexico.zip"
+    license: "Términos de Libre Uso MX / Datos Abiertos"
+    citation: "INEGI, Marco Geoestadístico, diciembre 2023"

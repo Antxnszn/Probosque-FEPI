@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { initDatabase } from './db/dexie';
 
 // Layouts
@@ -32,10 +32,10 @@ import { AdminEvidence } from './features/admin/AdminEvidence';
 import { AdminUsers } from './features/admin/AdminUsers';
 import { AdminReports } from './features/admin/AdminReports';
 import { AdminSystem } from './features/admin/AdminSystem';
+import { ForestViewerPage } from './features/forest-viewer/pages/ForestViewerPage';
 
 function RootRedirect() {
-  const { role } = useAuth();
-  return <Navigate to={role === 'ADMIN' ? '/admin' : '/app'} replace />;
+  return <Navigate to="/visor" replace />;
 }
 
 export function App() {
@@ -47,9 +47,12 @@ export function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public / Auth */}
-          <Route path="/login" element={<LoginPage />} />
+          {/* Public Forest Viewer */}
+          <Route path="/visor" element={<ForestViewerPage />} />
           <Route path="/" element={<RootRedirect />} />
+
+          {/* Legacy Auth */}
+          <Route path="/login" element={<LoginPage />} />
 
           {/* Technician Operational Workspace (/app) */}
           <Route path="/app" element={<TechnicianLayout />}>
