@@ -3,8 +3,8 @@ import * as maplibregl from 'maplibre-gl';
 import type { Map as MapLibreMap, LngLatBoundsLike, MapLayerMouseEvent, GeoJSONSource, StyleSpecification } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
-import { Layers, RotateCcw, Moon, Sun, Globe } from 'lucide-react';
-import type { RegionSummary, BasemapMode } from '../types/forest';
+import { Layers, RotateCcw, Moon, Sun, Globe, Eye } from 'lucide-react';
+import type { RegionSummary, BasemapMode, LayerSpec } from '../types/forest';
 
 // Explicitly register worker for Vite bundler
 maplibregl.setWorkerUrl(maplibreWorkerUrl);
@@ -17,6 +17,7 @@ interface ForestMapProps {
   onSelectMunicipality: (code: string) => void;
   activeIndicator: 'land_cover' | 'tree_cover_loss';
   selectedYear: number;
+  activeRasterLayer?: LayerSpec | null;
   isCompareMode: boolean;
   compareYearA: number;
   compareYearB: number;
@@ -102,6 +103,7 @@ export const ForestMap: React.FC<ForestMapProps> = ({
   onSelectMunicipality,
   activeIndicator,
   selectedYear,
+  activeRasterLayer,
   isCompareMode,
   compareYearA,
   compareYearB,
@@ -113,6 +115,7 @@ export const ForestMap: React.FC<ForestMapProps> = ({
   const [basemap, setBasemap] = useState<BasemapMode>('carto_dark');
   const [hoveredMuniName, setHoveredMuniName] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [rasterOpacity, setRasterOpacity] = useState<number>(0.85);
 
   // Initialize MapLibre
   useEffect(() => {
@@ -165,13 +168,40 @@ export const ForestMap: React.FC<ForestMapProps> = ({
     mapRef.current.setStyle(BASEMAP_STYLES[mode]);
   };
 
+  // Update raster layer opacity dynamically
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) return;
+    if (map.getLayer('mapbiomas-raster-layer')) {
+      map.setPaintProperty('mapbiomas-raster-layer', 'raster-opacity', rasterOpacity);
+    }
+  }, [rasterOpacity, mapLoaded]);
+
   // Add vector sources and layers when map is ready and GeoJSON is available
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapLoaded || !municipalitiesGeoJSON) return;
 
+    const isRasterReady = activeRasterLayer?.status === 'ready' && !!activeRasterLayer?.tile_url_template;
+
     const updateLayers = () => {
       if (!map.isStyleLoaded()) return;
+
+      // 0. Manage MapBiomas classified raster layer
+      const RASTER_SRC = 'mapbiomas-raster';
+      const RASTER_LYR = 'mapbiomas-raster-layer';
+
+      if (isRasterReady && activeRasterLayer?.tile_url_template) {
+        if (!map.getSource(RASTER_SRC)) {
+          map.addSource(RASTER_SRC, {
+            type: 'raster',
+            tiles: [activeRasterLayer.tile_url_template],
+            tileSize: 256,
+            attribution: 'MapBiomas México Colección 1.0 (CC BY 4.0)',
+          });
+        }
+      }
+
       // 1. Add Municipalities Source
       if (!map.getSource('municipalities')) {
         map.addSource('municipalities', {
@@ -195,7 +225,20 @@ export const ForestMap: React.FC<ForestMapProps> = ({
         }
       }
 
-      // 3. Municipal Fill Layer (interactive hover & selection)
+      // 3. Add Raster Layer (underneath borders & fills)
+      if (isRasterReady && map.getSource(RASTER_SRC) && !map.getLayer(RASTER_LYR)) {
+        map.addLayer({
+          id: RASTER_LYR,
+          type: 'raster',
+          source: RASTER_SRC,
+          paint: {
+            'raster-opacity': rasterOpacity,
+            'raster-fade-duration': 300,
+          },
+        });
+      }
+
+      // 4. Municipal Fill Layer (interactive hover & selection)
       if (!map.getLayer('municipalities-fill')) {
         map.addLayer({
           id: 'municipalities-fill',
@@ -210,19 +253,47 @@ export const ForestMap: React.FC<ForestMapProps> = ({
               '#059669', // emerald-600 on hover
               '#1e293b', // slate-800 default
             ],
-            'fill-opacity': [
-              'case',
-              ['==', ['get', 'inegi_code'], selectedMunicipalityCode || ''],
-              0.45,
-              ['boolean', ['feature-state', 'hover'], false],
-              0.35,
-              0.12,
-            ],
+            'fill-opacity': isRasterReady
+              ? [
+                  'case',
+                  ['boolean', ['feature-state', 'hover'], false],
+                  0.25,
+                  0.0, // transparent so the classified raster shines through
+                ]
+              : [
+                  'case',
+                  ['==', ['get', 'inegi_code'], selectedMunicipalityCode || ''],
+                  0.45,
+                  ['boolean', ['feature-state', 'hover'], false],
+                  0.35,
+                  0.12,
+                ],
           },
         });
+      } else {
+        // Update fill-opacity based on whether raster is active
+        map.setPaintProperty(
+          'municipalities-fill',
+          'fill-opacity',
+          isRasterReady
+            ? [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                0.25,
+                0.0,
+              ]
+            : [
+                'case',
+                ['==', ['get', 'inegi_code'], selectedMunicipalityCode || ''],
+                0.45,
+                ['boolean', ['feature-state', 'hover'], false],
+                0.35,
+                0.12,
+              ]
+        );
       }
 
-      // 4. Municipal Borders Line Layer
+      // 5. Municipal Borders Line Layer
       if (!map.getLayer('municipalities-borders')) {
         map.addLayer({
           id: 'municipalities-borders',
@@ -238,15 +309,15 @@ export const ForestMap: React.FC<ForestMapProps> = ({
             'line-width': [
               'case',
               ['==', ['get', 'inegi_code'], selectedMunicipalityCode || ''],
-              2.5,
-              1,
+              3.0,
+              1.2,
             ],
-            'line-opacity': 0.8,
+            'line-opacity': 0.85,
           },
         });
       }
 
-      // 5. State Perimeter Outline
+      // 6. State Perimeter Outline
       if (stateGeoJSON && !map.getLayer('state-outline')) {
         map.addLayer({
           id: 'state-outline',
@@ -260,7 +331,20 @@ export const ForestMap: React.FC<ForestMapProps> = ({
           },
         });
       }
+
+      // Ensure proper layer ordering (raster at bottom, borders on top)
+      if (map.getLayer(RASTER_LYR) && map.getLayer('municipalities-borders')) {
+        map.moveLayer(RASTER_LYR, 'municipalities-fill');
+      }
     };
+
+    // If raster template changed, remove existing raster layer & source to force reload
+    if (map.getLayer('mapbiomas-raster-layer')) {
+      map.removeLayer('mapbiomas-raster-layer');
+    }
+    if (map.getSource('mapbiomas-raster')) {
+      map.removeSource('mapbiomas-raster');
+    }
 
     updateLayers();
     map.on('styledata', updateLayers);
@@ -311,7 +395,7 @@ export const ForestMap: React.FC<ForestMapProps> = ({
       map.off('mouseleave', 'municipalities-fill', onMouseLeave);
       map.off('click', 'municipalities-fill', onClick);
     };
-  }, [mapLoaded, municipalitiesGeoJSON, stateGeoJSON, selectedMunicipalityCode, onSelectMunicipality]);
+  }, [mapLoaded, municipalitiesGeoJSON, stateGeoJSON, selectedMunicipalityCode, onSelectMunicipality, activeRasterLayer]);
 
   // Update selected highlight when selectedMunicipalityCode changes
   useEffect(() => {
@@ -337,8 +421,8 @@ export const ForestMap: React.FC<ForestMapProps> = ({
     map.setPaintProperty('municipalities-borders', 'line-width', [
       'case',
       ['==', ['get', 'inegi_code'], selectedMunicipalityCode || ''],
-      2.5,
-      1,
+      3.0,
+      1.2,
     ]);
   }, [selectedMunicipalityCode]);
 
@@ -364,8 +448,10 @@ export const ForestMap: React.FC<ForestMapProps> = ({
     mapRef.current.fitBounds(EDOMEX_BBOX as LngLatBoundsLike, { padding: 30, duration: 1000 });
   }, []);
 
+  const isRasterActive = activeRasterLayer?.status === 'ready' && !!activeRasterLayer?.tile_url_template;
+
   return (
-    <div className="relative w-full h-full min-h-[500px] bg-slate-950 overflow-hidden flex flex-col select-none">
+    <div className="relative w-full h-full min-h-0 bg-slate-950 overflow-hidden flex flex-col select-none">
       {/* Map Container */}
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full" />
 
@@ -382,6 +468,24 @@ export const ForestMap: React.FC<ForestMapProps> = ({
           </span>
         </div>
 
+        {/* Raster Layer Status Pill */}
+        <div className="pointer-events-auto">
+          {isRasterActive ? (
+            <div className="bg-emerald-950/90 backdrop-blur border border-emerald-500/60 px-3 py-1.5 rounded-xl text-xs text-emerald-200 shadow-xl font-medium flex items-center gap-2 animate-fadeIn">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>Ráster MapBiomas {selectedYear} activo (30m GEE Oficial)</span>
+            </div>
+          ) : (
+            <div className="bg-slate-900/90 backdrop-blur border border-slate-700/60 px-3 py-1.5 rounded-xl text-xs text-slate-400 shadow-xl font-medium flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-slate-500" />
+              <span>Ráster: En cola de ingesta masiva</span>
+            </div>
+          )}
+        </div>
+
         {/* Hovered municipality tooltip banner */}
         {hoveredMuniName && (
           <div className="bg-slate-900/95 backdrop-blur border border-emerald-500/50 px-3 py-1.5 rounded-lg text-xs text-emerald-200 shadow-xl font-medium flex items-center gap-1.5 animate-fadeIn">
@@ -391,8 +495,29 @@ export const ForestMap: React.FC<ForestMapProps> = ({
         )}
       </div>
 
-      {/* Top-Right Floating Controls (Basemap Switcher & Reset) */}
+      {/* Top-Right Floating Controls (Basemap Switcher & Opacity & Reset) */}
       <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md border border-slate-700/70 p-1.5 rounded-xl shadow-xl">
+        {/* Opacity slider for active raster layer */}
+        {isRasterActive && (
+          <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-950/70 rounded-lg text-xs text-slate-300 border border-slate-800">
+            <Eye className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <input
+              type="range"
+              min="0.2"
+              max="1.0"
+              step="0.05"
+              value={rasterOpacity}
+              onChange={(e) => setRasterOpacity(parseFloat(e.target.value))}
+              className="w-16 h-1.5 accent-emerald-500 cursor-pointer"
+              title={`Opacidad del mosaico: ${Math.round(rasterOpacity * 100)}%`}
+            />
+            <span className="text-[10px] font-mono text-emerald-400 w-7 text-right">
+              {Math.round(rasterOpacity * 100)}%
+            </span>
+            <div className="w-px h-4 bg-slate-800 mx-0.5" />
+          </div>
+        )}
+
         <button
           onClick={() => handleBasemapChange('carto_dark')}
           className={`p-2 rounded-lg transition-all ${basemap === 'carto_dark' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}

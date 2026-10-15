@@ -74,7 +74,7 @@ async def get_layers(
 
 @router.get("/stats/annual", response_model=AnnualStatsResponse)
 async def get_annual_stats(
-    region_id: str = Query(..., description="INEGI code of municipality (e.g. '15101' for Valle de Bravo) or '15' for State"),
+    region_id: str = Query(..., description="INEGI code of municipality (e.g. '15110' for Valle de Bravo) or '15' for State"),
     from_year: int = Query(2010, alias="from", ge=1985, le=2025),
     to_year: int = Query(2025, alias="to", ge=1985, le=2025),
 ):

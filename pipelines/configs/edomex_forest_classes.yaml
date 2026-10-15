@@ -1,7 +1,8 @@
 # Official MapBiomas México Colección 1.0 legend classes & Edomex forest grouping policy
-# Source: https://raw.githubusercontent.com/mapbiomas/user-toolkit/master/legend-colors/coverage/mexico-collection-1.0.sld
+# Source: Official API legend dde29c24-114a-4611-a2b0-1181b6119f19 and MapBiomas user-toolkit SLD
 legend_version: "mexico-collection-1.0"
 forest_grouping_version: "probosque-v1.0"
+methodological_decision: "La agrupación 'is_forest_approved' es una decisión metodológica explícita del proyecto Probosque-FEPI para monitorear bosque templado (88), bosque tropical seco (89), bosque tropical húmedo (3) y plantación forestal (9) bajo la jurisdicción del Estado de México. No constituye una definición intrínseca de MapBiomas México."
 
 classes:
   - code: 88
@@ -138,3 +139,21 @@ classes:
     is_native_forest: false
     is_forest_approved: false
     description: "Ciénegas del Lerma y cuerpos de agua temporales."
+
+  - code: 21
+    name_en: "Mosaic of land uses"
+    name_es: "Mosaico de usos"
+    hex_color: "#ffefc3"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Mosaico de usos agropecuarios y forestales no diferenciables a resolución de 30 m."
+
+  - code: 27
+    name_en: "Not observed"
+    name_es: "No observado"
+    hex_color: "#ffffff"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Área sin observación por persistencia extrema de nubes o sombras en la serie anual."

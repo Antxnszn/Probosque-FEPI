@@ -153,6 +153,7 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
 
             {filteredMunicipalities.map((m) => {
               const isSelected = selectedCode === m.inegi_code;
+              const isValle = m.inegi_code === '15110';
               return (
                 <button
                   key={m.inegi_code}
@@ -160,11 +161,20 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
                   className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between transition-colors ${
                     isSelected
                       ? 'bg-emerald-950/80 text-emerald-300 font-semibold border border-emerald-800/60'
+                      : isValle
+                      ? 'bg-emerald-950/20 text-slate-200 border border-emerald-900/30 hover:bg-emerald-950/40'
                       : 'text-slate-300 hover:bg-slate-800/70'
                   }`}
                 >
                   <div className="truncate pr-2">
-                    <span className="block truncate font-medium">{m.name}</span>
+                    <div className="flex items-center">
+                      <span className="block truncate font-medium">{m.name}</span>
+                      {isValle && (
+                        <span className="text-[9px] bg-emerald-900/60 text-emerald-300 border border-emerald-700/50 px-1.5 py-0.2 rounded ml-1.5 font-sans shrink-0">
+                          Fase 2 Verificada
+                        </span>
+                      )}
+                    </div>
                     <span className="text-[10px] text-slate-400 font-mono">
                       Clave {m.inegi_code} • {m.area_ha.toLocaleString('es-MX')} ha
                     </span>
@@ -241,7 +251,7 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="space-y-2">
             <select
               value={selectedYear}
               onChange={(e) => onChangeYear(Number(e.target.value))}
@@ -253,6 +263,32 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
                 </option>
               ))}
             </select>
+
+            {/* Quick 2010 / 2025 Toggles for Phase 2 Acceptance */}
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                onClick={() => onChangeYear(2010)}
+                className={`py-1 px-2 rounded-lg text-xs font-semibold border transition-all text-center ${
+                  selectedYear === 2010
+                    ? 'bg-emerald-600 border-emerald-400 text-white shadow'
+                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                2010 (Línea base)
+              </button>
+              <button
+                type="button"
+                onClick={() => onChangeYear(2025)}
+                className={`py-1 px-2 rounded-lg text-xs font-semibold border transition-all text-center ${
+                  selectedYear === 2025
+                    ? 'bg-emerald-600 border-emerald-400 text-white shadow'
+                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                2025 (Reciente)
+              </button>
+            </div>
           </div>
         </section>
 

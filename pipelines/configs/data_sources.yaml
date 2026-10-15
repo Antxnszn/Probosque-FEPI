@@ -5,7 +5,7 @@ sources:
     provider: "Iniciativa MapBiomas México (IPN, WRI México, et al.)"
     product: "Colección 1.0 — Cobertura y Uso del Suelo"
     collection_version: "1.0"
-    asset_id: "projects/mapbiomas-public/assets/mexico/lulc/collection1/mapbiomas_mexico_collection1_coverage_v1"
+    asset_id: "projects/mapbiomas-mexico/assets/LAND-COVER/COLLECTION-1/GENERAL/classification-ft/MEX_integration_natstable_lagunas_ft_v1"
     territories_asset_id: "projects/mapbiomas-territories/assets/TERRITORIES/MEXICO/WORKSPACE/POLITICAL_LEVEL_3/POLITICAL_LEVEL_3_v1"
     first_year: 1985
     last_year: 2025
@@ -13,8 +13,8 @@ sources:
     mvp_last_year: 2025
     resolution_m: 30
     sensor: "Landsat (TM, ETM+, OLI)"
-    license: "CC BY-SA 4.0"
-    citation: "MapBiomas México Colección 1.0 (1985-2025)"
+    license: "CC BY 4.0"
+    citation: "Iniciativa MapBiomas México, Colección 1.0 de la Cobertura y Uso del Suelo (1985-2025), accesible a través de https://mexico.mapbiomas.org"
     methodology_url: "https://mexico.mapbiomas.org/iniciativas-y-productos/metodologia-mapbiomas/vision-general/"
     legend_url: "https://raw.githubusercontent.com/mapbiomas/user-toolkit/master/legend-colors/coverage/mexico-collection-1.0.sld"
 

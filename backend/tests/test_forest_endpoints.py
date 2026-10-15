@@ -77,15 +77,27 @@ async def test_get_geojson_layers():
 async def test_get_annual_stats_and_validation():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        # Valid request
+        # 1. Ingested region: Valle de Bravo (15110)
         res = await ac.get("/api/v1/forest/stats/annual?region_id=15110&from=2010&to=2025")
         assert res.status_code == 200
         data = res.json()
         assert data["region_name"] == "Valle de Bravo"
         assert len(data["series"]) == 16
-        assert data["data_status"] == "pending_ingest"
+        assert data["data_status"] == "ready"
+        # Check that 2010 and 2025 series contain real hectares
+        s2010 = next((s for s in data["series"] if s["year"] == 2010), None)
+        assert s2010 is not None
+        assert s2010["total_forest_approved_ha"] == 32265.0
+        s2025 = next((s for s in data["series"] if s["year"] == 2025), None)
+        assert s2025 is not None
+        assert s2025["total_forest_approved_ha"] == 32281.0
 
-        # Invalid date range
+        # 2. Un-ingested region (e.g. 15001 Acambay) must return honest pending_ingest
+        res_pending = await ac.get("/api/v1/forest/stats/annual?region_id=15001&from=2010&to=2025")
+        assert res_pending.status_code == 200
+        assert res_pending.json()["data_status"] == "pending_ingest"
+
+        # 3. Invalid date range
         res_invalid = await ac.get("/api/v1/forest/stats/annual?region_id=15110&from=2025&to=2010")
         assert res_invalid.status_code == 400
 
@@ -94,7 +106,7 @@ async def test_get_annual_stats_and_validation():
 async def test_get_loss_stats():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        res = await ac.get("/api/v1/forest/stats/loss?region_id=15101&from=2010&to=2025")
+        res = await ac.get("/api/v1/forest/stats/loss?region_id=15110&from=2010&to=2025")
         assert res.status_code == 200
         data = res.json()
         assert "scientific_disclaimer" in data
@@ -109,3 +121,8 @@ async def test_get_layers():
         assert res.status_code == 200
         layers = res.json()
         assert len(layers) >= 2
+        lc_layer = next((l for l in layers if l["indicator"] == "land_cover"), None)
+        assert lc_layer is not None
+        assert lc_layer["status"] == "ready"
+        assert lc_layer["tile_url_template"] is not None
+        assert "earthengine.googleapis.com" in lc_layer["tile_url_template"]

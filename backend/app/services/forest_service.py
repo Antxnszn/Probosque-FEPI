@@ -3,6 +3,11 @@ import pathlib
 import yaml
 from typing import List, Dict, Any, Optional
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from app.config import settings
+from app.models.forest import GeoRegion, DataSource, LandCoverClass, RasterProduct, RegionYearStat
 from app.schemas.forest import (
     ForestMetadataResponse,
     DataSourceInfo,
@@ -185,31 +190,83 @@ class ForestService:
             return json.loads(path.read_text(encoding="utf-8"))
         return {"type": "FeatureCollection", "features": []}
 
+    def _get_db_session(self):
+        try:
+            engine = create_engine(settings.SYNC_DATABASE_URL, pool_pre_ping=True)
+            Session = sessionmaker(bind=engine)
+            return Session()
+        except Exception:
+            return None
+
     def get_annual_stats(self, region_id: str, year_from: int = 2010, year_to: int = 2025) -> AnnualStatsResponse:
         self._load_configs()
         region_detail = self.get_region_detail(region_id)
         name = region_detail.name if region_detail else region_id
 
-        # Phase 0 & 1 empty state (no synthetic numbers, fully honest status)
-        classes = [
-            AnnualClassStat(
-                code=c.code,
-                name_es=c.name_es,
-                hex_color=c.hex_color,
-                area_ha=None,
-                is_forest_approved=c.is_forest_approved,
-            )
-            for c in self._metadata_cache.legend_classes
-        ]
+        # Query database for ingested statistics
+        db_stats_by_year: Dict[int, Dict[int, float]] = {}
+        session = self._get_db_session()
+        if session:
+            try:
+                records = (
+                    session.query(RegionYearStat)
+                    .filter(
+                        RegionYearStat.region_id == region_id,
+                        RegionYearStat.year >= max(1985, year_from),
+                        RegionYearStat.year <= min(2025, year_to),
+                    )
+                    .all()
+                )
+                for r in records:
+                    if r.year not in db_stats_by_year:
+                        db_stats_by_year[r.year] = {}
+                    db_stats_by_year[r.year][r.class_code] = float(r.area_ha)
+            except Exception:
+                pass
+            finally:
+                session.close()
 
-        series = [
-            AnnualStatsSeries(
-                year=y,
-                total_forest_approved_ha=None,
-                classes=classes,
+        has_data = len(db_stats_by_year) > 0
+        series = []
+
+        for y in range(max(2010, year_from), min(2025, year_to) + 1):
+            year_data = db_stats_by_year.get(y)
+            classes = []
+            forest_ha_sum = 0.0
+
+            for c in self._metadata_cache.legend_classes:
+                if year_data is not None and c.code in year_data:
+                    ha = year_data[c.code]
+                    classes.append(
+                        AnnualClassStat(
+                            code=c.code,
+                            name_es=c.name_es,
+                            hex_color=c.hex_color,
+                            area_ha=ha,
+                            is_forest_approved=c.is_forest_approved,
+                        )
+                    )
+                    if c.is_forest_approved:
+                        forest_ha_sum += ha
+                else:
+                    # Ingested year exists but this class had 0 ha, or year is not ingested yet
+                    classes.append(
+                        AnnualClassStat(
+                            code=c.code,
+                            name_es=c.name_es,
+                            hex_color=c.hex_color,
+                            area_ha=0.0 if year_data is not None else None,
+                            is_forest_approved=c.is_forest_approved,
+                        )
+                    )
+
+            series.append(
+                AnnualStatsSeries(
+                    year=y,
+                    total_forest_approved_ha=forest_ha_sum if year_data is not None else None,
+                    classes=classes,
+                )
             )
-            for y in range(max(2010, year_from), min(2025, year_to) + 1)
-        ]
 
         return AnnualStatsResponse(
             region_id=region_id,
@@ -222,7 +279,7 @@ class ForestService:
                 "resolution_m": 30,
             },
             series=series,
-            data_status="pending_ingest",
+            data_status="ready" if has_data else "pending_ingest",
         )
 
     def get_loss_stats(self, region_id: str, year_from: int = 2010, year_to: int = 2025) -> LossStatsResponse:
@@ -273,6 +330,28 @@ class ForestService:
         layers = []
         target_year = year or 2025
 
+        # Query database for ready raster products
+        tile_url = None
+        layer_status = "pending_ingest"
+        tile_strategy = "xyz"
+
+        session = self._get_db_session()
+        if session:
+            try:
+                rp = (
+                    session.query(RasterProduct)
+                    .filter_by(indicator="land_cover", year=target_year)
+                    .first()
+                )
+                if rp and rp.status == "ready" and rp.tile_url_template:
+                    tile_url = rp.tile_url_template
+                    layer_status = "ready"
+                    tile_strategy = rp.tile_strategy
+            except Exception:
+                pass
+            finally:
+                session.close()
+
         # Land cover layer
         legend_items = [
             {"code": c.code, "label": c.name_es, "color": c.hex_color}
@@ -285,9 +364,9 @@ class ForestService:
                 indicator="land_cover",
                 name=f"Cobertura y Uso del Suelo {target_year} (MapBiomas Col. 1.0)",
                 year=target_year,
-                tile_strategy="xyz",
-                tile_url_template=None,
-                status="pending_ingest",
+                tile_strategy=tile_strategy,
+                tile_url_template=tile_url,
+                status=layer_status,
                 legend=legend_items,
             )
         )
@@ -311,3 +390,4 @@ class ForestService:
 
 
 forest_service = ForestService()
+
