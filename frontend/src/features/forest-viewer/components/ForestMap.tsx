@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as maplibregl from 'maplibre-gl';
-import type { Map as MapLibreMap, LngLatBoundsLike, MapLayerMouseEvent, GeoJSONSource } from 'maplibre-gl';
-import { Layers, RotateCcw, Moon, Sun } from 'lucide-react';
+import type { Map as MapLibreMap, LngLatBoundsLike, MapLayerMouseEvent, GeoJSONSource, StyleSpecification } from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+import { Layers, RotateCcw, Moon, Sun, Globe } from 'lucide-react';
 import type { RegionSummary, BasemapMode } from '../types/forest';
+
+// Explicitly register worker for Vite bundler
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
 interface ForestMapProps {
   municipalitiesGeoJSON: GeoJSON.FeatureCollection | null;
@@ -20,10 +25,73 @@ interface ForestMapProps {
 // Bounding box for entire Estado de México
 const EDOMEX_BBOX: [number, number, number, number] = [-100.6131, 18.3669, -98.5969, 20.2859];
 
-const BASEMAP_STYLES: Record<BasemapMode, string> = {
-  carto_dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-  carto_positron: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-  satellite: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', // fallback style with satellite raster overlay
+const BASEMAP_STYLES: Record<BasemapMode, StyleSpecification> = {
+  carto_dark: {
+    version: 8,
+    sources: {
+      'dark-base': {
+        type: 'raster',
+        tiles: [
+          'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        ],
+        tileSize: 256,
+        attribution: 'Esri, HERE, Garmin, © OpenStreetMap contributors',
+      },
+    },
+    layers: [
+      {
+        id: 'dark-base-layer',
+        type: 'raster',
+        source: 'dark-base',
+        minzoom: 0,
+        maxzoom: 20,
+      },
+    ],
+  },
+  carto_positron: {
+    version: 8,
+    sources: {
+      'light-base': {
+        type: 'raster',
+        tiles: [
+          'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        ],
+        tileSize: 256,
+        attribution: 'Esri, HERE, Garmin, © OpenStreetMap contributors',
+      },
+    },
+    layers: [
+      {
+        id: 'light-base-layer',
+        type: 'raster',
+        source: 'light-base',
+        minzoom: 0,
+        maxzoom: 20,
+      },
+    ],
+  },
+  satellite: {
+    version: 8,
+    sources: {
+      'esri-satellite': {
+        type: 'raster',
+        tiles: [
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        ],
+        tileSize: 256,
+        attribution: 'Esri, Maxar, Earthstar Geographics',
+      },
+    },
+    layers: [
+      {
+        id: 'esri-satellite-layer',
+        type: 'raster',
+        source: 'esri-satellite',
+        minzoom: 0,
+        maxzoom: 19,
+      },
+    ],
+  },
 };
 
 export const ForestMap: React.FC<ForestMapProps> = ({
@@ -69,6 +137,7 @@ export const ForestMap: React.FC<ForestMapProps> = ({
 
     map.on('load', () => {
       setMapLoaded(true);
+      map.resize();
     });
 
     mapRef.current = map;
@@ -79,12 +148,21 @@ export const ForestMap: React.FC<ForestMapProps> = ({
     };
   }, []);
 
+  // Ensure map resizes when container dimension changes
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+    const observer = new ResizeObserver(() => {
+      mapRef.current?.resize();
+    });
+    observer.observe(mapContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   // Handle basemap style switch
   const handleBasemapChange = (mode: BasemapMode) => {
     if (!mapRef.current || mode === basemap) return;
     setBasemap(mode);
     mapRef.current.setStyle(BASEMAP_STYLES[mode]);
-    // Note: 'styledata' event will re-add layers automatically via useEffect below
   };
 
   // Add vector sources and layers when map is ready and GeoJSON is available
@@ -93,6 +171,7 @@ export const ForestMap: React.FC<ForestMapProps> = ({
     if (!map || !mapLoaded || !municipalitiesGeoJSON) return;
 
     const updateLayers = () => {
+      if (!map.isStyleLoaded()) return;
       // 1. Add Municipalities Source
       if (!map.getSource('municipalities')) {
         map.addSource('municipalities', {
@@ -327,6 +406,13 @@ export const ForestMap: React.FC<ForestMapProps> = ({
           title="Mapa Claro (Carto Positron)"
         >
           <Sun className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => handleBasemapChange('satellite')}
+          className={`p-2 rounded-lg transition-all ${basemap === 'satellite' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+          title="Satélite (Esri World Imagery)"
+        >
+          <Globe className="w-4 h-4" />
         </button>
         <div className="w-px h-5 bg-slate-700 mx-0.5" />
         <button

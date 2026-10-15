@@ -10,13 +10,22 @@ import type {
 
 const API_BASE = '/api/v1/forest';
 
-export async function fetchForestMetadata(): Promise<ForestMetadata> {
+async function safeFetchJson<T>(url: string): Promise<T | null> {
   try {
-    const res = await fetch(`${API_BASE}/metadata`);
-    if (res.ok) return await res.json();
+    const res = await fetch(url);
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      return (await res.json()) as T;
+    }
   } catch (err) {
-    console.warn('API /metadata unavailable, using local defaults', err);
+    console.warn(`Fetch error for ${url}:`, err);
   }
+  return null;
+}
+
+export async function fetchForestMetadata(): Promise<ForestMetadata> {
+  const data = await safeFetchJson<ForestMetadata>(`${API_BASE}/metadata`);
+  if (data) return data;
 
   // Fallback defaults for standalone client testing
   return {
@@ -77,12 +86,8 @@ export async function fetchForestMetadata(): Promise<ForestMetadata> {
 }
 
 export async function fetchMunicipalities(): Promise<RegionSummary[]> {
-  try {
-    const res = await fetch(`${API_BASE}/regions?type=municipality`);
-    if (res.ok) return await res.json();
-  } catch (err) {
-    console.warn('API /regions unavailable, fetching from static data', err);
-  }
+  const data = await safeFetchJson<RegionSummary[]>(`${API_BASE}/regions?type=municipality`);
+  if (data) return data;
 
   // Fallback to static public json
   const staticRes = await fetch('/data/edomex_municipios_catalog.json');
@@ -90,33 +95,21 @@ export async function fetchMunicipalities(): Promise<RegionSummary[]> {
 }
 
 export async function fetchRegionDetail(regionId: string): Promise<RegionDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/regions/${regionId}`);
-    if (res.ok) return await res.json();
-  } catch (err) {
-    console.warn(`API /regions/${regionId} error`, err);
-  }
-  return null;
+  return await safeFetchJson<RegionDetail>(`${API_BASE}/regions/${regionId}`);
 }
 
 export async function fetchStateGeoJSON(): Promise<GeoJSON.FeatureCollection> {
-  try {
-    const res = await fetch(`${API_BASE}/geojson/state?simplified=true`);
-    if (res.ok) return await res.json();
-  } catch (err) {
-    console.warn('API state geojson unavailable, using static fallback', err);
-  }
+  const data = await safeFetchJson<GeoJSON.FeatureCollection>(`${API_BASE}/geojson/state?simplified=true`);
+  if (data) return data;
+
   const staticRes = await fetch('/data/edomex_state_simplified.geojson');
   return await staticRes.json();
 }
 
 export async function fetchMunicipalitiesGeoJSON(): Promise<GeoJSON.FeatureCollection> {
-  try {
-    const res = await fetch(`${API_BASE}/geojson/municipalities?simplified=true`);
-    if (res.ok) return await res.json();
-  } catch (err) {
-    console.warn('API municipalities geojson unavailable, using static fallback', err);
-  }
+  const data = await safeFetchJson<GeoJSON.FeatureCollection>(`${API_BASE}/geojson/municipalities?simplified=true`);
+  if (data) return data;
+
   const staticRes = await fetch('/data/edomex_125_municipios_simplified.geojson');
   return await staticRes.json();
 }
