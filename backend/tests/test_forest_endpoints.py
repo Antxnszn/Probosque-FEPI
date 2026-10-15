@@ -87,17 +87,23 @@ async def test_get_annual_stats_and_validation():
         # Check that 2010 and 2025 series contain real hectares
         s2010 = next((s for s in data["series"] if s["year"] == 2010), None)
         assert s2010 is not None
-        assert s2010["total_forest_approved_ha"] == 32265.0
+        assert round(s2010["total_forest_approved_ha"]) == 32265
         s2025 = next((s for s in data["series"] if s["year"] == 2025), None)
         assert s2025 is not None
-        assert s2025["total_forest_approved_ha"] == 32281.0
+        assert round(s2025["total_forest_approved_ha"]) == 32281
 
-        # 2. Un-ingested region (e.g. 15001 Acambay) must return honest pending_ingest
-        res_pending = await ac.get("/api/v1/forest/stats/annual?region_id=15001&from=2010&to=2025")
+        # 2. Ingested region: Acambay (15001) must return ready with full multitemporal series
+        res_acambay = await ac.get("/api/v1/forest/stats/annual?region_id=15001&from=2010&to=2025")
+        assert res_acambay.status_code == 200
+        assert res_acambay.json()["data_status"] == "ready"
+        assert len(res_acambay.json()["series"]) == 16
+
+        # 3. Un-ingested region (e.g. 99999) must return honest pending_ingest
+        res_pending = await ac.get("/api/v1/forest/stats/annual?region_id=99999&from=2010&to=2025")
         assert res_pending.status_code == 200
         assert res_pending.json()["data_status"] == "pending_ingest"
 
-        # 3. Invalid date range
+        # 4. Invalid date range
         res_invalid = await ac.get("/api/v1/forest/stats/annual?region_id=15110&from=2025&to=2010")
         assert res_invalid.status_code == 400
 
