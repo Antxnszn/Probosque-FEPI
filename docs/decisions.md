@@ -64,3 +64,15 @@
   - Clase 3: Bosque húmedo tropical
   - Clase 9: Plantación forestal (catalogada como forestal inducida)
   Matorrales (66) y pastizales naturales (45) se contabilizan en sus propias categorías sin fusionarse automáticamente con "bosque".
+
+---
+
+### ADR-008: Protocolo de Limpieza Pre-Lanzamiento y Purga de Archivos de Desarrollo
+* **Fecha:** Octubre 2026
+* **Estado:** Aceptado
+* **Contexto:** Durante las fases iterativas de desarrollo se mantienen planes de implementación (`implementation_plans/`), bitácoras de trabajo (`walkthroughs/`), scripts de prueba locales y reglas permisivas temporales en `.gitignore`. Para la entrega final del producto a usuarios u operadores externos, el repositorio debe reflejar exclusivamente código de producción, arquitectura limpia y cero artefactos residuales.
+* **Decisión:** Se establece una fase final obligatoria de limpieza y consolidación antes del release a producción:
+  1. Mantener los planes de implementación y documentación de desarrollo durante la ejecución activa de los sprints.
+  2. Al finalizar el producto, purgar del árbol de archivos del repositorio las carpetas de trabajo interno (`implementation_plans/`, `walkthroughs/`, scripts scratch).
+  3. Auditar y sanitizar `.gitignore` para eliminar referencias temporales que no tengan propósito en producción, conservando únicamente las reglas estándar de entorno (Node, Python, Docker, SO, secretos).
+  4. Dejar el repositorio en estado de "código limpio de producción", asegurando que cualquier evaluador o desarrollador externo reciba una estructura pulcra, comprensible y estandarizada.
