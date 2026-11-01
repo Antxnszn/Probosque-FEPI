@@ -51,28 +51,26 @@ export function TechDashboard() {
   const pendingSyncTotal = pendingAuditsCount + pendingEvidenceCount;
 
   return (
-    <div className="space-y-5">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-forest-950/40 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
-        <div className="relative z-10 space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-forest-400">
-              Operación de Campo Probosque
-            </span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white">
+    <div className="space-y-10 font-['Plus_Jakarta_Sans',sans-serif] text-[#1B2A24]">
+      {/* Welcome Banner in Tactile Clay Well */}
+      <div className="rounded-[32px] bg-[#EAE4D3] p-6 sm:p-8 shadow-[inset_4px_4px_12px_rgba(107,139,120,0.18),inset_-4px_-4px_12px_rgba(255,255,255,0.85)] space-y-4">
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold text-[#E0643A] uppercase tracking-normal">
+            Operación de Campo PROBOSQUE
+          </span>
+          <h1 className="font-['Outfit',sans-serif] text-2xl sm:text-3xl font-light text-[#1B2A24]">
             Buenos días, {currentUser.name.split(' ')[1] || currentUser.name}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300">
-            {plots.length} parcelas asignadas en tu cuadrante de trabajo.
+          <p className="text-xs sm:text-sm text-[#6B8B78]">
+            Tienes {plots.length} parcelas asignadas en tu cuadrante territorial de muestreo.
           </p>
         </div>
 
-        {/* Floating Quick Action */}
-        <div className="mt-4 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+        {/* Quick Actions */}
+        <div className="pt-4 border-t border-[#6B8B78]/20 flex flex-wrap items-center justify-between gap-4">
           <button
             onClick={() => navigate('/app/plots')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-forest-600 hover:bg-forest-500 text-white rounded-xl text-xs font-bold shadow-lg transition-all"
+            className="clay-btn-terracotta px-6 py-2.5 text-xs text-white shadow-sm flex items-center gap-2"
           >
             <span>{activeAudit ? 'Continuar auditoría en curso' : 'Ver parcelas asignadas'}</span>
             <ArrowRight className="w-4 h-4" />
@@ -80,127 +78,149 @@ export function TechDashboard() {
 
           {/* Sync warning pill */}
           <div className="flex items-center gap-2 text-xs">
-            <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full border ${pendingSyncTotal > 0 ? 'bg-amber-950/60 border-amber-800 text-amber-300' : 'bg-emerald-950/60 border-emerald-800 text-emerald-300'}`}>
+            <span
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full font-semibold ${
+                pendingSyncTotal > 0
+                  ? 'bg-[#F9DFD5] text-[#E0643A]'
+                  : 'bg-[#B9C8B2] text-[#1B2A24]'
+              }`}
+            >
               <Clock className="w-3.5 h-3.5" />
-              {pendingSyncTotal > 0 ? `${pendingSyncTotal} pendientes de sync` : 'Datos al día'}
+              <span>{pendingSyncTotal > 0 ? `${pendingSyncTotal} registros pendientes de sincronía` : 'Datos sincronizados al día'}</span>
             </span>
           </div>
         </div>
       </div>
 
-      {/* Operational Metrics Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
-          <span className="text-xs text-slate-400 font-medium">Pendientes</span>
-          <div className="text-2xl font-black text-slate-100 my-1">{pendingPlots.length}</div>
-          <span className="text-[10px] text-slate-500">Por auditar</span>
-        </div>
+      {/* Open-Air Operational Metrics */}
+      <section aria-label="Resumen operativo del técnico">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-4 border-y border-[#6B8B78]/20">
+          <div className="space-y-1">
+            <span className="text-xs font-medium text-[#6B8B78] block">Por Muestrear</span>
+            <div className="font-['Outfit',sans-serif] text-3xl font-light text-[#1B2A24] tabular-nums">
+              {pendingPlots.length}
+            </div>
+            <span className="text-xs text-[#6B8B78]">Parcelas pendientes</span>
+          </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
-          <span className="text-xs text-blue-400 font-medium">En Progreso</span>
-          <div className="text-2xl font-black text-blue-300 my-1">{inProgressPlots.length}</div>
-          <span className="text-[10px] text-blue-500/80">Levantamiento activo</span>
-        </div>
+          <div className="space-y-1 border-l-0 sm:border-l border-[#6B8B78]/20 sm:pl-6">
+            <span className="text-xs font-medium text-[#355044] block">En Progreso</span>
+            <div className="font-['Outfit',sans-serif] text-3xl font-light text-[#355044] tabular-nums">
+              {inProgressPlots.length}
+            </div>
+            <span className="text-xs text-[#6B8B78]">Levantamiento activo</span>
+          </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
-          <span className="text-xs text-emerald-400 font-medium">Completadas</span>
-          <div className="text-2xl font-black text-emerald-300 my-1">{completedPlots.length}</div>
-          <span className="text-[10px] text-emerald-500/80">Sincronizadas/listas</span>
-        </div>
+          <div className="space-y-1 border-l-0 sm:border-l border-[#6B8B78]/20 sm:pl-6">
+            <span className="text-xs font-medium text-[#355044] block">Completadas</span>
+            <div className="font-['Outfit',sans-serif] text-3xl font-light text-[#355044] tabular-nums">
+              {completedPlots.length}
+            </div>
+            <span className="text-xs text-[#6B8B78]">Listas o transmitidas</span>
+          </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
-          <span className="text-xs text-amber-400 font-medium">Incidencias</span>
-          <div className="text-2xl font-black text-amber-300 my-1">{incidentPlots.length}</div>
-          <span className="text-[10px] text-amber-500/80">GPS o vegetación</span>
+          <div className="space-y-1 border-l-0 sm:border-l border-[#6B8B78]/20 sm:pl-6">
+            <span className="text-xs font-medium text-[#E0643A] block">Con Incidencias</span>
+            <div className="font-['Outfit',sans-serif] text-3xl font-light text-[#E0643A] tabular-nums">
+              {incidentPlots.length}
+            </div>
+            <span className="text-xs text-[#6B8B78]">Desvío GPS o canopia</span>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Connectivity & Local Storage Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-          <HardDrive className="w-4 h-4 text-forest-400" />
-          Estado del Dispositivo y Almacenamiento Local
+      {/* Device & Connectivity Status in Soft Clay */}
+      <div className="rounded-[28px] bg-[#EAE4D3] p-6 shadow-sm border border-[#6B8B78]/15 space-y-4">
+        <h3 className="font-['Outfit',sans-serif] text-base font-medium text-[#1B2A24] flex items-center gap-2">
+          <HardDrive className="w-4 h-4 text-[#355044]" />
+          <span>Estado del Dispositivo y Almacén Local</span>
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 flex items-center justify-between shadow-inner">
+            <div className="flex items-center gap-3">
               {isOnline ? (
-                <Wifi className="w-4 h-4 text-emerald-400" />
+                <div className="w-8 h-8 rounded-full bg-[#B9C8B2] flex items-center justify-center text-[#355044]">
+                  <Wifi className="w-4 h-4" />
+                </div>
               ) : (
-                <WifiOff className="w-4 h-4 text-amber-400" />
+                <div className="w-8 h-8 rounded-full bg-[#F9DFD5] flex items-center justify-center text-[#E0643A]">
+                  <WifiOff className="w-4 h-4" />
+                </div>
               )}
               <div>
-                <div className="font-semibold text-white">
-                  {isOnline ? 'Conexión a Internet Estable' : 'Sin Conexión Celular'}
+                <div className="font-semibold text-[#1B2A24]">
+                  {isOnline ? 'Conexión a Internet Activa' : 'Modo Fuera de Línea'}
                 </div>
-                <div className="text-[10px] text-slate-400">
-                  {isOnline ? 'Listo para enviar cola' : 'Operando en base de datos IndexedDB'}
+                <div className="text-[11px] text-[#6B8B78]">
+                  {isOnline ? 'Listo para sincronizar cola' : 'Guardando en base local Dexie'}
                 </div>
               </div>
             </div>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${isOnline ? 'bg-emerald-950 text-emerald-300 border-emerald-800' : 'bg-amber-950 text-amber-300 border-amber-800'}`}>
-              {isOnline ? 'EN LÍNEA' : 'OFFLINE'}
+            <span className={`text-[11px] px-3 py-1 rounded-full font-semibold ${isOnline ? 'bg-[#B9C8B2] text-[#1B2A24]' : 'bg-[#F9DFD5] text-[#E0643A]'}`}>
+              {isOnline ? 'En línea' : 'Local'}
             </span>
           </div>
 
-          <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <HardDrive className="w-4 h-4 text-indigo-400" />
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 flex items-center justify-between shadow-inner">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#D9D1B8] flex items-center justify-center text-[#355044]">
+                <HardDrive className="w-4 h-4" />
+              </div>
               <div>
-                <div className="font-semibold text-white">Almacenamiento Local PWA</div>
-                <div className="text-[10px] text-slate-400">Uso actual: {storageUsage}</div>
+                <div className="font-semibold text-[#1B2A24]">Almacenamiento Local PWA</div>
+                <div className="text-[11px] text-[#6B8B78]">Espacio en uso: {storageUsage}</div>
               </div>
             </div>
-            <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">
-              PROTEGIDO
+            <span className="text-[11px] px-3 py-1 rounded-full font-semibold bg-[#D9D1B8] text-[#355044]">
+              Protegido
             </span>
           </div>
         </div>
       </div>
 
-      {/* Quick Plots Preview */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <Layers className="w-4 h-4 text-forest-400" />
-            Próximas Parcelas a Muestrear
+      {/* Quick Assigned Plots Stream */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between border-b border-[#6B8B78]/20 pb-3">
+          <h3 className="font-['Outfit',sans-serif] text-xl font-light text-[#1B2A24] flex items-center gap-2">
+            <Layers className="w-5 h-5 text-[#355044]" />
+            <span>Próximas Parcelas a Muestrear</span>
           </h3>
           <button
             onClick={() => navigate('/app/plots')}
-            className="text-xs text-forest-400 hover:text-forest-300 font-semibold"
+            className="text-xs text-[#355044] hover:text-[#E0643A] font-semibold transition-colors"
           >
             Ver todas →
           </button>
         </div>
 
-        <div className="space-y-2">
+        <div className="divide-y divide-[#6B8B78]/15 border-b border-[#6B8B78]/15">
           {plots.slice(0, 3).map((plot) => (
-            <div
+            <article
               key={plot.id}
               onClick={() => navigate(`/app/plots/${plot.id}`)}
-              className="bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 p-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors"
+              className="group py-4 px-3 -mx-3 rounded-2xl hover:bg-[#EAE4D3]/60 cursor-pointer transition-colors flex items-center justify-between"
             >
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-forest-400 bg-forest-950/80 px-2 py-0.5 rounded border border-forest-800">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xs font-semibold text-[#355044] bg-[#D9D1B8] px-2.5 py-0.5 rounded-full">
                     {plot.cadastralKey}
                   </span>
-                  <span className="text-xs font-semibold text-white">{plot.municipality}</span>
+                  <span className="text-xs font-semibold text-[#1B2A24]">{plot.municipality}</span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">{plot.beneficiaryName}</p>
+                <p className="text-xs text-[#6B8B78]">{plot.beneficiaryName}</p>
               </div>
 
-              <div className="text-right">
-                <span className="text-xs font-bold text-slate-300">{plot.areaHa} ha</span>
-                <div className="text-[10px] text-forest-400 font-semibold mt-0.5">
+              <div className="text-right space-y-1">
+                <span className="text-xs font-semibold text-[#1B2A24] tabular-nums">{plot.areaHa} ha</span>
+                <div className="text-[11px] text-[#355044] font-medium">
                   {plot.auditStatus}
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

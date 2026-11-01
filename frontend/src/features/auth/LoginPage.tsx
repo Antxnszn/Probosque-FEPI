@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import { Trees, Smartphone, Monitor, ArrowRight, ShieldCheck } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Trees, Smartphone, Monitor, ArrowRight, ShieldCheck, Compass } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export function LoginPage() {
@@ -16,100 +16,122 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+    <div className="min-h-screen bg-[#F4F1EA] text-[#1B2A24] flex items-center justify-center p-4 sm:p-6 font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#E0643A]/20">
+      <div className="w-full max-w-3xl space-y-10">
         {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-forest-600/20 border border-forest-500/40 flex items-center justify-center text-forest-400 mx-auto shadow-md">
+        <div className="text-center space-y-3">
+          <div className="w-16 h-16 rounded-3xl bg-[#355044] text-[#F4F1EA] flex items-center justify-center mx-auto shadow-[6px_10px_24px_rgba(27,42,36,0.22),inset_2px_2px_5px_rgba(185,200,178,0.32),inset_-3px_-4px_6px_rgba(15,24,20,0.5)]">
             <Trees className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
-            PROBOSQUE — Sistema de Auditoría Forestal y Subsidios
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">
-            Plataforma unificada con división de experiencias: Operación de campo (Mobile/Offline) vs. Supervisión y Dictamen (Desktop/Online).
+          <div>
+            <p className="text-sm font-semibold text-[#E0643A]">Gobierno del Estado de México</p>
+            <h1 className="font-['Outfit',sans-serif] text-3xl sm:text-4xl font-light tracking-tight text-[#1B2A24] mt-1">
+              PROBOSQUE · Sistema Forestal y Subsidios
+            </h1>
+          </div>
+          <p className="text-sm sm:text-base text-[#6B8B78] max-w-xl mx-auto leading-relaxed">
+            Plataforma unificada para levantamiento in situ, análisis satelital multitemporal y dictamen transparente de apoyos forestales.
           </p>
         </div>
 
-        {/* Role Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-          {/* Technician Role Card */}
+        {/* Role Cards in Tactile Clay */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Technician Role */}
           <div
             onClick={() => handleSelectRole('TECHNICIAN')}
-            className="group bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-forest-500 rounded-2xl p-5 cursor-pointer transition-all shadow-md flex flex-col justify-between space-y-4 hover:shadow-forest-950/40"
+            className="group rounded-[32px] bg-[#EAE4D3] p-7 cursor-pointer transition-all duration-200 shadow-[8px_14px_28px_rgba(27,42,36,0.07),-4px_-4px_14px_rgba(255,255,255,0.85),inset_2px_2px_5px_rgba(255,255,255,0.75),inset_-2px_-3px_6px_rgba(107,139,120,0.18)] hover:-translate-y-1 hover:shadow-[12px_18px_32px_rgba(27,42,36,0.12),-4px_-4px_16px_rgba(255,255,255,0.9)] flex flex-col justify-between space-y-6"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-forest-950 border border-forest-800 flex items-center justify-center text-forest-400">
-                  <Smartphone className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-2xl bg-[#B9C8B2] text-[#1B2A24] flex items-center justify-center shadow-[4px_6px_12px_rgba(27,42,36,0.08),inset_2px_2px_4px_rgba(255,255,255,0.7)]">
+                  <Smartphone className="w-6 h-6 text-[#355044]" />
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
-                  MOBILE / OFFLINE
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#D9D1B8] text-[#355044]">
+                  Operación In Situ
                 </span>
               </div>
               <div>
-                <h3 className="text-base font-bold text-white group-hover:text-forest-400 transition-colors">
-                  Vista Operativa (Técnico de Campo)
+                <h3 className="font-['Outfit',sans-serif] text-xl font-medium text-[#1B2A24] group-hover:text-[#355044] transition-colors">
+                  Técnico de Campo
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Levantamiento in situ, geocerca, muestreo de unidades circulares, captura fotográfica forense y almacenamiento local Dexie.
+                <p className="text-xs sm:text-sm text-[#6B8B78] mt-1.5 leading-relaxed">
+                  Levantamiento in situ, geocerca, muestreo de unidades circulares, captura fotográfica y resguardo local Dexie.
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 space-y-0.5">
-                <div>• Perfil: Ing. Juan Pérez</div>
-                <div>• Dispositivo: Android Samsung Galaxy A15</div>
+              <div className="text-xs text-[#6B8B78] space-y-1 pt-2 border-t border-[#6B8B78]/15">
+                <div>Ing. Juan Pérez</div>
+                <div>Brigada de campo regional</div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs font-bold text-forest-400">
-              <span>Ingresar como Técnico</span>
+            <div className="flex items-center justify-between pt-3 border-t border-[#6B8B78]/15 text-xs font-semibold text-[#355044] group-hover:text-[#E0643A] transition-colors">
+              <span>Ingresar a modo técnico</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
-          {/* Admin Role Card */}
+          {/* Admin Role */}
           <div
             onClick={() => handleSelectRole('ADMIN')}
-            className="group bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500 rounded-2xl p-5 cursor-pointer transition-all shadow-md flex flex-col justify-between space-y-4 hover:shadow-indigo-950/40"
+            className="group rounded-[32px] bg-[#EAE4D3] p-7 cursor-pointer transition-all duration-200 shadow-[8px_14px_28px_rgba(27,42,36,0.07),-4px_-4px_14px_rgba(255,255,255,0.85),inset_2px_2px_5px_rgba(255,255,255,0.75),inset_-2px_-3px_6px_rgba(107,139,120,0.18)] hover:-translate-y-1 hover:shadow-[12px_18px_32px_rgba(27,42,36,0.12),-4px_-4px_16px_rgba(255,255,255,0.9)] flex flex-col justify-between space-y-6"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-indigo-950 border border-indigo-800 flex items-center justify-center text-indigo-400">
-                  <Monitor className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-2xl bg-[#355044] text-[#F4F1EA] flex items-center justify-center shadow-[4px_6px_12px_rgba(27,42,36,0.18),inset_2px_2px_4px_rgba(185,200,178,0.3)]">
+                  <Monitor className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800">
-                  DESKTOP / ONLINE
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#D9D1B8] text-[#355044]">
+                  Sede Central
                 </span>
               </div>
               <div>
-                <h3 className="text-base font-bold text-white group-hover:text-indigo-400 transition-colors">
-                  Vista Gerencial (Administrador)
+                <h3 className="font-['Outfit',sans-serif] text-xl font-medium text-[#1B2A24] group-hover:text-[#355044] transition-colors">
+                  Supervisión y Dictamen
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Supervisión general, mapa operativo geoespacial, inspección Sentinel-2, dictaminación de subsidios y línea de tiempo.
+                <p className="text-xs sm:text-sm text-[#6B8B78] mt-1.5 leading-relaxed">
+                  Supervisión del acervo, mapa geoespacial, inspección multitemporal Sentinel-2 y evaluación de subsidios.
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 space-y-0.5">
-                <div>• Perfil: Dra. Elena Ramos</div>
-                <div>• Rol: Supervisora de Auditoría y Fomento</div>
+              <div className="text-xs text-[#6B8B78] space-y-1 pt-2 border-t border-[#6B8B78]/15">
+                <div>Dra. Elena Ramos</div>
+                <div>Supervisora de Auditoría y Fomento</div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs font-bold text-indigo-400">
-              <span>Ingresar como Administrador</span>
+            <div className="flex items-center justify-between pt-3 border-t border-[#6B8B78]/15 text-xs font-semibold text-[#355044] group-hover:text-[#E0643A] transition-colors">
+              <span>Ingresar a sede central</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
+        </div>
+
+        {/* Public Forest Viewer Shortcut */}
+        <div className="rounded-2xl bg-[#D9D1B8]/40 p-4 flex flex-wrap items-center justify-between gap-4 border border-[#6B8B78]/15">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#355044] text-white flex items-center justify-center">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-[#1B2A24]">Consulta Ciudadana Abierta</p>
+              <p className="text-xs text-[#6B8B78]">Accede directamente al Visor Forestal Multitemporal sin credenciales</p>
+            </div>
+          </div>
+          <Link
+            to="/visor"
+            className="rounded-full bg-gradient-to-br from-[#EB7147] to-[#D95B30] px-5 py-2.5 text-xs font-semibold text-white shadow-[6px_10px_20px_rgba(224,100,58,0.28),inset_2px_2px_5px_rgba(255,215,195,0.55),inset_-2px_-3px_6px_rgba(148,52,20,0.4)] hover:-translate-y-0.5 transition-all"
+          >
+            Abrir Visor Forestal
+          </Link>
         </div>
 
         {/* Security and Governance Note */}
-        <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-[11px] text-slate-500 text-center space-y-1">
-          <p className="font-semibold text-slate-400 flex items-center justify-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-forest-400" />
-            Principio Arquitectónico Probosque
+        <div className="rounded-2xl bg-[#EAE4D3]/60 p-4 text-xs text-[#6B8B78] text-center space-y-1">
+          <p className="font-semibold text-[#355044] flex items-center justify-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-[#355044]" />
+            Principio Institucional PROBOSQUE
           </p>
           <p>
-            El técnico captura la realidad. El backend calcula y preserva. El administrador interpreta y decide.
+            El técnico captura la realidad in situ. El backend procesa y preserva. El equipo directivo interpreta y dictamina.
           </p>
         </div>
       </div>

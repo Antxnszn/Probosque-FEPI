@@ -4,10 +4,8 @@ import {
   ChevronDown,
   TreePine,
   Info,
-  CheckCircle2,
   Clock,
   Layers,
-  ArrowRightLeft,
 } from 'lucide-react';
 import type { RegionSummary, LegendClass, AnnualStatsResponse, LossStatsResponse } from '../types/forest';
 
@@ -61,51 +59,51 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
   return (
     <div
       className={`
-        bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 transition-all duration-300 shadow-2xl flex flex-col shrink-0 z-20
+        bg-[#EAE4D3] border-t border-[#6B8B78]/20 transition-all duration-300 shadow-[0_-4px_24px_rgba(27,42,36,0.06)] flex flex-col shrink-0 z-20 font-['Plus_Jakarta_Sans',sans-serif] text-[#1B2A24]
         ${isExpanded ? 'h-[440px] max-h-[60vh]' : 'h-36 sm:h-32'}
       `}
     >
       {/* Header Bar */}
-      <div className="px-4 py-2 border-b border-slate-800 flex items-center justify-between shrink-0">
+      <div className="px-5 py-2.5 border-b border-[#6B8B78]/15 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span
-              className={`w-2.5 h-2.5 rounded-full ${hasYearData ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}
+              className={`w-2.5 h-2.5 rounded-full ${hasYearData ? 'bg-[#A3C962]' : 'bg-[#E0643A]'}`}
             />
-            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-              {regionName}
-              <span className="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md font-normal">
-                INEGI {inegiCode}
+            <h3 className="font-['Outfit',sans-serif] text-sm sm:text-base font-semibold text-[#1B2A24] tracking-tight flex items-center gap-2">
+              <span>{regionName}</span>
+              <span className="text-xs text-[#6B8B78] bg-[#D9D1B8] px-2 py-0.5 rounded-full font-normal">
+                Clave {inegiCode}
               </span>
             </h3>
           </div>
-          <span className="text-xs text-slate-400 hidden md:inline">
-            Superficie municipal oficial:{' '}
-            <strong className="text-white font-mono">{totalAreaHa.toLocaleString('es-MX')} ha</strong>
+          <span className="text-xs text-[#6B8B78] hidden md:inline">
+            Superficie oficial:{' '}
+            <strong className="text-[#355044] font-semibold">{totalAreaHa.toLocaleString('es-MX')} ha</strong>
           </span>
         </div>
 
-        {/* Quick Year Toggler Pills & Expand Toggle */}
-        <div className="flex items-center gap-2">
+        {/* Quick Year Toggler & Expand Toggle */}
+        <div className="flex items-center gap-2.5">
           {onChangeYear && (
-            <div className="flex items-center gap-1 bg-slate-950/80 p-0.5 rounded-lg border border-slate-800">
+            <div className="flex items-center gap-1 bg-[#D9D1B8] p-1 rounded-full shadow-inner">
               <button
                 onClick={() => onChangeYear(2010)}
-                className={`px-2 py-1 rounded-md text-[11px] font-bold transition-all ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                   selectedYear === 2010
-                    ? 'bg-emerald-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-[#355044] text-white shadow-sm'
+                    : 'text-[#355044] hover:text-[#1B2A24]'
                 }`}
-                title="Corte Línea Base 2010"
+                title="Línea Base 2010"
               >
                 2010
               </button>
               <button
                 onClick={() => onChangeYear(2025)}
-                className={`px-2 py-1 rounded-md text-[11px] font-bold transition-all ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                   selectedYear === 2025
-                    ? 'bg-emerald-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-[#355044] text-white shadow-sm'
+                    : 'text-[#355044] hover:text-[#1B2A24]'
                 }`}
                 title="Corte Reciente 2025"
               >
@@ -116,15 +114,15 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
 
           <button
             onClick={onOpenMetadataModal}
-            className="text-[11px] text-slate-400 hover:text-emerald-400 hidden sm:flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-slate-800"
+            className="text-xs text-[#355044] hover:text-[#E0643A] hidden sm:flex items-center gap-1 transition-colors px-2.5 py-1.5 rounded-full bg-[#D9D1B8]/60"
           >
             <Info className="w-3.5 h-3.5" />
-            Fuentes
+            <span>Fuentes</span>
           </button>
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors flex items-center gap-1 text-xs"
+            className="px-3 py-1.5 rounded-full bg-[#D9D1B8] hover:bg-[#B9C8B2] text-[#1B2A24] transition-colors flex items-center gap-1.5 text-xs font-semibold shadow-sm"
           >
             <span className="hidden sm:inline">{isExpanded ? 'Contraer' : 'Expandir estadísticas'}</span>
             {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
@@ -133,88 +131,76 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
       </div>
 
       {/* Main Stats Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
         {hasYearData ? (
           <>
-            {/* Quick KPI Bar (Always visible in collapsed mode) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              {/* Card 1: Cobertura Forestal Aprobada */}
-              <div className="bg-slate-950/70 border border-emerald-900/40 p-2.5 rounded-xl relative overflow-hidden">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400 font-medium">Bosque Aprobado (Probosque)</span>
-                  <TreePine className="w-3.5 h-3.5 text-emerald-400" />
-                </div>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-base sm:text-lg font-bold text-emerald-400 font-mono">
+            {/* Open-Air Metric Strip (Cardless Botanical Taste) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-[#6B8B78]/20">
+              {/* Metric 1: Cobertura Forestal Aprobada */}
+              <div className="space-y-1">
+                <span className="text-xs text-[#6B8B78] font-medium block">Bosque Nativo Aprobado</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-['Outfit',sans-serif] text-2xl sm:text-3xl font-light text-[#355044] tabular-nums">
                     {forestApprovedHa.toLocaleString('es-MX')}
                   </span>
-                  <span className="text-xs text-slate-400">ha</span>
+                  <span className="text-xs text-[#6B8B78]">ha</span>
                 </div>
-                <span className="text-[10px] text-emerald-300 font-medium block">
+                <span className="text-xs font-semibold text-[#355044] block">
                   {forestCoverPct.toFixed(1)}% del territorio ({selectedYear})
                 </span>
               </div>
 
-              {/* Card 2: Superficie Analizada vs Cartografía */}
-              <div className="bg-slate-950/70 border border-slate-800 p-2.5 rounded-xl">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400 font-medium">Superficie Analizada (30m)</span>
-                  <Layers className="w-3.5 h-3.5 text-blue-400" />
-                </div>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-base sm:text-lg font-bold text-white font-mono">
+              {/* Metric 2: Superficie Analizada */}
+              <div className="space-y-1 pt-2 sm:pt-0 sm:pl-4">
+                <span className="text-xs text-[#6B8B78] font-medium block">Superficie Raster 30m</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-['Outfit',sans-serif] text-2xl sm:text-3xl font-light text-[#1B2A24] tabular-nums">
                     {totalAnalyzedHa.toLocaleString('es-MX')}
                   </span>
-                  <span className="text-xs text-slate-400">ha</span>
+                  <span className="text-xs text-[#6B8B78]">ha</span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium block truncate">
-                  INEGI: {concordancePct.toFixed(2)}% ({diffInegiHa >= 0 ? `+${diffInegiHa.toFixed(1)}` : diffInegiHa.toFixed(1)} ha)
+                <span className="text-xs text-[#6B8B78] block truncate">
+                  Concordancia INEGI: {concordancePct.toFixed(2)}%
                 </span>
               </div>
 
-              {/* Card 3: Usos No Forestales */}
-              <div className="bg-slate-950/70 border border-slate-800 p-2.5 rounded-xl">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400 font-medium">Usos No Forestales</span>
-                  <ArrowRightLeft className="w-3.5 h-3.5 text-amber-400" />
-                </div>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-base sm:text-lg font-bold text-amber-300 font-mono">
+              {/* Metric 3: Usos No Forestales */}
+              <div className="space-y-1 pt-2 sm:pt-0 sm:pl-4">
+                <span className="text-xs text-[#6B8B78] font-medium block">Otros Usos del Suelo</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-['Outfit',sans-serif] text-2xl sm:text-3xl font-light text-[#E0643A] tabular-nums">
                     {(totalAnalyzedHa - forestApprovedHa).toLocaleString('es-MX')}
                   </span>
-                  <span className="text-xs text-slate-400">ha</span>
+                  <span className="text-xs text-[#6B8B78]">ha</span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium block">
-                  {((1 - forestCoverPct / 100) * 100).toFixed(1)}% (Agropecuario, agua, urbano)
+                <span className="text-xs text-[#6B8B78] block">
+                  {((1 - forestCoverPct / 100) * 100).toFixed(1)}% (Agrícola, urbano, agua)
                 </span>
               </div>
 
-              {/* Card 4: Estado de Datos Oficiales */}
-              <div className="bg-slate-950/70 border border-slate-800 p-2.5 rounded-xl">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400 font-medium">Validación Científica</span>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              {/* Metric 4: Validación Científica */}
+              <div className="space-y-1 pt-2 sm:pt-0 sm:pl-4">
+                <span className="text-xs text-[#6B8B78] font-medium block">Validación Científica</span>
+                <div className="font-['Outfit',sans-serif] text-xl font-medium text-[#355044] mt-1">
+                  MapBiomas México
                 </div>
-                <span className="text-xs font-bold text-emerald-300 flex items-center gap-1.5 mt-1 font-mono">
-                  MapBiomas Col. 1.0
-                </span>
-                <span className="text-[10px] text-slate-400 block truncate">
-                  Píxel a píxel verificado
+                <span className="text-xs text-[#6B8B78] block">
+                  Colección 1.0 (Píxel 30m verificado)
                 </span>
               </div>
             </div>
 
             {/* Detailed Expanded Section */}
             {isExpanded && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2 border-t border-slate-800 animate-fadeIn">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-4 border-t border-[#6B8B78]/20 animate-fadeIn">
                 {/* Left: Class breakdown */}
-                <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 space-y-3">
+                <div className="rounded-2xl bg-[#F4F1EA] p-4 space-y-3 shadow-inner">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <Layers className="w-4 h-4 text-emerald-400" />
-                      Desglose por Clases Oficiales ({selectedYear})
+                    <span className="text-xs font-semibold text-[#1B2A24] flex items-center gap-1.5">
+                      <Layers className="w-4 h-4 text-[#355044]" />
+                      <span>Desglose por Clases Oficiales ({selectedYear})</span>
                     </span>
-                    <span className="text-[10px] font-mono text-slate-400">
+                    <span className="text-xs text-[#6B8B78]">
                       {activeClasses.length} categorías detectadas
                     </span>
                   </div>
@@ -225,7 +211,7 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
                       return (
                         <div
                           key={c.code}
-                          className="bg-slate-900/90 border border-slate-800/80 rounded-xl p-2.5 space-y-1.5"
+                          className="rounded-xl bg-[#EAE4D3] p-2.5 space-y-1.5"
                         >
                           <div className="flex items-center justify-between text-xs">
                             <div className="flex items-center gap-2 truncate pr-2">
@@ -233,25 +219,25 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
                                 className="w-3 h-3 rounded shrink-0 shadow-sm"
                                 style={{ backgroundColor: c.hex_color }}
                               />
-                              <span className="font-semibold text-slate-200 truncate">{c.name_es}</span>
+                              <span className="font-semibold text-[#1B2A24] truncate">{c.name_es}</span>
                               {c.is_forest_approved && (
-                                <span className="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-700/60 px-1.5 py-0.2 rounded font-mono font-medium">
+                                <span className="text-[10px] bg-[#B9C8B2] text-[#1B2A24] px-2 py-0.5 rounded-full font-semibold">
                                   Bosque Aprobado
                                 </span>
                               )}
                             </div>
                             <div className="text-right shrink-0">
-                              <span className="font-mono font-bold text-white">
+                              <span className="font-['Outfit',sans-serif] font-medium text-[#1B2A24] tabular-nums">
                                 {(c.area_ha || 0).toLocaleString('es-MX')} ha
                               </span>
-                              <span className="text-[10px] text-slate-400 ml-1.5 font-mono">
+                              <span className="text-xs text-[#6B8B78] ml-1.5 tabular-nums">
                                 ({pct.toFixed(1)}%)
                               </span>
                             </div>
                           </div>
 
                           {/* Progress bar */}
-                          <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                          <div className="w-full bg-[#D9D1B8] rounded-full h-1.5 overflow-hidden">
                             <div
                               className="h-full rounded-full transition-all duration-500"
                               style={{
@@ -266,53 +252,45 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
                   </div>
                 </div>
 
-                {/* Right: Methodological Notes & Exact Reproducibility Audit */}
-                <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 space-y-3">
+                {/* Right: Methodological Notes */}
+                <div className="rounded-2xl bg-[#F4F1EA] p-4 space-y-3 shadow-inner">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <TreePine className="w-4 h-4 text-emerald-400" />
-                      Trazabilidad y Decisión Metodológica
+                    <span className="text-xs font-semibold text-[#1B2A24] flex items-center gap-1.5">
+                      <TreePine className="w-4 h-4 text-[#355044]" />
+                      <span>Trazabilidad y Decisión Metodológica</span>
                     </span>
-                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                    <span className="text-[11px] font-semibold text-[#355044] bg-[#D9D1B8] px-2 py-0.5 rounded-full">
                       CC BY 4.0
                     </span>
                   </div>
 
-                  <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-xl text-xs text-slate-300 space-y-2">
-                    <div className="grid grid-cols-2 gap-2 text-[11px] pb-2 border-b border-slate-800">
+                  <div className="rounded-xl bg-[#EAE4D3] p-3 text-xs text-[#1B2A24] space-y-2">
+                    <div className="grid grid-cols-2 gap-2 text-xs pb-2 border-b border-[#6B8B78]/20">
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Superficie clasificada válida:</span>
-                        <strong className="text-white font-mono">{totalAnalyzedHa.toLocaleString('es-MX')} ha</strong>
+                        <span className="text-[#6B8B78] block text-[11px]">Superficie válida analizada:</span>
+                        <strong className="text-[#1B2A24]">{totalAnalyzedHa.toLocaleString('es-MX')} ha</strong>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Área sin datos / nubes:</span>
-                        <strong className="text-emerald-400 font-mono">0.0 ha (100% válido)</strong>
+                        <span className="text-[#6B8B78] block text-[11px]">Área sin nubes:</span>
+                        <strong className="text-[#355044]">100% verificado</strong>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Área geométrica INEGI:</span>
-                        <strong className="text-white font-mono">{totalAreaHa.toLocaleString('es-MX')} ha</strong>
+                        <span className="text-[#6B8B78] block text-[11px]">Superficie vectorial INEGI:</span>
+                        <strong className="text-[#1B2A24]">{totalAreaHa.toLocaleString('es-MX')} ha</strong>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Diferencia rasterización:</span>
-                        <strong className="text-slate-300 font-mono">
-                          {diffInegiHa >= 0 ? `+${diffInegiHa.toFixed(1)}` : diffInegiHa.toFixed(1)} ha (+0.003%)
+                        <span className="text-[#6B8B78] block text-[11px]">Diferencia rasterización:</span>
+                        <strong className="text-[#6B8B78]">
+                          {diffInegiHa >= 0 ? `+${diffInegiHa.toFixed(1)}` : diffInegiHa.toFixed(1)} ha
                         </strong>
                       </div>
                     </div>
 
-                    <p className="text-[11px] leading-relaxed text-slate-300">
-                      <strong className="text-emerald-400">Decisión Metodológica:</strong> El agrupamiento de clases
-                      forestales aprobadas (Bosque templado código 88) corresponde a una definición institucional de
-                      Probosque para auditar el macizo boscoso nativo. Las áreas agrícolas (15) y asentamientos urbanos
-                      (24) se registran fielmente según el catálogo oficial de MapBiomas México pero no integran el
-                      stock forestal protegido.
-                    </p>
-
-                    <p className="text-[10px] text-slate-400">
-                      Asset oficial:{' '}
-                      <code className="text-slate-300 font-mono">
-                        projects/mapbiomas-mexico/assets/LAND-COVER/COLLECTION-1/GENERAL/classification-ft/MEX_integration_natstable_lagunas_ft_v1
-                      </code>
+                    <p className="text-xs leading-relaxed text-[#6B8B78]">
+                      <strong className="text-[#355044]">Criterio Forestal Institucional:</strong> El agrupamiento
+                      de clases forestales aprobadas (Bosque templado código 88) corresponde a la definición técnica de
+                      PROBOSQUE para fiscalizar el macizo boscoso nativo. Las áreas agrícolas y urbanas se mapean fielmente
+                      según la Colección 1 de MapBiomas México pero quedan excluidas del stock de incentivos de conservación.
                     </p>
                   </div>
                 </div>
@@ -320,17 +298,16 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
             )}
           </>
         ) : (
-          /* Empty / Pending Ingest State for non-ingested municipalities */
-          <div className="bg-slate-950/60 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          /* Empty / Pending Ingest State */
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-inner">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-                <Clock className="w-4 h-4" />
+              <div className="w-9 h-9 rounded-xl bg-[#D9D1B8] flex items-center justify-center text-[#E0643A] shrink-0">
+                <Clock className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-semibold text-white">Municipio en cola de ingesta masiva (Fase 2 batch)</h4>
-                <p className="text-[11px] text-slate-400">
-                  {regionName} ({inegiCode}) cuenta con límites vectoriales oficiales. Las estadísticas raster zonales
-                  se procesarán en el lote de los 125 municipios.
+                <h4 className="font-semibold text-[#1B2A24]">Municipio en cola de ingesta multitemporal</h4>
+                <p className="text-xs text-[#6B8B78]">
+                  {regionName} ({inegiCode}) cuenta con delimitación oficial. Las estadísticas raster se calculan en el lote estatal.
                 </p>
               </div>
             </div>
@@ -338,10 +315,10 @@ export const ForestStatsPanel: React.FC<ForestStatsPanelProps> = ({
             {onSelectMunicipality && inegiCode !== '15110' && (
               <button
                 onClick={() => onSelectMunicipality('15110')}
-                className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-all shrink-0 flex items-center gap-1.5 shadow"
+                className="px-4 py-2 rounded-full bg-gradient-to-br from-[#EB7147] to-[#D95B30] text-white font-semibold shadow-sm shrink-0 flex items-center gap-1.5 transition-transform hover:-translate-y-0.5"
               >
                 <TreePine className="w-3.5 h-3.5" />
-                Ver Valle de Bravo (15110)
+                <span>Ver Valle de Bravo (15110)</span>
               </button>
             )}
           </div>

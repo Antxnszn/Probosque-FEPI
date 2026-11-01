@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Image as ImageIcon, ShieldCheck } from 'lucide-react';
+import { Image as ImageIcon, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { db } from '../../db/dexie';
 import type { EvidenceRecord } from '../../types';
 
@@ -12,7 +12,6 @@ export function AdminEvidence() {
     async function loadEvidence() {
       const data = await db.evidence.toArray();
       if (data.length === 0) {
-        // Sample demonstration forensic evidence matching section 4.9
         const sample: EvidenceRecord[] = [
           {
             id: 'ev-18342',
@@ -83,74 +82,76 @@ export function AdminEvidence() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 font-['Plus_Jakarta_Sans',sans-serif] text-[#1B2A24]">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#6B8B78]/20 pb-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <ImageIcon className="w-5 h-5 text-forest-400" />
-            Galería Forense de Evidencias Fotográficas
+          <div className="w-8 h-1 rounded-full bg-[#E0643A] mb-2" />
+          <h1 className="font-['Outfit',sans-serif] text-3xl font-light text-[#1B2A24] flex items-center gap-2.5">
+            <ImageIcon className="w-6 h-6 text-[#355044]" />
+            <span>Galería Forense de Evidencias</span>
           </h1>
-          <p className="text-xs text-slate-400">
-            Registro inmutable con metadatos GNSS, timestamp de cliente/servidor y sellos criptográficos SHA-256
+          <p className="text-sm text-[#6B8B78] mt-1">
+            Registro inmutable con telemetría GNSS, timestamp de cliente/servidor y sellos criptográficos SHA-256
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-3 py-1 rounded-full">
-          <ShieldCheck className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-2 text-xs font-semibold text-[#355044] bg-[#D9D1B8] px-3.5 py-1.5 rounded-full">
+          <ShieldCheck className="w-4 h-4 text-[#355044]" />
           <span>Cadena de Custodia Criptográfica</span>
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 text-xs">
+      {/* Filter Tabs in Clay Style */}
+      <div className="flex items-center flex-wrap gap-2 text-xs">
         {['ALL', 'PANORAMICA', 'MUESTRA_1', 'MUESTRA_2', 'MUESTRA_3'].map((t) => (
           <button
             key={t}
             onClick={() => setFilterType(t)}
-            className={`px-3 py-1.5 rounded-xl transition-colors ${
+            className={`px-4 py-2 rounded-full font-semibold transition-all shadow-sm ${
               filterType === t
-                ? 'bg-forest-600 text-white font-bold'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-[#355044] text-white shadow-md'
+                : 'bg-[#D9D1B8] text-[#1B2A24] hover:bg-[#B9C8B2]'
             }`}
           >
-            {t === 'ALL' ? 'Todas' : t}
+            {t === 'ALL' ? 'Todas las tomas' : t.replace('_', ' ')}
           </button>
         ))}
       </div>
 
-      {/* Evidence Gallery & Forensic Inspection Panel matching section 4.9 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Evidence Gallery & Forensic Inspection Panel */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left 2 Cols: Evidence Cards */}
-        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-5">
           {filtered.map((item) => (
             <div
               key={item.id}
               onClick={() => setSelectedPhoto(item)}
-              className={`bg-slate-900 border rounded-2xl overflow-hidden cursor-pointer transition-all ${
+              className={`rounded-[28px] overflow-hidden cursor-pointer transition-all ${
                 selectedPhoto?.id === item.id
-                  ? 'border-forest-500 ring-2 ring-forest-500/20 shadow-xl'
-                  : 'border-slate-800 hover:border-slate-700'
+                  ? 'bg-[#EAE4D3] shadow-lg border-2 border-[#355044]'
+                  : 'bg-[#F4F1EA] hover:bg-[#EAE4D3]/60 border border-[#6B8B78]/20 shadow-sm'
               }`}
             >
-              <div className="h-44 w-full bg-slate-950 overflow-hidden relative">
+              <div className="h-44 w-full bg-[#EAE4D3] overflow-hidden relative">
                 <img
                   src={item.dataUrl}
                   alt={item.id}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
-                <span className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur px-2 py-0.5 rounded text-[10px] font-mono text-white">
+                <span className="absolute top-2.5 left-2.5 bg-[#1B2A24]/75 backdrop-blur px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-white">
                   {item.evidenceType}
                 </span>
-                <span className="absolute bottom-2 right-2 bg-emerald-950/90 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">
-                  ✓ HASH VALID
+                <span className="absolute bottom-2.5 right-2.5 bg-[#B9C8B2] text-[#1B2A24] px-2.5 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 shadow-sm">
+                  <CheckCircle2 className="w-3 h-3 text-[#355044]" />
+                  <span>Hash Válido</span>
                 </span>
               </div>
-              <div className="p-3 text-xs space-y-1">
-                <div className="flex justify-between font-mono text-[10px] text-slate-400">
-                  <span>ID: {item.id}</span>
-                  <span>±{item.captureAccuracyM}m GPS</span>
+              <div className="p-4 text-xs space-y-1.5">
+                <div className="flex justify-between font-semibold text-[#1B2A24]">
+                  <span>{item.id}</span>
+                  <span className="text-[#6B8B78]">Precisión ±{item.captureAccuracyM}m</span>
                 </div>
-                <div className="font-mono text-[10px] text-slate-500 truncate">
+                <div className="text-[11px] text-[#6B8B78] truncate">
                   SHA: {item.hashSha256}
                 </div>
               </div>
@@ -158,58 +159,59 @@ export function AdminEvidence() {
           ))}
         </div>
 
-        {/* Right Col: Forensic Detail Inspection matching section 4.9 */}
+        {/* Right Col: Forensic Detail Inspection */}
         {selectedPhoto && (
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4 text-xs">
-            <div className="border-b border-slate-800 pb-3">
-              <span className="text-[10px] font-mono text-forest-400 uppercase tracking-wider block">
+          <div className="rounded-[28px] bg-[#EAE4D3] p-6 shadow-sm space-y-5 border border-[#6B8B78]/15 text-xs">
+            <div className="border-b border-[#6B8B78]/20 pb-3">
+              <span className="text-xs font-semibold text-[#355044] bg-[#D9D1B8] px-3 py-1 rounded-full block w-fit mb-2">
                 Ficha Forense de Evidencia
               </span>
-              <h3 className="text-base font-bold text-white mt-1">
-                Fotografía #{selectedPhoto.id}
+              <h3 className="font-['Outfit',sans-serif] text-xl font-medium text-[#1B2A24]">
+                Toma #{selectedPhoto.id}
               </h3>
-              <p className="text-slate-400 text-[11px]">Tipo: {selectedPhoto.evidenceType}</p>
+              <p className="text-[#6B8B78] mt-0.5">Categoría: {selectedPhoto.evidenceType}</p>
             </div>
 
-            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2.5 font-mono text-[11px]">
+            <div className="rounded-2xl bg-[#F4F1EA] p-4 space-y-3 shadow-inner text-xs">
               <div>
-                <span className="text-slate-500 block text-[10px] font-sans">Hash Criptográfico SHA-256:</span>
-                <span className="text-slate-200 break-all">{selectedPhoto.hashSha256}</span>
+                <span className="text-[#6B8B78] block text-[11px]">Hash SHA-256 (Sello Criptográfico):</span>
+                <span className="text-[#1B2A24] break-all font-semibold">{selectedPhoto.hashSha256}</span>
               </div>
 
-              <div className="border-t border-slate-800 pt-2">
-                <span className="text-slate-500 block text-[10px] font-sans">Fecha y Hora de Captura (Sensor):</span>
-                <span className="text-white">{selectedPhoto.capturedAt}</span>
+              <div className="border-t border-[#6B8B78]/15 pt-2">
+                <span className="text-[#6B8B78] block text-[11px]">Timestamp de Captura (Sensor):</span>
+                <span className="text-[#1B2A24] font-medium">{selectedPhoto.capturedAt}</span>
               </div>
 
               <div>
-                <span className="text-slate-500 block text-[10px] font-sans">Coordenadas GNSS:</span>
-                <span className="text-slate-200">
+                <span className="text-[#6B8B78] block text-[11px]">Coordenadas GNSS:</span>
+                <span className="text-[#1B2A24] font-medium">
                   {selectedPhoto.captureLat}, {selectedPhoto.captureLon}
                 </span>
               </div>
 
               <div>
-                <span className="text-slate-500 block text-[10px] font-sans">Precisión de Telemetría:</span>
-                <span className="text-emerald-400 font-bold">{selectedPhoto.captureAccuracyM} m</span>
+                <span className="text-[#6B8B78] block text-[11px]">Precisión de Telemetría:</span>
+                <span className="text-[#355044] font-semibold">{selectedPhoto.captureAccuracyM} m</span>
               </div>
 
-              <div className="border-t border-slate-800 pt-2">
-                <span className="text-slate-500 block text-[10px] font-sans">Servidor Central Recibió:</span>
-                <span className="text-white">{selectedPhoto.receivedAt || '07/10/2026 09:42:10'}</span>
+              <div className="border-t border-[#6B8B78]/15 pt-2">
+                <span className="text-[#6B8B78] block text-[11px]">Recepción en Sede Central:</span>
+                <span className="text-[#1B2A24] font-medium">{selectedPhoto.receivedAt || '07/10/2026 09:42:10'}</span>
               </div>
 
-              <div className="flex items-center justify-between border-t border-slate-800 pt-2">
-                <span className="text-slate-500 font-sans">Estado de Integridad:</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold text-[10px]">
-                  ✓ HASH VALID
+              <div className="flex items-center justify-between border-t border-[#6B8B78]/15 pt-2">
+                <span className="text-[#6B8B78]">Estado de Integridad:</span>
+                <span className="px-3 py-1 rounded-full bg-[#B9C8B2] text-[#1B2A24] font-semibold text-xs flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#355044]" />
+                  <span>Certificada</span>
                 </span>
               </div>
             </div>
 
-            <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[10px] text-slate-500 italic space-y-1">
-              <p>• Regla 3: El administrador puede visualizar y auditar, pero no reemplazar destructivamente la evidencia.</p>
-              <p>• Toda nueva fotografía se incorpora como nueva evidencia inmutable con su propio hash.</p>
+            <div className="rounded-2xl bg-[#D9D1B8]/40 p-4 border border-[#6B8B78]/15 text-[11px] text-[#6B8B78] space-y-1.5 leading-relaxed">
+              <p>• La evidencia in situ se preserva con carácter probatorio inmutable.</p>
+              <p>• Toda nueva toma complementaria genera un nuevo registro forense independiente.</p>
             </div>
           </div>
         )}

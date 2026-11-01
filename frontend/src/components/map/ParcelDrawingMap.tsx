@@ -120,11 +120,11 @@ export function ParcelDrawingMap({
     // 3. Estado de México Official Border Overlay
     L.geoJSON(EDOMEX_BOUNDARY_GEOJSON, {
       style: {
-        color: '#10b981',
+        color: '#6B8B78',
         weight: 2,
         dashArray: '5, 5',
-        fillColor: '#059669',
-        fillOpacity: 0.03,
+        fillColor: '#355044',
+        fillOpacity: 0.05,
       },
     }).addTo(map);
 
@@ -138,7 +138,7 @@ export function ParcelDrawingMap({
 
       // Validate boundary
       if (!isPointInsideEdomex(lat, lng)) {
-        setAlertMsg('⚠️ Punto fuera de los límites del Estado de México.');
+        setAlertMsg('Punto fuera de los límites del Estado de México.');
         return;
       }
 
@@ -204,11 +204,11 @@ export function ParcelDrawingMap({
         html: `
           <div class="flex items-center justify-center w-7 h-7 rounded-full border-2 ${
             isFirst
-              ? 'bg-emerald-500 border-white text-white shadow-lg ring-4 ring-emerald-500/30'
+              ? 'bg-[#355044] border-white text-[#F4F1EA] shadow-md ring-4 ring-[#355044]/30'
               : isLast && !isClosed
-              ? 'bg-amber-500 border-white text-slate-950 shadow-md ring-2 ring-amber-400/40'
-              : 'bg-slate-900 border-emerald-400 text-emerald-300 shadow'
-          } font-mono text-[11px] font-bold cursor-grab transition-transform hover:scale-125">
+              ? 'bg-[#E0643A] border-white text-white shadow-md ring-2 ring-[#E0643A]/40'
+              : 'bg-[#EAE4D3] border-[#355044] text-[#1B2A24] shadow'
+          } font-sans text-[11px] font-bold cursor-grab transition-transform hover:scale-125">
             ${idx + 1}
           </div>
         `,
@@ -226,7 +226,7 @@ export function ParcelDrawingMap({
         const newPos = e.target.getLatLng();
         if (!isPointInsideEdomex(newPos.lat, newPos.lng)) {
           marker.setLatLng([lat, lon]);
-          setAlertMsg('⚠️ Vértice desplazado fuera del Estado de México.');
+          setAlertMsg('Vértice desplazado fuera del Estado de México.');
           return;
         }
 
@@ -257,16 +257,16 @@ export function ParcelDrawingMap({
 
     if (isClosed && vertices.length >= 3) {
       const polygon = L.polygon(latLngs, {
-        color: isSelfIntersecting ? '#f43f5e' : '#10b981',
+        color: isSelfIntersecting ? '#E0643A' : '#355044',
         weight: 2.5,
-        fillColor: isSelfIntersecting ? '#f43f5e' : '#10b981',
-        fillOpacity: 0.3,
+        fillColor: isSelfIntersecting ? '#E0643A' : '#6B8B78',
+        fillOpacity: 0.35,
         dashArray: isSelfIntersecting ? '4, 4' : undefined,
       }).addTo(map);
       polygonLayerRef.current = polygon;
     } else {
       const polyline = L.polyline(latLngs, {
-        color: '#34d399',
+        color: '#6B8B78',
         weight: 2,
         dashArray: '6, 6',
       }).addTo(map);
@@ -331,18 +331,18 @@ export function ParcelDrawingMap({
   };
 
   return (
-    <div className={`relative w-full ${heightClass} bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden flex flex-col shadow-2xl`}>
+    <div className={`relative w-full ${heightClass} bg-[#16251E] rounded-[28px] border border-[#6B8B78]/25 overflow-hidden flex flex-col shadow-sm select-none font-['Plus_Jakarta_Sans',sans-serif]`}>
       {/* Top Floating Map Controls */}
-      <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2 bg-slate-900/90 backdrop-blur border border-slate-700/80 p-1.5 rounded-xl text-xs text-slate-200 shadow-xl">
+      <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2 bg-[#F4F1EA]/95 backdrop-blur-md border border-[#D9D1B8] p-1.5 rounded-full text-xs text-[#1B2A24] shadow-md">
         {/* Layer Selector */}
-        <div className="flex items-center gap-1 bg-slate-950/70 p-0.5 rounded-lg border border-slate-800">
+        <div className="flex items-center gap-1 bg-[#EAE4D3] p-0.5 rounded-full border border-[#D9D1B8]">
           <button
             type="button"
             onClick={() => setMapType('SATELLITE')}
-            className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
+            className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
               mapType === 'SATELLITE'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#355044] text-[#F4F1EA] shadow-sm'
+                : 'text-[#6B8B78] hover:text-[#1B2A24]'
             }`}
           >
             Satélite (Esri)
@@ -350,25 +350,25 @@ export function ParcelDrawingMap({
           <button
             type="button"
             onClick={() => setMapType('STREET')}
-            className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
+            className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
               mapType === 'STREET'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#355044] text-[#F4F1EA] shadow-sm'
+                : 'text-[#6B8B78] hover:text-[#1B2A24]'
             }`}
           >
             Calles (OSM)
           </button>
         </div>
 
-        <div className="h-4 w-px bg-slate-700 hidden sm:block" />
+        <div className="h-4 w-px bg-[#D9D1B8] hidden sm:block" />
 
         {/* Municipality Fast-Zoom */}
         <div className="flex items-center gap-1.5 text-[11px]">
-          <Compass className="w-3.5 h-3.5 text-emerald-400" />
+          <Compass className="w-3.5 h-3.5 text-[#355044]" />
           <select
             value={currentMuni}
             onChange={(e) => handleMunicipalityChange(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-200 text-[11px] focus:outline-none focus:border-emerald-500"
+            className="bg-[#EAE4D3] border border-[#D9D1B8] rounded-full px-2.5 py-1 text-[#1B2A24] text-[11px] font-medium focus:outline-none shadow-sm cursor-pointer"
           >
             {EDOMEX_FOREST_MUNICIPALITIES.map((m) => (
               <option key={m.name} value={m.name}>
@@ -382,20 +382,20 @@ export function ParcelDrawingMap({
         <button
           type="button"
           onClick={handleLocateMe}
-          className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-emerald-300 font-medium rounded-lg text-[11px] transition-colors border border-slate-700"
+          className="flex items-center gap-1.5 px-3 py-1 bg-[#D9D1B8] hover:bg-[#cfc6ab] text-[#355044] font-semibold rounded-full text-[11px] transition-colors shadow-sm cursor-pointer"
           title="Centrar en mi ubicación GPS"
         >
-          <Navigation className="w-3 h-3" />
+          <Navigation className="w-3 h-3 text-[#355044]" />
           <span className="hidden sm:inline">Mi GPS</span>
         </button>
       </div>
 
       {/* Floating Zoom Controls */}
-      <div className="absolute top-3 right-3 z-[1000] flex flex-col gap-1 bg-slate-900/90 backdrop-blur border border-slate-700/80 p-1 rounded-xl shadow-xl">
+      <div className="absolute top-3 right-3 z-[1000] flex flex-col gap-1 bg-[#F4F1EA]/95 backdrop-blur-md border border-[#D9D1B8] p-1 rounded-2xl shadow-md text-[#355044]">
         <button
           type="button"
           onClick={() => mapInstanceRef.current?.zoomIn()}
-          className="p-1.5 hover:bg-slate-800 text-slate-200 rounded-lg transition-colors"
+          className="p-1.5 hover:bg-[#EAE4D3] rounded-xl transition-colors cursor-pointer"
           title="Acercar"
         >
           <ZoomIn className="w-4 h-4" />
@@ -403,7 +403,7 @@ export function ParcelDrawingMap({
         <button
           type="button"
           onClick={() => mapInstanceRef.current?.zoomOut()}
-          className="p-1.5 hover:bg-slate-800 text-slate-200 rounded-lg transition-colors"
+          className="p-1.5 hover:bg-[#EAE4D3] rounded-xl transition-colors cursor-pointer"
           title="Alejar"
         >
           <ZoomOut className="w-4 h-4" />
@@ -412,8 +412,8 @@ export function ParcelDrawingMap({
 
       {/* Toast Alert Banner */}
       {alertMsg && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-[1001] bg-rose-950/95 border border-rose-600/80 text-rose-200 px-4 py-2 rounded-xl text-xs font-semibold shadow-2xl flex items-center gap-2 backdrop-blur animate-bounce">
-          <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-[1001] bg-[#F9EDE8] border border-[#E8C8B8] text-[#9A381E] px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-xl flex items-center gap-2 backdrop-blur-md">
+          <AlertCircle className="w-4 h-4 text-[#E0643A] shrink-0" />
           <span>{alertMsg}</span>
         </div>
       )}
@@ -422,44 +422,51 @@ export function ParcelDrawingMap({
       <div ref={mapContainerRef} className="w-full flex-1 z-0 cursor-crosshair" />
 
       {/* Bottom Map Drawing Toolbar and Real-Time Metrics */}
-      <div className="absolute bottom-3 left-3 right-3 z-[1000] flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 p-2.5 rounded-xl shadow-2xl">
+      <div className="absolute bottom-3 left-3 right-3 z-[1000] flex flex-wrap items-center justify-between gap-2.5 bg-[#F4F1EA]/95 backdrop-blur-md border border-[#D9D1B8] p-3 rounded-2xl shadow-lg">
         {/* Geometry Metrics */}
         <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-1.5 font-mono">
-            <span className="text-slate-400">Vértices:</span>
-            <span className={`font-bold px-1.5 py-0.5 rounded text-[11px] ${vertices.length >= 3 ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-300'}`}>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#6B8B78]">Vértices:</span>
+            <span className={`font-bold px-2 py-0.5 rounded-full text-xs tabular-nums ${
+              vertices.length >= 3
+                ? 'bg-[#E5ECE3] text-[#355044]'
+                : 'bg-[#D9D1B8] text-[#1B2A24]'
+            }`}>
               {vertices.length}
             </span>
           </div>
 
-          <div className="h-3.5 w-px bg-slate-700" />
+          <div className="h-3.5 w-px bg-[#D9D1B8]" />
 
-          <div className="flex items-center gap-1 font-mono">
-            <span className="text-slate-400">Superficie:</span>
-            <span className="font-bold text-emerald-400 text-sm">{areaHa.toFixed(2)} ha</span>
+          <div className="flex items-center gap-1">
+            <span className="text-[#6B8B78]">Superficie:</span>
+            <span className="font-['Outfit',sans-serif] text-base font-light text-[#355044] tabular-nums">
+              {areaHa.toFixed(2)} ha
+            </span>
           </div>
 
-          <div className="h-3.5 w-px bg-slate-700 hidden sm:block" />
+          <div className="h-3.5 w-px bg-[#D9D1B8] hidden sm:block" />
 
-          <div className="items-center gap-1 font-mono hidden sm:flex">
-            <span className="text-slate-400">Perímetro:</span>
-            <span className="font-semibold text-slate-200">{perimeterM.toLocaleString()} m</span>
+          <div className="items-center gap-1 hidden sm:flex">
+            <span className="text-[#6B8B78]">Perímetro:</span>
+            <span className="font-medium text-[#1B2A24] tabular-nums">{perimeterM.toLocaleString()} m</span>
           </div>
 
           {isSelfIntersecting && (
-            <span className="text-[11px] text-rose-400 font-bold bg-rose-950/80 px-2 py-0.5 rounded border border-rose-800 animate-pulse">
-              ⚠️ Auto-intersección detectada
+            <span className="text-xs text-[#9A381E] font-bold bg-[#F9EDE8] px-2.5 py-0.5 rounded-full border border-[#E8C8B8] flex items-center gap-1">
+              <AlertCircle className="w-3.5 h-3.5 text-[#E0643A]" />
+              <span>Auto-intersección detectada</span>
             </span>
           )}
         </div>
 
         {/* Action Buttons for Drawing */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handleUndo}
             disabled={vertices.length === 0}
-            className="flex items-center gap-1 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-slate-300 hover:text-white rounded-lg text-xs font-medium transition-colors border border-slate-700"
+            className="flex items-center gap-1 px-3 py-1.5 bg-[#D9D1B8] hover:bg-[#cfc6ab] disabled:opacity-40 disabled:pointer-events-none text-[#1B2A24] rounded-full text-xs font-medium transition-colors shadow-sm cursor-pointer"
             title="Deshacer último vértice"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -470,7 +477,7 @@ export function ParcelDrawingMap({
             type="button"
             onClick={handleClear}
             disabled={vertices.length === 0}
-            className="flex items-center gap-1 px-2.5 py-1.5 bg-slate-800 hover:bg-rose-950/80 disabled:opacity-40 disabled:pointer-events-none text-slate-300 hover:text-rose-300 rounded-lg text-xs font-medium transition-colors border border-slate-700"
+            className="flex items-center gap-1 px-3 py-1.5 bg-[#D9D1B8] hover:bg-[#F9EDE8] hover:text-[#9A381E] disabled:opacity-40 disabled:pointer-events-none text-[#1B2A24] rounded-full text-xs font-medium transition-colors shadow-sm cursor-pointer"
             title="Borrar todo el polígono"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -482,15 +489,15 @@ export function ParcelDrawingMap({
               type="button"
               onClick={handleClosePolygon}
               disabled={vertices.length < 3 || isSelfIntersecting}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:pointer-events-none text-white font-bold rounded-lg text-xs transition-all shadow-md"
+              className="clay-btn-terracotta flex items-center gap-1.5 px-4 py-1.5 text-white font-bold rounded-full text-xs shadow-md disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Cerrar Polígono</span>
             </button>
           ) : (
-            <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-950/90 text-emerald-400 border border-emerald-800 text-[11px] font-semibold rounded-lg">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Polígono Cerrado
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-[#E5ECE3] text-[#355044] font-bold text-xs rounded-full shadow-sm">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#355044]" />
+              <span>Polígono Cerrado</span>
             </span>
           )}
         </div>

@@ -6,7 +6,6 @@ import {
   Send,
   History,
   User,
-  Wifi,
   WifiOff,
   HardDrive,
   Crosshair,
@@ -54,87 +53,98 @@ export function TechnicianLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#F4F1EA] text-[#1B2A24] flex flex-col font-['Plus_Jakarta_Sans',sans-serif] pb-24 md:pb-6 selection:bg-[#E0643A]/20">
       {/* Top Telemetry Header for Technician */}
-      <header className="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-40 shadow-md">
+      <header className="bg-[#EAE4D3]/90 backdrop-blur border-b border-[#6B8B78]/15 px-4 py-3 sticky top-0 z-40 shadow-[0_4px_16px_rgba(27,42,36,0.04)]">
         <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-forest-600/20 border border-forest-500/40 flex items-center justify-center text-forest-400 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#355044] text-[#F4F1EA] flex items-center justify-center shadow-[4px_6px_14px_rgba(27,42,36,0.18),inset_2px_2px_4px_rgba(185,200,178,0.3),inset_-2px_-3px_5px_rgba(15,25,21,0.5)]">
               <Trees className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold tracking-tight text-white">PROBOSQUE CAMPO</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono">
-                  TÉCNICO
+                <span className="font-['Outfit',sans-serif] text-base font-semibold tracking-tight text-[#1B2A24]">
+                  PROBOSQUE CAMPO
+                </span>
+                <span className="text-[11px] font-semibold text-[#355044] bg-[#D9D1B8] px-2 py-0.5 rounded-full">
+                  Técnico
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">Operación Offline & Muestreo In Situ</p>
+              <p className="text-xs text-[#6B8B78]">Operación in situ y muestreo forestal</p>
             </div>
           </div>
 
-          {/* Telemetry Pills & Role Switcher */}
+          {/* Telemetry Pebbles & Role Switcher */}
           <div className="flex items-center flex-wrap gap-2 text-xs">
-            {/* Connectivity */}
+            {/* Connectivity Pebble */}
             <div
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium ${
                 isOnline
-                  ? 'bg-emerald-950/60 border-emerald-700/60 text-emerald-400'
-                  : 'bg-amber-950/60 border-amber-700/60 text-amber-400 animate-pulse'
+                  ? 'bg-[#B9C8B2]/60 text-[#1B2A24] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8),inset_-1px_-1px_2px_rgba(53,80,68,0.15)]'
+                  : 'bg-[#F9DFD5] text-[#E0643A] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_2px_rgba(224,100,58,0.2)]'
               }`}
             >
-              {isOnline ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
-              <span className="font-semibold text-[11px]">{isOnline ? 'ONLINE' : 'OFFLINE'}</span>
+              {isOnline ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-[#A3C962]" />
+                  <span>En línea</span>
+                </>
+              ) : (
+                <>
+                  <WifiOff className="w-3.5 h-3.5 text-[#E0643A]" />
+                  <span>Modo local</span>
+                </>
+              )}
             </div>
 
-            {/* GPS Telemetry Pill */}
+            {/* GPS Telemetry Pebble */}
             <button
               onClick={handleRefreshGPS}
               disabled={gpsLoading}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition-colors text-[11px]"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D9D1B8] hover:bg-[#B9C8B2] text-[#1B2A24] shadow-[3px_5px_12px_rgba(27,42,36,0.06),-2px_-2px_6px_rgba(255,255,255,0.7),inset_1px_1px_3px_rgba(255,255,255,0.6)] transition-all text-[11px] font-medium"
               title="Actualizar telemetría GPS"
             >
-              <Crosshair className={`w-3.5 h-3.5 ${gpsLoading ? 'animate-spin text-amber-400' : 'text-forest-400'}`} />
+              <Crosshair className={`w-3.5 h-3.5 ${gpsLoading ? 'animate-spin text-[#E0643A]' : 'text-[#355044]'}`} />
               <span>
                 {currentGps
-                  ? `±${currentGps.accuracyM}m`
-                  : 'GPS FIX'}
+                  ? `Precision ±${currentGps.accuracyM}m`
+                  : 'Fijar GPS'}
               </span>
             </button>
 
-            {/* Storage Quota */}
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-slate-300 text-[11px]">
-              <HardDrive className="w-3.5 h-3.5 text-indigo-400" />
-              <span>{storageInfo ? formatBytes(storageInfo.usageBytes) : '12MB'} local</span>
+            {/* Storage Quota Pebble */}
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D9D1B8]/70 text-[#355044] text-[11px] font-medium shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8)]">
+              <HardDrive className="w-3.5 h-3.5 text-[#6B8B78]" />
+              <span>{storageInfo ? formatBytes(storageInfo.usageBytes) : '12 MB'} local</span>
             </div>
 
             {/* Quick Role Switcher Button */}
             <button
               onClick={() => switchRole('ADMIN')}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 border border-indigo-700 text-[11px] font-medium transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#355044] hover:bg-[#1B2A24] text-white text-[11px] font-semibold shadow-[4px_6px_14px_rgba(27,42,36,0.18),inset_2px_2px_4px_rgba(185,200,178,0.25)] transition-all"
               title="Cambiar a Vista Administrador Gerencial"
             >
-              <ArrowRightLeft className="w-3.5 h-3.5 text-indigo-300" />
-              <span className="hidden xs:inline">Cambiar a</span> Admin
+              <ArrowRightLeft className="w-3.5 h-3.5" />
+              <span>Admin</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Screen Outlet */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-5">
+      <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6">
         <Outlet />
       </main>
 
-      {/* Mobile-First Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-slate-800 shadow-2xl">
-        <div className="max-w-md mx-auto grid grid-cols-5 text-center py-2">
+      {/* Mobile-First Floating Clay Bottom Navigation Bar */}
+      <nav className="fixed bottom-3 left-4 right-4 max-w-md mx-auto z-50 rounded-full bg-[#D9D1B8] px-4 py-2 shadow-[10px_16px_32px_rgba(27,42,36,0.12),-4px_-4px_14px_rgba(255,255,255,0.88),inset_2px_2px_4px_rgba(255,255,255,0.7),inset_-2px_-3px_5px_rgba(107,139,120,0.22)]">
+        <div className="grid grid-cols-5 text-center">
           <NavLink
             to="/app"
             end
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive ? 'text-forest-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center justify-center py-1 transition-colors rounded-2xl ${
+                isActive ? 'text-[#1B2A24] font-semibold bg-[#B9C8B2]/50 shadow-inner' : 'text-[#6B8B78] hover:text-[#1B2A24]'
               }`
             }
           >
@@ -145,8 +155,8 @@ export function TechnicianLayout() {
           <NavLink
             to="/app/plots"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive ? 'text-forest-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center justify-center py-1 transition-colors rounded-2xl ${
+                isActive ? 'text-[#1B2A24] font-semibold bg-[#B9C8B2]/50 shadow-inner' : 'text-[#6B8B78] hover:text-[#1B2A24]'
               }`
             }
           >
@@ -157,15 +167,15 @@ export function TechnicianLayout() {
           <NavLink
             to="/app/sync"
             className={({ isActive }) =>
-              `relative flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive ? 'text-forest-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `relative flex flex-col items-center justify-center py-1 transition-colors rounded-2xl ${
+                isActive ? 'text-[#1B2A24] font-semibold bg-[#B9C8B2]/50 shadow-inner' : 'text-[#6B8B78] hover:text-[#1B2A24]'
               }`
             }
           >
             <Send className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px]">Sync</span>
+            <span className="text-[10px]">Sincronía</span>
             {pendingCount > 0 && (
-              <span className="absolute top-0.5 right-3 w-4 h-4 rounded-full bg-amber-500 text-black text-[9px] font-black flex items-center justify-center animate-bounce">
+              <span className="absolute top-0 right-2 w-4 h-4 rounded-full bg-[#E0643A] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
                 {pendingCount}
               </span>
             )}
@@ -174,8 +184,8 @@ export function TechnicianLayout() {
           <NavLink
             to="/app/history"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive ? 'text-forest-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center justify-center py-1 transition-colors rounded-2xl ${
+                isActive ? 'text-[#1B2A24] font-semibold bg-[#B9C8B2]/50 shadow-inner' : 'text-[#6B8B78] hover:text-[#1B2A24]'
               }`
             }
           >
@@ -186,8 +196,8 @@ export function TechnicianLayout() {
           <NavLink
             to="/app/profile"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive ? 'text-forest-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center justify-center py-1 transition-colors rounded-2xl ${
+                isActive ? 'text-[#1B2A24] font-semibold bg-[#B9C8B2]/50 shadow-inner' : 'text-[#6B8B78] hover:text-[#1B2A24]'
               }`
             }
           >

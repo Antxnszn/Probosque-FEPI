@@ -1,176 +1,158 @@
 import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, Link } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Map as MapIcon,
-  Layers,
-  Satellite,
-  ClipboardCheck,
-  FileCheck2,
-  Image as ImageIcon,
-  Users,
-  FileSpreadsheet,
-  Server,
+  Trees,
+  Compass,
   ArrowRightLeft,
-  Wifi,
-  WifiOff,
   Menu,
   X,
+  FileSpreadsheet,
+  Users,
+  Server,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export function AdminLayout() {
-  const { currentUser, isOnline, switchRole } = useAuth();
+  const { switchRole } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-    { to: '/admin/map', label: 'Mapa Operativo', icon: MapIcon },
-    { to: '/admin/plots', label: 'Parcelas', icon: Layers },
-    { to: '/admin/triage', label: 'Triage Satelital', icon: Satellite },
-    { to: '/admin/audits', label: 'Auditorías', icon: ClipboardCheck },
-    { to: '/admin/subsidies', label: 'Subsidios & Decisión', icon: FileCheck2 },
-    { to: '/admin/evidence', label: 'Evidencias (Hash)', icon: ImageIcon },
-    { to: '/admin/users', label: 'Técnicos & Usuarios', icon: Users },
-    { to: '/admin/reports', label: 'Reportes & Export', icon: FileSpreadsheet },
-    { to: '/admin/system', label: 'Estado del Sistema', icon: Server },
+    { to: '/admin', label: 'Resumen', end: true },
+    { to: '/admin/map', label: 'Mapa Operativo' },
+    { to: '/admin/plots', label: 'Parcelas' },
+    { to: '/admin/triage', label: 'Triage Satelital' },
+    { to: '/admin/audits', label: 'Auditorías' },
+    { to: '/admin/subsidies', label: 'Dictamen' },
+    { to: '/admin/evidence', label: 'Evidencias' },
+  ];
+
+  const secondaryItems = [
+    { to: '/admin/users', label: 'Padrón Técnico', icon: Users },
+    { to: '/admin/reports', label: 'Reportes', icon: FileSpreadsheet },
+    { to: '/admin/system', label: 'Sistema', icon: Server },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans">
-      {/* Sidebar for Desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-slate-900 border-r border-slate-800 shrink-0">
-        {/* Brand & Emblem */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-forest-600/20 border border-forest-500/40 flex items-center justify-center text-forest-400 shadow-md">
-              <Satellite className="w-6 h-6" />
+    <div className="min-h-screen bg-[#F4F1EA] text-[#1B2A24] font-['Plus_Jakarta_Sans',sans-serif] antialiased selection:bg-[#E0643A]/20">
+      {/* ZONA 1: Isla de Navegación Flotante en Arcilla (Sin barra lateral rígida) */}
+      <header className="max-w-6xl mx-auto pt-6 px-4 sm:px-8">
+        <nav
+          aria-label="Navegación principal PROBOSQUE"
+          className="flex items-center justify-between gap-4 rounded-full bg-[#D9D1B8] px-5 sm:px-7 py-3 shadow-[10px_14px_28px_rgba(27,42,36,0.08),-6px_-6px_18px_rgba(255,255,255,0.85),inset_3px_3px_6px_rgba(255,255,255,0.75),inset_-3px_-4px_7px_rgba(107,139,120,0.22)]"
+        >
+          {/* Emblema y Título */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#355044] text-[#F4F1EA] shadow-[4px_6px_12px_rgba(27,42,36,0.2),inset_2px_2px_4px_rgba(185,200,178,0.3),inset_-2px_-3px_5px_rgba(15,25,21,0.5)]">
+              <Trees className="w-5 h-5 text-[#F4F1EA]" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
-                PROBOSQUE <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-700 font-mono">ADMIN</span>
-              </h1>
-              <p className="text-[11px] text-slate-400">Supervisión & Decisión</p>
+              <span className="font-['Outfit',sans-serif] text-xl font-medium tracking-tight text-[#1B2A24] group-hover:text-[#355044] transition-colors">
+                PROBOSQUE
+              </span>
+              <span className="hidden sm:inline-block mx-2 text-[#6B8B78]">·</span>
+              <span className="hidden sm:inline-block text-xs font-medium text-[#355044]">
+                Panel Directivo
+              </span>
             </div>
-          </div>
-        </div>
+          </Link>
 
-        {/* Navigation Items */}
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-            Módulos de Gestión
-          </div>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
+          {/* Links para Desktop */}
+          <div className="hidden lg:flex items-center gap-1.5">
+            {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                  `px-3.5 py-1.5 rounded-full text-xs transition-all ${
                     isActive
-                      ? 'bg-forest-600 text-white shadow-lg shadow-forest-900/30'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                      ? 'bg-[#355044] text-[#F4F1EA] font-semibold shadow-sm'
+                      : 'text-[#355044] hover:text-[#1B2A24] hover:bg-[#B9C8B2]/40 font-medium'
                   }`
                 }
               >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span>{item.label}</span>
+                {item.label}
               </NavLink>
-            );
-          })}
-        </nav>
+            ))}
 
-        {/* Current Admin User Footnote */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/40">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-indigo-900/60 border border-indigo-700 flex items-center justify-center text-indigo-300 font-bold text-xs">
-              ER
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-xs font-semibold text-white truncate">{currentUser.name}</p>
-              <p className="text-[10px] text-slate-400 truncate">{currentUser.email}</p>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header */}
-        <header className="h-16 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+            <Link
+              to="/visor"
+              className="px-3.5 py-1.5 rounded-full text-xs font-medium text-[#355044] hover:text-[#1B2A24] hover:bg-[#B9C8B2]/40 transition-all flex items-center gap-1"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-            <div>
-              <span className="text-xs text-slate-400 hidden sm:inline">Panel Gerencial y Dictaminación Forestal</span>
-              <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-                Gobierno del Estado de México — Probosque
-              </h2>
-            </div>
+              <Compass className="w-3.5 h-3.5 text-[#355044]" />
+              <span>Visor</span>
+            </Link>
           </div>
 
-          {/* Right Header Statuses & Role Switcher */}
-          <div className="flex items-center gap-3">
-            {/* Connectivity */}
-            <div
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs ${
-                isOnline
-                  ? 'bg-emerald-950/60 border-emerald-700/60 text-emerald-400'
-                  : 'bg-rose-950/60 border-rose-700/60 text-rose-400'
-              }`}
-            >
-              {isOnline ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
-              <span className="font-semibold text-[11px] hidden sm:inline">{isOnline ? 'CONECTADO AL CENTRO' : 'SIN RED'}</span>
-            </div>
-
-            {/* Quick Switch to Technician Mode */}
+          {/* Botones de Acción Derecha */}
+          <div className="flex items-center gap-2.5">
             <button
+              type="button"
               onClick={() => switchRole('TECHNICIAN')}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-forest-600/20 hover:bg-forest-600/30 text-forest-300 border border-forest-500/40 text-xs font-semibold transition-all shadow-sm"
+              className="clay-btn-terracotta px-4 py-2 text-xs text-white shadow-md flex items-center gap-1.5 cursor-pointer"
               title="Cambiar a Vista Operativa de Técnico de Campo"
             >
-              <ArrowRightLeft className="w-3.5 h-3.5 text-forest-400" />
-              <span>Modo Técnico</span>
+              <ArrowRightLeft className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Modo Técnico</span>
+            </button>
+
+            {/* Mobile menu trigger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-full bg-[#B9C8B2] text-[#1B2A24] hover:bg-[#A3C962] transition-colors cursor-pointer"
+              aria-label="Menú móvil"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
-        </header>
+        </nav>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-slate-900 border-b border-slate-800 p-4 space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
+          <div className="lg:hidden mt-3 p-4 rounded-3xl bg-[#EAE4D3] shadow-[inset_3px_3px_8px_rgba(107,139,120,0.18)] space-y-1 text-xs">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `block px-4 py-2 rounded-xl transition-all ${
+                    isActive ? 'bg-[#355044] text-white font-semibold' : 'text-[#355044] hover:bg-[#D9D1B8]'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+
+            <div className="pt-2 border-t border-[#6B8B78]/20 flex flex-wrap gap-2">
+              {secondaryItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  end={item.end}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium ${
-                      isActive ? 'bg-forest-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`
-                  }
+                  className="px-3 py-1.5 rounded-full bg-[#D9D1B8] text-[#355044] text-xs font-medium"
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
+                  {item.label}
                 </NavLink>
-              );
-            })}
+              ))}
+              <Link
+                to="/visor"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-1.5 rounded-full bg-[#E0643A] text-white text-xs font-semibold"
+              >
+                Visor Forestal
+              </Link>
+            </div>
           </div>
         )}
+      </header>
 
-        {/* Desktop Main Workspace */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto overflow-y-auto">
-          <Outlet />
-        </main>
-      </div>
+      {/* Main Open Canvas Workspace */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-8 pt-10 pb-24">
+        <Outlet />
+      </main>
     </div>
   );
 }
