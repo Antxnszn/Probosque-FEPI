@@ -14,7 +14,8 @@ import yaml
 
 
 def validate_inegi(base_dir: pathlib.Path) -> dict:
-    inegi_dir = base_dir / "data" / "inegi"
+    repo_root = base_dir.parent.parent if base_dir.parent.name == "modules" else base_dir
+    inegi_dir = repo_root / "data" / "inegi" if (repo_root / "data" / "inegi").exists() else base_dir / "data" / "inegi"
     mun_path = inegi_dir / "edomex_125_municipios.geojson"
     state_path = inegi_dir / "edomex_state.geojson"
     cat_path = inegi_dir / "edomex_municipios_catalog.json"

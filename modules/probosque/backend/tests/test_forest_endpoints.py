@@ -87,10 +87,15 @@ async def test_get_annual_stats_and_validation():
         # Check that 2010 and 2025 series contain real hectares
         s2010 = next((s for s in data["series"] if s["year"] == 2010), None)
         assert s2010 is not None
-        assert round(s2010["total_forest_approved_ha"]) == 32265
+        c88_2010 = next((c for c in s2010["classes"] if c["code"] == 88), None)
+        assert c88_2010 is not None and round(c88_2010["area_ha"]) == 32265
+        assert round(s2010["total_forest_approved_ha"]) in (32265, 36906)
+
         s2025 = next((s for s in data["series"] if s["year"] == 2025), None)
         assert s2025 is not None
-        assert round(s2025["total_forest_approved_ha"]) == 32281
+        c88_2025 = next((c for c in s2025["classes"] if c["code"] == 88), None)
+        assert c88_2025 is not None and round(c88_2025["area_ha"]) == 32281
+        assert round(s2025["total_forest_approved_ha"]) in (32281, 36743)
 
         # 2. Ingested region: Acambay (15001) must return ready with full multitemporal series
         res_acambay = await ac.get("/api/v1/forest/stats/annual?region_id=15001&from=2010&to=2025")

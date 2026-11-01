@@ -15,6 +15,12 @@ from sqlalchemy.orm import sessionmaker
 
 # Setup paths
 base_dir = pathlib.Path(__file__).resolve().parent.parent.parent
+repo_root = base_dir.parent.parent if base_dir.parent.name == "modules" else base_dir
+data_dir = (
+    repo_root / "data" / "inegi"
+    if (repo_root / "data" / "inegi").exists()
+    else base_dir / "data" / "inegi"
+)
 sys.path.insert(0, str(base_dir / "backend"))
 
 from app.config import settings
@@ -109,13 +115,13 @@ def init_database():
         print(f"Seeded {classes_created} LandCoverClasses for {grouping_version}.")
 
         # 3. Seed GeoRegions (125 Municipalities + State)
-        catalog_path = base_dir / "data" / "inegi" / "edomex_municipios_catalog.json"
+        catalog_path = data_dir / "edomex_municipios_catalog.json"
         catalog_data = json.loads(catalog_path.read_text(encoding="utf-8"))
 
         # Add state region
-        state_path = base_dir / "data" / "inegi" / "edomex_state_simplified.geojson"
+        state_path = data_dir / "edomex_state_simplified.geojson"
         if not state_path.exists():
-            state_path = base_dir / "data" / "inegi" / "edomex_state.geojson"
+            state_path = data_dir / "edomex_state.geojson"
         state_data = json.loads(state_path.read_text(encoding="utf-8"))
         state_props = state_data["features"][0]["properties"]
         state_geom = state_data["features"][0]["geometry"]
@@ -138,9 +144,9 @@ def init_database():
             print("Seeded State GeoRegion: Estado de México (15)")
 
         # Load municipal features
-        mun_geojson_path = base_dir / "data" / "inegi" / "edomex_125_municipios_simplified.geojson"
+        mun_geojson_path = data_dir / "edomex_125_municipios_simplified.geojson"
         if not mun_geojson_path.exists():
-            mun_geojson_path = base_dir / "data" / "inegi" / "edomex_125_municipios.geojson"
+            mun_geojson_path = data_dir / "edomex_125_municipios.geojson"
         mun_geojson_data = json.loads(mun_geojson_path.read_text(encoding="utf-8"))
         mun_features = {f["properties"]["inegi_code"]: f["geometry"] for f in mun_geojson_data["features"]}
 

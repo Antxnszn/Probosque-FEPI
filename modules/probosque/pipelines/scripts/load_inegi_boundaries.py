@@ -13,7 +13,8 @@ import shapely.ops
 
 
 def process_inegi_boundaries():
-    base_dir = pathlib.Path(__file__).resolve().parent.parent.parent
+    module_dir = pathlib.Path(__file__).resolve().parent.parent.parent
+    base_dir = module_dir.parent.parent if module_dir.parent.name == "modules" else module_dir
     extracted_dir = base_dir / "data" / "inegi" / "extracted"
     out_dir = base_dir / "data" / "inegi"
     out_dir.mkdir(parents=True, exist_ok=True)
