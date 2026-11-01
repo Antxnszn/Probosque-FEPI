@@ -133,7 +133,7 @@ uv run fastapi dev app/main.py
 
 ```bash
 cd frontend
-
+    
 # Instalar dependencias
 npm install
 
@@ -162,6 +162,7 @@ La documentación detallada se encuentra en la carpeta `docs/`. Recomendamos rev
 - [Metodología de Campo y Estimación Estadística](docs/field_methodology.md)
 - [Protocolo de Sincronización Idempotente](docs/sync_protocol.md)
 - [Motor de Reglas de Decisión](docs/decision_rules.md)
+- [Guía de Referencia CLI y Combinaciones](docs/cli_reference.md)
 
 ---
 
