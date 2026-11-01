@@ -1,7 +1,9 @@
 import json
 import pathlib
-import yaml
+import urllib.request
+from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
+import yaml
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -35,6 +37,7 @@ class ForestService:
         self._catalog_cache: Optional[List[RegionSummary]] = None
         self._feature_map: Dict[str, Dict[str, Any]] = {}
         self._state_data: Optional[Dict[str, Any]] = None
+        self._tile_cache: Dict[int, Dict[str, Any]] = {}
 
     def _load_configs(self):
         if self._metadata_cache is not None:
@@ -325,32 +328,80 @@ class ForestService:
             data_status="pending_ingest",
         )
 
+    def _fetch_live_tile_url(self, year: int) -> Optional[str]:
+        """
+        Fetches or returns cached live Earth Engine XYZ tile URL template from MapBiomas México API.
+        Tokens expire after 24-48 hours, so we cache with a 6-hour TTL and refresh automatically.
+        """
+        now = datetime.now(timezone.utc)
+        cached = self._tile_cache.get(year)
+        if cached and (now - cached["timestamp"]).total_seconds() < 21600:
+            return cached["url"]
+
+        leaf_pixels = [88, 89, 3, 5, 66, 45, 11, 15, 36, 19, 9, 21, 24, 25, 33, 34, 27]
+        query = "&".join([f"pixelValue={v}" for v in leaf_pixels])
+        url = f"https://prd.plataforma.mapbiomas.org/api/v1/mexico/maps/map?subthemeKey=coverage_lclu&legendKey=default&year={year}&{query}"
+        headers = {"tenant-id": "mapbiomas", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode())
+                live_url = data.get("url")
+                if live_url:
+                    self._tile_cache[year] = {"url": live_url, "timestamp": now}
+                    # Update database asynchronously / on session
+                    session = self._get_db_session()
+                    if session:
+                        try:
+                            rps = session.query(RasterProduct).filter_by(indicator="land_cover", year=year).all()
+                            for rp in rps:
+                                rp.tile_url_template = live_url
+                                rp.status = "ready"
+                                rp.produced_at = now
+                            session.commit()
+                        except Exception:
+                            session.rollback()
+                        finally:
+                            session.close()
+                    return live_url
+        except Exception:
+            pass
+
+        return None
+
     def get_layers(self, indicator: Optional[str] = None, year: Optional[int] = None) -> List[LayerSpec]:
         self._load_configs()
         layers = []
         target_year = year or 2025
 
-        # Query database for ready raster products
+        # Query database for ready raster products or auto-refresh if token is stale
         tile_url = None
         layer_status = "pending_ingest"
         tile_strategy = "xyz"
 
-        session = self._get_db_session()
-        if session:
-            try:
-                rp = (
-                    session.query(RasterProduct)
-                    .filter_by(indicator="land_cover", year=target_year)
-                    .first()
-                )
-                if rp and rp.status == "ready" and rp.tile_url_template:
-                    tile_url = rp.tile_url_template
-                    layer_status = "ready"
-                    tile_strategy = rp.tile_strategy
-            except Exception:
-                pass
-            finally:
-                session.close()
+        # Try live/cached refresh first so GEE tokens never expire
+        live_tile_url = self._fetch_live_tile_url(target_year)
+        if live_tile_url:
+            tile_url = live_tile_url
+            layer_status = "ready"
+        else:
+            session = self._get_db_session()
+            if session:
+                try:
+                    rp = (
+                        session.query(RasterProduct)
+                        .filter_by(indicator="land_cover", year=target_year)
+                        .first()
+                    )
+                    if rp and rp.status == "ready" and rp.tile_url_template:
+                        tile_url = rp.tile_url_template
+                        layer_status = "ready"
+                        tile_strategy = rp.tile_strategy
+                except Exception:
+                    pass
+                finally:
+                    session.close()
 
         # Land cover layer
         legend_items = [

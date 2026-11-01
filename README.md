@@ -154,15 +154,37 @@ Para evitar ataques de replay (repetición) y alteraciones en los datos levantad
 
 ---
 
-## Documentación de Referencia
+## Documentación de Referencia (MkDocs)
 
-La documentación detallada se encuentra en la carpeta `docs/`. Recomendamos revisar los siguientes archivos para un entendimiento profundo del sistema:
+La plataforma cuenta con un portal interactivo de documentación generado con **MkDocs** y el tema **Material for MkDocs**, con soporte para fórmulas matemáticas en LaTeX (MathJax) y diagramas Mermaid.
 
-- [Arquitectura Detallada](docs/architecture.md)
+### Levantar el Portal de Documentación
+
+**Opción A: Ejecución local con uv**
+```bash
+uv run --with mkdocs-material mkdocs serve
+```
+> Disponible en: `http://localhost:8000`
+
+**Opción B: Contenedor Docker**
+```bash
+cd infra
+docker compose up -d docs
+```
+> Disponible en: `http://localhost:8008`
+
+### Índice de Documentos
+- [Vista General e Inicio](docs/index.md)
+- [Arquitectura del Sistema](docs/architecture.md)
+- [Decisiones de Arquitectura (ADR)](docs/decisions.md)
+- [Fuentes de Datos y Licencias](docs/sources_and_licenses.md)
+- [Diccionario de Datos y Modelo](docs/data_dictionary.md)
 - [Metodología de Campo y Estimación Estadística](docs/field_methodology.md)
-- [Protocolo de Sincronización Idempotente](docs/sync_protocol.md)
 - [Motor de Reglas de Decisión](docs/decision_rules.md)
+- [Protocolo de Sincronización Idempotente](docs/sync_protocol.md)
 - [Guía de Referencia CLI y Combinaciones](docs/cli_reference.md)
+- [Protocolo de Limpieza Pre-Lanzamiento](docs/cleanup_protocol.md)
+
 
 ---
 

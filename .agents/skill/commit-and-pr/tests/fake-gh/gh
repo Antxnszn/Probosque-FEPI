@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Fake GitHub CLI used by tests/run-tests.sh. NOT the real gh.
+# Fixtures live in $FAKE_GH_DIR:
+#   repo-<owner>__<name>.json   object returned by `gh repo view`
+#   prs-<owner>__<name>.json    array of PR objects returned by `gh pr list` / `gh pr view`
+#   calls.log                   every invocation, one line each (used by assertions)
+# Behaviour that matters for the tests is emulated faithfully:
+#   - `pr list --head X` filters on the literal branch NAME, so "owner:branch" matches nothing
+#     (the documented limitation of the real gh).
+set -euo pipefail
+
+: "${FAKE_GH_DIR:?FAKE_GH_DIR must point at the fixtures directory}"
+printf '%s\n' "$*" >>"$FAKE_GH_DIR/calls.log"
+[ -z "${FAKE_GH_FAIL:-}" ] || { echo "fake gh: forced failure" >&2; exit 1; }
+
+sub=${1:-} sub2=${2:-}
+shift 2 || true
+
+repo="" head="" state="open" limit=30 jq_expr="" json=0 positional=""
+while [ $# -gt 0 ]; do
+  case $1 in
+    --repo | -R) repo=$2; shift ;;
+    --head | -H) head=$2; shift ;;
+    --state | -s) state=$2; shift ;;
+    --limit | -L) limit=$2; shift ;;
+    --jq | -q) jq_expr=$2; shift ;;
+    --json) json=1; shift ;;
+    --base | -B | --title | -t | --body-file | -F) shift ;;
+    --draft) ;;
+    -*) ;;
+    *) positional=${positional:-$1} ;;
+  esac
+  shift
+done
+
+slug_file() { printf '%s/%s-%s.json' "$FAKE_GH_DIR" "$1" "${2//\//__}"; }
+
+emit_json() { # FILE-or-stdin JSON, applies --jq when given
+  if [ -n "$jq_expr" ]; then jq -r "$jq_expr"; else cat; fi
+}
+
+case "$sub $sub2" in
+  "auth status") exit 0 ;;
+  "repo view")
+    target=${positional:-$repo}
+    f=$(slug_file repo "$target")
+    [ -f "$f" ] || { echo "GraphQL: Could not resolve to a Repository with the name '$target'." >&2; exit 1; }
+    emit_json <"$f"
+    ;;
+  "pr list")
+    f=$(slug_file prs "$repo")
+    [ -f "$f" ] || { echo '[]' | emit_json; exit 0; }
+    jq --arg head "$head" --arg state "$state" --argjson limit "$limit" '
+        [ .[]
+          | select($head == "" or .headRefName == $head)
+          | select($state == "all" or (.state | ascii_downcase) == $state) ]
+        | .[:$limit]' "$f" | emit_json
+    ;;
+  "pr view")
+    f=$(slug_file prs "$repo")
+    [ -f "$f" ] || { echo "no pull requests found" >&2; exit 1; }
+    jq --argjson n "${positional:-0}" '.[] | select(.number == $n)' "$f" >"$FAKE_GH_DIR/.view.tmp"
+    [ -s "$FAKE_GH_DIR/.view.tmp" ] || { echo "no pull requests found for #${positional}" >&2; exit 1; }
+    emit_json <"$FAKE_GH_DIR/.view.tmp"
+    ;;
+  "pr create")
+    n=$(cat "$FAKE_GH_DIR/next-pr" 2>/dev/null || echo 900)
+    echo $((n + 1)) >"$FAKE_GH_DIR/next-pr"
+    echo "https://github.com/${repo:-unknown/unknown}/pull/$n"
+    ;;
+  *)
+    echo "fake gh: unsupported command: $sub $sub2" >&2
+    exit 2
+    ;;
+esac
