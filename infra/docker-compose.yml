@@ -102,6 +102,11 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-probosque_minio_pass_2026}
       - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME:-probosque-evidence}
       - MINIO_USE_SSL=false
+      - DATA_DIR=/data/inegi
+      - CONFIG_DIR=/pipelines/configs
+    volumes:
+      - ../data:/data:ro
+      - ../modules/probosque/pipelines/configs:/pipelines/configs:ro
     depends_on:
       db:
         condition: service_healthy

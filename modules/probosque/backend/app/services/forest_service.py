@@ -31,16 +31,30 @@ class ForestService:
         # Resolve module and repo directories
         self.module_dir = pathlib.Path(__file__).resolve().parent.parent.parent.parent
         self.base_dir = self.module_dir.parent.parent if self.module_dir.parent.name == "modules" else self.module_dir
-        self.config_dir = (
-            self.module_dir / "pipelines" / "configs"
-            if (self.module_dir / "pipelines" / "configs").exists()
-            else self.base_dir / "pipelines" / "configs"
-        )
-        self.data_dir = (
-            self.base_dir / "data" / "probosque" / "inegi"
-            if (self.base_dir / "data" / "probosque" / "inegi").exists()
-            else self.base_dir / "data" / "inegi"
-        )
+
+        # Resolve config dir: custom setting -> module/repo pipelines/configs -> /pipelines/configs -> app/configs
+        if settings.CONFIG_DIR and pathlib.Path(settings.CONFIG_DIR).exists():
+            self.config_dir = pathlib.Path(settings.CONFIG_DIR)
+        elif (self.module_dir / "pipelines" / "configs").exists():
+            self.config_dir = self.module_dir / "pipelines" / "configs"
+        elif (self.base_dir / "pipelines" / "configs").exists():
+            self.config_dir = self.base_dir / "pipelines" / "configs"
+        elif pathlib.Path("/pipelines/configs").exists():
+            self.config_dir = pathlib.Path("/pipelines/configs")
+        else:
+            self.config_dir = pathlib.Path(__file__).resolve().parent.parent / "configs"
+
+        # Resolve data dir: custom setting -> volume /data/inegi -> base_dir/data/inegi -> app/data/inegi
+        if settings.DATA_DIR and pathlib.Path(settings.DATA_DIR).exists():
+            self.data_dir = pathlib.Path(settings.DATA_DIR)
+        elif (self.base_dir / "data" / "probosque" / "inegi").exists():
+            self.data_dir = self.base_dir / "data" / "probosque" / "inegi"
+        elif (self.base_dir / "data" / "inegi").exists():
+            self.data_dir = self.base_dir / "data" / "inegi"
+        elif pathlib.Path("/data/inegi").exists():
+            self.data_dir = pathlib.Path("/data/inegi")
+        else:
+            self.data_dir = pathlib.Path(__file__).resolve().parent.parent / "data" / "inegi"
 
         self._metadata_cache: Optional[ForestMetadataResponse] = None
         self._catalog_cache: Optional[List[RegionSummary]] = None

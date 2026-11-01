@@ -1,0 +1,159 @@
+# Official MapBiomas México Colección 1.0 legend classes & Edomex forest grouping policy
+# Source: Official API legend dde29c24-114a-4611-a2b0-1181b6119f19 and MapBiomas user-toolkit SLD
+legend_version: "mexico-collection-1.0"
+forest_grouping_version: "probosque-v1.0"
+methodological_decision: "La agrupación 'is_forest_approved' es una decisión metodológica explícita del proyecto Probosque-FEPI para monitorear bosque templado (88), bosque tropical seco (89), bosque tropical húmedo (3) y plantación forestal (9) bajo la jurisdicción del Estado de México. No constituye una definición intrínseca de MapBiomas México."
+
+classes:
+  - code: 88
+    name_en: "Temperate forest"
+    name_es: "Bosque templado"
+    hex_color: "#329c5a"
+    is_forest: true
+    is_native_forest: true
+    is_forest_approved: true
+    description: "Bosques de pino, encino, oyamel, mesófilo de montaña y sus asociaciones en el Eje Neovolcánico Transversal y Sierra Madre del Sur."
+
+  - code: 89
+    name_en: "Tropical dry forest"
+    name_es: "Selva seca / Bosque tropical seco"
+    hex_color: "#6bd46c"
+    is_forest: true
+    is_native_forest: true
+    is_forest_approved: true
+    description: "Selva baja caducifolia y bosque tropical deciduo presente en el sur del Estado de México (cuenca del río Balsas, Tejupilco, Tlatlaya)."
+
+  - code: 3
+    name_en: "Tropical humid forest"
+    name_es: "Bosque húmedo tropical / Selva húmeda"
+    hex_color: "#1f8d49"
+    is_forest: true
+    is_native_forest: true
+    is_forest_approved: true
+    description: "Bosques tropicales húmedos relictos o de galería."
+
+  - code: 9
+    name_en: "Forest plantation"
+    name_es: "Plantación forestal"
+    hex_color: "#7a5900"
+    is_forest: true
+    is_native_forest: false
+    is_forest_approved: true
+    description: "Plantaciones forestales comerciales y plantaciones de árboles de navidad."
+
+  - code: 5
+    name_en: "Mangrove"
+    name_es: "Manglar"
+    hex_color: "#04381d"
+    is_forest: true
+    is_native_forest: true
+    is_forest_approved: false
+    description: "No distribuido naturalmente en el Estado de México (revisar máscara de validez)."
+
+  - code: 66
+    name_en: "Shrublands"
+    name_es: "Matorrales"
+    hex_color: "#a89358"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Vegetación arbustiva xerófila y matorral submontano. No agrupada como bosque en el cálculo estándar de cobertura arbórea."
+
+  - code: 45
+    name_en: "Savanna and natural grassland"
+    name_es: "Sabana y pastizal natural / Pastizal alpino"
+    hex_color: "#807a40"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Pastizales naturales de alta montaña (zacatonales en Nevado de Toluca, Popocatépetl, Iztaccíhuatl)."
+
+  - code: 15
+    name_en: "Cultivated grassland"
+    name_es: "Pastizal cultivado / Ganadero"
+    hex_color: "#edde8e"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Superficies inducidas para pastoreo de ganado."
+
+  - code: 19
+    name_en: "Annual crop"
+    name_es: "Agricultura anual"
+    hex_color: "#c27ba0"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Cultivos cíclicos de temporal o riego (maíz, avena, frijol, cebada)."
+
+  - code: 36
+    name_en: "Perennial crop"
+    name_es: "Cultivo perenne"
+    hex_color: "#d082de"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Huertos frutales, aguacate y otros cultivos de ciclo continuo."
+
+  - code: 24
+    name_en: "Urban and built-up area"
+    name_es: "Área urbana y construida"
+    hex_color: "#d4271e"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Asentamientos humanos concentrados, infraestructura y zonas metropolitanas."
+
+  - code: 25
+    name_en: "Other non-vegetated areas"
+    name_es: "Otras áreas no vegetadas"
+    hex_color: "#db4d4f"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Suelo desnudo, canteras, áreas erosionadas sin cubierta vegetal."
+
+  - code: 33
+    name_en: "River, lake or ocean"
+    name_es: "Cuerpos de agua (río, presa, lago)"
+    hex_color: "#2532e4"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Presas (Valle de Bravo, Villa Victoria, Tepetitlán), lagos y ríos principales."
+
+  - code: 34
+    name_en: "Ice and permanent snow"
+    name_es: "Nieve y hielo permanente"
+    hex_color: "#93dfe6"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Glaciares y campos de nieve permanente en cumbres volcánicas."
+
+  - code: 11
+    name_en: "Flooded"
+    name_es: "Humedal o zona inundable"
+    hex_color: "#519799"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Ciénegas del Lerma y cuerpos de agua temporales."
+
+  - code: 21
+    name_en: "Mosaic of land uses"
+    name_es: "Mosaico de usos"
+    hex_color: "#ffefc3"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Mosaico de usos agropecuarios y forestales no diferenciables a resolución de 30 m."
+
+  - code: 27
+    name_en: "Not observed"
+    name_es: "No observado"
+    hex_color: "#ffffff"
+    is_forest: false
+    is_native_forest: false
+    is_forest_approved: false
+    description: "Área sin observación por persistencia extrema de nubes o sombras en la serie anual."

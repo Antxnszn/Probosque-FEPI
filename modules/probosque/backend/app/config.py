@@ -50,5 +50,9 @@ class Settings(BaseSettings):
     TRIAGE_METHODOLOGY_VERSION: str = "TRIAGE-1.0"
     CARBON_METHODOLOGY_VERSION: str = "CARBON-1.0"
 
+    # Data & Config paths
+    DATA_DIR: Optional[str] = None
+    CONFIG_DIR: Optional[str] = None
+
 
 settings = Settings()
