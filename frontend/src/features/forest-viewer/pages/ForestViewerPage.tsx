@@ -165,7 +165,7 @@ export const ForestViewerPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#F4F1EA] text-[#1B2A24] font-['Plus_Jakarta_Sans',sans-serif]">
       {/* 1. Top Navbar */}
       <ViewerHeader
         onToggleSidebarMobile={() => setIsSidebarMobileOpen((prev) => !prev)}
@@ -173,8 +173,8 @@ export const ForestViewerPage: React.FC = () => {
         selectedMuniName={selectedMunicipality?.name || 'Estado de México'}
       />
       {isLoadingData && (
-        <div className="h-0.5 w-full bg-emerald-950 overflow-hidden">
-          <div className="w-1/2 h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 animate-pulse" />
+        <div className="h-1 w-full bg-[#D9D1B8] overflow-hidden">
+          <div className="w-1/2 h-full bg-[#E0643A] animate-pulse" />
         </div>
       )}
 

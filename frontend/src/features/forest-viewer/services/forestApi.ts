@@ -87,7 +87,7 @@ export async function fetchForestMetadata(): Promise<ForestMetadata> {
 
 export async function fetchMunicipalities(): Promise<RegionSummary[]> {
   const data = await safeFetchJson<RegionSummary[]>(`${API_BASE}/regions?type=municipality`);
-  if (data) return data;
+  if (data && data.length > 0) return data;
 
   // Fallback to static public json
   const staticRes = await fetch('/data/edomex_municipios_catalog.json');
@@ -100,7 +100,7 @@ export async function fetchRegionDetail(regionId: string): Promise<RegionDetail 
 
 export async function fetchStateGeoJSON(): Promise<GeoJSON.FeatureCollection> {
   const data = await safeFetchJson<GeoJSON.FeatureCollection>(`${API_BASE}/geojson/state?simplified=true`);
-  if (data) return data;
+  if (data && data.features && data.features.length > 0) return data;
 
   const staticRes = await fetch('/data/edomex_state_simplified.geojson');
   return await staticRes.json();
@@ -108,7 +108,7 @@ export async function fetchStateGeoJSON(): Promise<GeoJSON.FeatureCollection> {
 
 export async function fetchMunicipalitiesGeoJSON(): Promise<GeoJSON.FeatureCollection> {
   const data = await safeFetchJson<GeoJSON.FeatureCollection>(`${API_BASE}/geojson/municipalities?simplified=true`);
-  if (data) return data;
+  if (data && data.features && data.features.length > 0) return data;
 
   const staticRes = await fetch('/data/edomex_125_municipios_simplified.geojson');
   return await staticRes.json();

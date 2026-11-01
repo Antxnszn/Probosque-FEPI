@@ -69,86 +69,92 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
   return (
     <aside
       className={`
-        fixed inset-y-0 left-0 z-30 w-84 sm:w-96 bg-slate-900/95 backdrop-blur-xl border-r border-slate-800 flex flex-col transition-transform duration-300 shadow-2xl
+        fixed inset-y-0 left-0 z-30 w-84 sm:w-96 bg-[#EAE4D3] border-r border-[#6B8B78]/20 flex flex-col transition-transform duration-300 shadow-[4px_0_24px_rgba(27,42,36,0.06)] font-['Plus_Jakarta_Sans',sans-serif]
         ${isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0 lg:static lg:z-auto'}
       `}
     >
       {/* Sidebar Header */}
-      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+      <div className="p-5 border-b border-[#6B8B78]/15 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl bg-[#355044] text-[#F4F1EA] flex items-center justify-center shadow-sm">
             <TreePine className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-white tracking-tight">Panel de Control</h2>
-            <p className="text-[11px] text-slate-400">Filtros y series multitemporales</p>
+            <h2 className="font-['Outfit',sans-serif] text-sm font-semibold text-[#1B2A24] tracking-tight">
+              Filtros Geoespaciales
+            </h2>
+            <p className="text-xs text-[#6B8B78]">Series multitemporales 2010–2025</p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={onOpenMetadataModal}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-xl text-[#355044] hover:bg-[#D9D1B8] transition-colors"
             title="Ver fuentes y metodología"
+            aria-label="Ver fuentes y metodología"
           >
             <Info className="w-4 h-4" />
           </button>
           <button
             onClick={onCloseMobile}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors lg:hidden"
-            title="Cerrar menú"
+            className="p-2 rounded-xl text-[#355044] hover:bg-[#D9D1B8] transition-colors lg:hidden"
+            title="Cerrar panel"
+            aria-label="Cerrar panel"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      <div className="flex-1 overflow-y-auto p-5 space-y-6">
         {/* 1. Área de Análisis */}
-        <section className="space-y-2.5">
+        <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-              Área de análisis
+            <label className="text-xs font-semibold text-[#1B2A24] flex items-center gap-2">
+              <MapPin className="w-3.5 h-3.5 text-[#355044]" />
+              <span>Región o municipio</span>
             </label>
             {selectedCode && selectedCode !== '15' && (
               <button
                 onClick={() => onSelectMunicipality('15')}
-                className="text-[11px] text-emerald-400 hover:text-emerald-300 hover:underline flex items-center gap-1 font-medium"
+                className="text-xs text-[#E0643A] hover:underline flex items-center gap-1 font-semibold"
               >
                 <Maximize2 className="w-3 h-3" />
-                Ver todo Edomex
+                <span>Todo el estado</span>
               </button>
             )}
           </div>
 
-          {/* Search Input */}
-          <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          {/* Search Input (Recessed Clay Well) */}
+          <div className="relative rounded-2xl bg-[#F4F1EA] shadow-[inset_3px_3px_7px_rgba(107,139,120,0.18),inset_-3px_-3px_7px_rgba(255,255,255,0.85)]">
+            <Search className="w-4 h-4 text-[#6B8B78] absolute left-3.5 top-3" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar entre los 125 municipios..."
-              className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
+              placeholder="Buscar por nombre de municipio..."
+              className="w-full bg-transparent border-none pl-10 pr-4 py-2.5 text-xs text-[#1B2A24] placeholder-[#6B8B78]/70 focus:outline-none"
             />
           </div>
 
           {/* Municipality Selector Dropdown / Quick list */}
-          <div className="bg-slate-950/50 border border-slate-800 rounded-xl max-h-44 overflow-y-auto p-1 divide-y divide-slate-800/50">
+          <div className="rounded-2xl bg-[#D9D1B8]/40 p-1.5 max-h-48 overflow-y-auto space-y-1 border border-[#6B8B78]/15">
             {/* Option: Entire State */}
             <button
               onClick={() => onSelectMunicipality('15')}
-              className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between transition-colors ${
+              className={`w-full text-left px-3 py-2.5 rounded-xl text-xs flex items-center justify-between transition-colors ${
                 !selectedCode || selectedCode === '15'
-                  ? 'bg-emerald-950/80 text-emerald-300 font-semibold border border-emerald-800/60'
-                  : 'text-slate-300 hover:bg-slate-800/70'
+                  ? 'bg-[#355044] text-[#F4F1EA] font-semibold shadow-sm'
+                  : 'text-[#1B2A24] hover:bg-[#D9D1B8]'
               }`}
             >
               <div>
                 <span className="block font-medium">Estado de México (Total)</span>
-                <span className="text-[10px] text-slate-400 font-mono">125 Municipios • 2,235,175 ha</span>
+                <span className={`text-[10px] ${!selectedCode || selectedCode === '15' ? 'text-[#B9C8B2]' : 'text-[#6B8B78]'}`}>
+                  125 municipios · 2,235,175 ha
+                </span>
               </div>
-              {(!selectedCode || selectedCode === '15') && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+              {(!selectedCode || selectedCode === '15') && <Check className="w-3.5 h-3.5 text-[#A3C962]" />}
             </button>
 
             {filteredMunicipalities.map((m) => {
@@ -158,28 +164,28 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
                 <button
                   key={m.inegi_code}
                   onClick={() => onSelectMunicipality(m.inegi_code)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between transition-colors ${
+                  className={`w-full text-left px-3 py-2.5 rounded-xl text-xs flex items-center justify-between transition-colors ${
                     isSelected
-                      ? 'bg-emerald-950/80 text-emerald-300 font-semibold border border-emerald-800/60'
+                      ? 'bg-[#355044] text-[#F4F1EA] font-semibold shadow-sm'
                       : isValle
-                      ? 'bg-emerald-950/20 text-slate-200 border border-emerald-900/30 hover:bg-emerald-950/40'
-                      : 'text-slate-300 hover:bg-slate-800/70'
+                      ? 'bg-[#B9C8B2]/50 text-[#1B2A24] hover:bg-[#B9C8B2]/70 font-medium'
+                      : 'text-[#1B2A24] hover:bg-[#D9D1B8]'
                   }`}
                 >
                   <div className="truncate pr-2">
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-1.5">
                       <span className="block truncate font-medium">{m.name}</span>
                       {isValle && (
-                        <span className="text-[9px] bg-emerald-900/60 text-emerald-300 border border-emerald-700/50 px-1.5 py-0.2 rounded ml-1.5 font-sans shrink-0">
-                          Fase 2 Verificada
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${isSelected ? 'bg-[#D9D1B8] text-[#1B2A24]' : 'bg-[#355044] text-white'}`}>
+                          Verificado
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      Clave {m.inegi_code} • {m.area_ha.toLocaleString('es-MX')} ha
+                    <span className={`text-[10px] ${isSelected ? 'text-[#B9C8B2]' : 'text-[#6B8B78]'}`}>
+                      {m.area_ha.toLocaleString('es-MX')} ha
                     </span>
                   </div>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#A3C962] shrink-0" />}
                 </button>
               );
             })}
@@ -187,75 +193,75 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
         </section>
 
         {/* 2. Catálogo de Capas / Indicadores */}
-        <section className="space-y-2.5">
-          <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-emerald-400" />
-            Indicador principal
+        <section className="space-y-3">
+          <label className="text-xs font-semibold text-[#1B2A24] flex items-center gap-2">
+            <Layers className="w-3.5 h-3.5 text-[#355044]" />
+            <span>Indicador satelital</span>
           </label>
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2.5">
             <button
               onClick={() => onChangeIndicator('land_cover')}
-              className={`p-3 rounded-xl border text-left transition-all ${
+              className={`p-3.5 rounded-2xl text-left transition-all ${
                 activeIndicator === 'land_cover'
-                  ? 'bg-emerald-950/60 border-emerald-500 text-white shadow-lg shadow-emerald-950/30'
-                  : 'bg-slate-950/40 border-slate-800 text-slate-300 hover:border-slate-700'
+                  ? 'bg-[#355044] text-white shadow-[6px_10px_20px_rgba(27,42,36,0.18),inset_2px_2px_4px_rgba(185,200,178,0.25)]'
+                  : 'bg-[#D9D1B8]/60 text-[#1B2A24] hover:bg-[#D9D1B8] shadow-sm'
               }`}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-xs flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="font-semibold text-xs flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${activeIndicator === 'land_cover' ? 'bg-[#A3C962]' : 'bg-[#355044]'}`} />
                   Cobertura y Uso del Suelo
                 </span>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-900/40 px-1.5 py-0.5 rounded">
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${activeIndicator === 'land_cover' ? 'bg-[#D9D1B8] text-[#1B2A24]' : 'bg-[#B9C8B2] text-[#355044]'}`}>
                   MapBiomas Col. 1
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 line-clamp-2">
-                Clasificación temática anual de bosques templados, selvas secas, agricultura y cuerpos de agua (30m).
+              <p className={`text-xs leading-relaxed ${activeIndicator === 'land_cover' ? 'text-[#F4F1EA]/85' : 'text-[#6B8B78]'}`}>
+                Clasificación temática de bosques templados, selvas, agricultura y cuerpos de agua a 30m.
               </p>
             </button>
 
             <button
               onClick={() => onChangeIndicator('tree_cover_loss')}
-              className={`p-3 rounded-xl border text-left transition-all ${
+              className={`p-3.5 rounded-2xl text-left transition-all ${
                 activeIndicator === 'tree_cover_loss'
-                  ? 'bg-rose-950/60 border-rose-500 text-white shadow-lg shadow-rose-950/30'
-                  : 'bg-slate-950/40 border-slate-800 text-slate-300 hover:border-slate-700'
+                  ? 'bg-gradient-to-br from-[#EB7147] to-[#D95B30] text-white shadow-[6px_10px_20px_rgba(224,100,58,0.28),inset_2px_2px_5px_rgba(255,215,195,0.5)]'
+                  : 'bg-[#D9D1B8]/60 text-[#1B2A24] hover:bg-[#D9D1B8] shadow-sm'
               }`}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-xs flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-rose-500" />
-                  Pérdida Bruta de Cobertura Arbórea
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="font-semibold text-xs flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${activeIndicator === 'tree_cover_loss' ? 'bg-white' : 'bg-[#E0643A]'}`} />
+                  Pérdida de Cobertura Arbórea
                 </span>
-                <span className="text-[10px] font-mono text-rose-400 bg-rose-900/40 px-1.5 py-0.5 rounded">
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${activeIndicator === 'tree_cover_loss' ? 'bg-white/20 text-white' : 'bg-[#F9DFD5] text-[#E0643A]'}`}>
                   Hansen v1.13
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 line-clamp-2">
-                Eventos de pérdida de dosel arbóreo (umbral ≥30%). Indicador independiente de stock forestal.
+              <p className={`text-xs leading-relaxed ${activeIndicator === 'tree_cover_loss' ? 'text-white/90' : 'text-[#6B8B78]'}`}>
+                Eventos anuales de pérdida de dosel arbóreo (umbral mayor o igual al 30%).
               </p>
             </button>
           </div>
         </section>
 
         {/* 3. Selector Temporal */}
-        <section className="space-y-2.5">
+        <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-emerald-400" />
-              Año seleccionado
+            <label className="text-xs font-semibold text-[#1B2A24] flex items-center gap-2">
+              <Calendar className="w-3.5 h-3.5 text-[#355044]" />
+              <span>Año seleccionado</span>
             </label>
-            <span className="font-mono text-xs font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-800/60">
+            <span className="font-['Outfit',sans-serif] text-sm font-semibold text-[#355044] bg-[#D9D1B8] px-3 py-0.5 rounded-full tabular-nums">
               {selectedYear}
             </span>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <select
               value={selectedYear}
               onChange={(e) => onChangeYear(Number(e.target.value))}
-              className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+              className="w-full rounded-2xl bg-[#F4F1EA] border border-[#6B8B78]/20 px-3.5 py-2.5 text-xs text-[#1B2A24] focus:outline-none shadow-sm"
             >
               {years.map((y) => (
                 <option key={y} value={y}>
@@ -264,15 +270,15 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
               ))}
             </select>
 
-            {/* Quick 2010 / 2025 Toggles for Phase 2 Acceptance */}
-            <div className="grid grid-cols-2 gap-1.5">
+            {/* Quick 2010 / 2025 Toggles */}
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => onChangeYear(2010)}
-                className={`py-1 px-2 rounded-lg text-xs font-semibold border transition-all text-center ${
+                className={`py-2 px-3 rounded-full text-xs font-semibold transition-all text-center ${
                   selectedYear === 2010
-                    ? 'bg-emerald-600 border-emerald-400 text-white shadow'
-                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-[#355044] text-white shadow-sm'
+                    : 'bg-[#D9D1B8] text-[#1B2A24] hover:bg-[#B9C8B2]'
                 }`}
               >
                 2010 (Línea base)
@@ -280,10 +286,10 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
               <button
                 type="button"
                 onClick={() => onChangeYear(2025)}
-                className={`py-1 px-2 rounded-lg text-xs font-semibold border transition-all text-center ${
+                className={`py-2 px-3 rounded-full text-xs font-semibold transition-all text-center ${
                   selectedYear === 2025
-                    ? 'bg-emerald-600 border-emerald-400 text-white shadow'
-                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-[#355044] text-white shadow-sm'
+                    : 'bg-[#D9D1B8] text-[#1B2A24] hover:bg-[#B9C8B2]'
                 }`}
               >
                 2025 (Reciente)
@@ -292,34 +298,34 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
           </div>
         </section>
 
-        {/* 4. Comparador Temporal (Swipe / Cortinilla) */}
-        <section className="bg-slate-950/60 border border-slate-800 rounded-2xl p-3.5 space-y-3">
+        {/* 4. Comparador Temporal */}
+        <section className="rounded-3xl bg-[#D9D1B8]/40 border border-[#6B8B78]/15 p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <SplitSquareVertical className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-bold text-white">Modo Comparación</span>
+              <SplitSquareVertical className="w-4 h-4 text-[#355044]" />
+              <span className="text-xs font-semibold text-[#1B2A24]">Modo Comparativo</span>
             </div>
             <button
               onClick={() => onToggleCompare(!isCompareMode)}
-              className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                 isCompareMode
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/50'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-[#E0643A] text-white shadow-sm'
+                  : 'bg-[#D9D1B8] text-[#6B8B78] hover:text-[#1B2A24]'
               }`}
             >
-              {isCompareMode ? 'ACTIVADO' : 'DESACTIVADO'}
+              {isCompareMode ? 'Activado' : 'Desactivado'}
             </button>
           </div>
 
           {isCompareMode && (
-            <div className="space-y-2.5 pt-1 border-t border-slate-800/80 animate-fadeIn">
+            <div className="space-y-3 pt-2 border-t border-[#6B8B78]/15">
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <label className="text-[10px] text-slate-400 font-mono block mb-1">Año A (Izquierda)</label>
+                  <label className="text-[11px] text-[#6B8B78] font-medium block mb-1">Año A (Izquierda)</label>
                   <select
                     value={compareYearA}
                     onChange={(e) => onChangeCompareYearA(Number(e.target.value))}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white font-mono"
+                    className="w-full bg-[#F4F1EA] border border-[#6B8B78]/20 rounded-xl px-2.5 py-1.5 text-xs text-[#1B2A24]"
                   >
                     {years.map((y) => (
                       <option key={y} value={y}>
@@ -329,11 +335,11 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] text-slate-400 font-mono block mb-1">Año B (Derecha)</label>
+                  <label className="text-[11px] text-[#6B8B78] font-medium block mb-1">Año B (Derecha)</label>
                   <select
                     value={compareYearB}
                     onChange={(e) => onChangeCompareYearB(Number(e.target.value))}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white font-mono"
+                    className="w-full bg-[#F4F1EA] border border-[#6B8B78]/20 rounded-xl px-2.5 py-1.5 text-xs text-[#1B2A24]"
                   >
                     {years.map((y) => (
                       <option key={y} value={y}>
@@ -343,8 +349,8 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
                   </select>
                 </div>
               </div>
-              <p className="text-[10px] text-slate-400">
-                Arrastre la cortinilla central en el mapa para contrastar ambos cortes anuales.
+              <p className="text-[11px] text-[#6B8B78] leading-relaxed">
+                Desplaza la cortinilla en el mapa para contrastar ambos momentos temporales.
               </p>
             </div>
           )}
@@ -352,14 +358,14 @@ export const ViewerSidebar: React.FC<ViewerSidebarProps> = ({
       </div>
 
       {/* Sidebar Footer */}
-      <div className="p-3 border-t border-slate-800 bg-slate-950/80 text-[10px] text-slate-400 flex items-center justify-between">
-        <span>Probosque • Edo. de México</span>
+      <div className="p-4 border-t border-[#6B8B78]/15 bg-[#D9D1B8]/30 text-xs text-[#6B8B78] flex items-center justify-between">
+        <span>PROBOSQUE · Edomex</span>
         <button
           onClick={onOpenMetadataModal}
-          className="text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1"
+          className="text-[#355044] hover:text-[#E0643A] font-semibold flex items-center gap-1 transition-colors"
         >
-          Metodología
-          <ChevronRight className="w-3 h-3" />
+          <span>Metodología</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </aside>

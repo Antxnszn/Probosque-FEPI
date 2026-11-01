@@ -1,0 +1,3884 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Probosque Forest Audit & Subsidy System",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/auth/token": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login For Access Token",
+        "operationId": "login_for_access_token_api_v1_auth_token_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_for_access_token_api_v1_auth_token_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register User",
+        "operationId": "register_user_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Read Users Me",
+        "operationId": "read_users_me_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/plots": {
+      "get": {
+        "tags": [
+          "Plots"
+        ],
+        "summary": "List Plots",
+        "operationId": "list_plots_api_v1_plots_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "audit_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Audit Status"
+            }
+          },
+          {
+            "name": "triage_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Triage Status"
+            }
+          },
+          {
+            "name": "subsidy_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Subsidy Status"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlotResponse"
+                  },
+                  "title": "Response List Plots Api V1 Plots Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Plots"
+        ],
+        "summary": "Create Plot",
+        "operationId": "create_plot_api_v1_plots_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlotCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlotResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plots/{plot_id}": {
+      "get": {
+        "tags": [
+          "Plots"
+        ],
+        "summary": "Get Plot",
+        "operationId": "get_plot_api_v1_plots__plot_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "plot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Plot Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlotResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plots/upload/kmz": {
+      "post": {
+        "tags": [
+          "Plots"
+        ],
+        "summary": "Create Plot From Kmz",
+        "description": "Creates a plot by extracting the geometry from an uploaded KMZ file.",
+        "operationId": "create_plot_from_kmz_api_v1_plots_upload_kmz_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_plot_from_kmz_api_v1_plots_upload_kmz_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlotResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/plots/{plot_id}/carbon-assessments": {
+      "post": {
+        "tags": [
+          "Plots"
+        ],
+        "summary": "Create Plot Carbon Assessment",
+        "description": "Creates and persists an authoritative carbon assessment linked to an existing plot.",
+        "operationId": "create_plot_carbon_assessment_api_v1_plots__plot_id__carbon_assessments_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "plot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Plot Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarbonAssessmentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarbonAssessmentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Plots"
+        ],
+        "summary": "List Plot Carbon Assessments",
+        "description": "Lists all historical carbon assessments recorded for a given plot.",
+        "operationId": "list_plot_carbon_assessments_api_v1_plots__plot_id__carbon_assessments_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "plot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Plot Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CarbonAssessmentResponse"
+                  },
+                  "title": "Response List Plot Carbon Assessments Api V1 Plots  Plot Id  Carbon Assessments Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/audits": {
+      "get": {
+        "tags": [
+          "Audits"
+        ],
+        "summary": "List Audits",
+        "operationId": "list_audits_api_v1_audits_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "plot_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Plot Id"
+            }
+          },
+          {
+            "name": "technician_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Technician Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditResponse"
+                  },
+                  "title": "Response List Audits Api V1 Audits Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/audits/{audit_id}": {
+      "get": {
+        "tags": [
+          "Audits"
+        ],
+        "summary": "Get Audit",
+        "operationId": "get_audit_api_v1_audits__audit_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "audit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Audit Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sync/challenges": {
+      "post": {
+        "tags": [
+          "Sync Protocol"
+        ],
+        "summary": "Request Challenge",
+        "operationId": "request_challenge_api_v1_sync_challenges_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChallengeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChallengeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sync/audits": {
+      "post": {
+        "tags": [
+          "Sync Protocol"
+        ],
+        "summary": "Sync Audit Payload",
+        "operationId": "sync_audit_payload_api_v1_sync_audits_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuditCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sync/evidence": {
+      "post": {
+        "tags": [
+          "Sync Protocol"
+        ],
+        "summary": "Sync Evidence Photo",
+        "operationId": "sync_evidence_photo_api_v1_sync_evidence_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_sync_evidence_photo_api_v1_sync_evidence_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/decisions/evaluate": {
+      "post": {
+        "tags": [
+          "Subsidy Decision Engine"
+        ],
+        "summary": "Trigger Decision Evaluation",
+        "operationId": "trigger_decision_evaluation_api_v1_decisions_evaluate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubsidyDecisionCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubsidyDecisionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/decisions/plot/{plot_id}": {
+      "get": {
+        "tags": [
+          "Subsidy Decision Engine"
+        ],
+        "summary": "Get Decisions For Plot",
+        "operationId": "get_decisions_for_plot_api_v1_decisions_plot__plot_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "plot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Plot Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubsidyDecisionResponse"
+                  },
+                  "title": "Response Get Decisions For Plot Api V1 Decisions Plot  Plot Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/carbon/equations": {
+      "get": {
+        "tags": [
+          "Carbon"
+        ],
+        "summary": "List Allometric Equations",
+        "description": "Returns the catalog of validated regional allometric equations for Estado de M\u00e9xico.",
+        "operationId": "list_allometric_equations_api_v1_carbon_equations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/carbon/estimate": {
+      "post": {
+        "tags": [
+          "Carbon"
+        ],
+        "summary": "Estimate Carbon",
+        "description": "Computes an allometric biomass and carbon stock estimate from geometry or area,\nvalidating trees count and DBH parameters.",
+        "operationId": "estimate_carbon_api_v1_carbon_estimate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarbonEstimateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarbonEstimateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/forest/metadata": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get Forest Metadata",
+        "description": "Returns platform metadata: available years, sources, legend classes, and grouping versions.",
+        "operationId": "get_forest_metadata_api_v1_forest_metadata_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestMetadataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/regions": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "List Regions",
+        "description": "Lists official regions (125 municipalities or state) with INEGI codes, names, areas, and bboxes.",
+        "operationId": "list_regions_api_v1_forest_regions_get",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "municipality",
+              "title": "Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegionSummary"
+                  },
+                  "title": "Response List Regions Api V1 Forest Regions Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/regions/{region_id}": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get Region Detail",
+        "description": "Gets detailed information for a region, including bounds, center, and geometry.",
+        "operationId": "get_region_detail_api_v1_forest_regions__region_id__get",
+        "parameters": [
+          {
+            "name": "region_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Region Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegionDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/geojson/state": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get State Geojson",
+        "description": "Returns official GeoJSON geometry of Estado de M\u00e9xico perimeter.",
+        "operationId": "get_state_geojson_api_v1_forest_geojson_state_get",
+        "parameters": [
+          {
+            "name": "simplified",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Simplified"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/geojson/municipalities": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get Municipalities Geojson",
+        "description": "Returns official GeoJSON FeatureCollection of all 125 municipalities.",
+        "operationId": "get_municipalities_geojson_api_v1_forest_geojson_municipalities_get",
+        "parameters": [
+          {
+            "name": "simplified",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Simplified"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/layers": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get Layers",
+        "description": "Returns available raster/vector map layers and their tile strategy.",
+        "operationId": "get_layers_api_v1_forest_layers_get",
+        "parameters": [
+          {
+            "name": "indicator",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Indicator"
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Year"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LayerSpec"
+                  },
+                  "title": "Response Get Layers Api V1 Forest Layers Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/stats/annual": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get Annual Stats",
+        "description": "Returns annual land cover surface per class for the selected region.",
+        "operationId": "get_annual_stats_api_v1_forest_stats_annual_get",
+        "parameters": [
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "INEGI code of municipality (e.g. '15110' for Valle de Bravo) or '15' for State",
+              "title": "Region Id"
+            },
+            "description": "INEGI code of municipality (e.g. '15110' for Valle de Bravo) or '15' for State"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2025,
+              "minimum": 1985,
+              "default": 2010,
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2025,
+              "minimum": 1985,
+              "default": 2025,
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnnualStatsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/stats/loss": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get Loss Stats",
+        "description": "Returns gross tree cover loss series (Hansen GFC v1.13) with scientific disclaimer.",
+        "operationId": "get_loss_stats_api_v1_forest_stats_loss_get",
+        "parameters": [
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "INEGI code of municipality or state",
+              "title": "Region Id"
+            },
+            "description": "INEGI code of municipality or state"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2025,
+              "minimum": 2000,
+              "default": 2010,
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2025,
+              "minimum": 2000,
+              "default": 2025,
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LossStatsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forest/stats/transitions": {
+      "get": {
+        "tags": [
+          "Forest Viewer"
+        ],
+        "summary": "Get Transition Stats",
+        "description": "Returns land cover transition matrix between two selected years.",
+        "operationId": "get_transition_stats_api_v1_forest_stats_transitions_get",
+        "parameters": [
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "INEGI code of municipality or state",
+              "title": "Region Id"
+            },
+            "description": "INEGI code of municipality or state"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2025,
+              "minimum": 1985,
+              "default": 2010,
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2025,
+              "minimum": 1985,
+              "default": 2025,
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransitionStatsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnnualClassStat": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code"
+          },
+          "name_es": {
+            "type": "string",
+            "title": "Name Es"
+          },
+          "hex_color": {
+            "type": "string",
+            "title": "Hex Color"
+          },
+          "area_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area Ha"
+          },
+          "is_forest_approved": {
+            "type": "boolean",
+            "title": "Is Forest Approved"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name_es",
+          "hex_color",
+          "is_forest_approved"
+        ],
+        "title": "AnnualClassStat"
+      },
+      "AnnualStatsResponse": {
+        "properties": {
+          "region_id": {
+            "type": "string",
+            "title": "Region Id"
+          },
+          "region_name": {
+            "type": "string",
+            "title": "Region Name"
+          },
+          "indicator": {
+            "type": "string",
+            "title": "Indicator",
+            "default": "land_cover_area_by_class"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit",
+            "default": "ha"
+          },
+          "source": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Source"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/AnnualStatsSeries"
+            },
+            "type": "array",
+            "title": "Series"
+          },
+          "data_status": {
+            "type": "string",
+            "title": "Data Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region_id",
+          "region_name",
+          "source",
+          "series",
+          "data_status"
+        ],
+        "title": "AnnualStatsResponse"
+      },
+      "AnnualStatsSeries": {
+        "properties": {
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "total_forest_approved_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Forest Approved Ha"
+          },
+          "classes": {
+            "items": {
+              "$ref": "#/components/schemas/AnnualClassStat"
+            },
+            "type": "array",
+            "title": "Classes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "year",
+          "classes"
+        ],
+        "title": "AnnualStatsSeries"
+      },
+      "AuditCreate": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "plot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Plot Id"
+          },
+          "technician_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Technician Id"
+          },
+          "device_installation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Device Installation Id"
+          },
+          "methodology_version": {
+            "type": "string",
+            "title": "Methodology Version",
+            "default": "SAMPLING-1.0"
+          },
+          "survey_started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Survey Started At"
+          },
+          "survey_completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Survey Completed At"
+          },
+          "start_lat": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 90.0,
+                "minimum": -90.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Lat"
+          },
+          "start_lon": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 180.0,
+                "minimum": -180.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Lon"
+          },
+          "start_accuracy_m": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Accuracy M"
+          },
+          "end_lat": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 90.0,
+                "minimum": -90.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Lat"
+          },
+          "end_lon": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 180.0,
+                "minimum": -180.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Lon"
+          },
+          "end_accuracy_m": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Accuracy M"
+          },
+          "client_created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Client Created At"
+          },
+          "sampling_units": {
+            "items": {
+              "$ref": "#/components/schemas/SamplingUnitCreate"
+            },
+            "type": "array",
+            "title": "Sampling Units",
+            "default": []
+          },
+          "idempotency_key": {
+            "type": "string",
+            "title": "Idempotency Key"
+          },
+          "challenge_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Challenge Id"
+          },
+          "signature": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Signature"
+          }
+        },
+        "type": "object",
+        "required": [
+          "plot_id",
+          "technician_id",
+          "device_installation_id",
+          "survey_started_at",
+          "client_created_at",
+          "idempotency_key"
+        ],
+        "title": "AuditCreate"
+      },
+      "AuditResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "plot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Plot Id"
+          },
+          "technician_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Technician Id"
+          },
+          "survey_started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Survey Started At"
+          },
+          "survey_completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Survey Completed At"
+          },
+          "methodology_version": {
+            "type": "string",
+            "title": "Methodology Version"
+          },
+          "geofence_valid": {
+            "type": "boolean",
+            "title": "Geofence Valid"
+          },
+          "geofence_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geofence Method"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AuditResultResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sampling_units": {
+            "items": {
+              "$ref": "#/components/schemas/SamplingUnitResponse"
+            },
+            "type": "array",
+            "title": "Sampling Units",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "plot_id",
+          "technician_id",
+          "survey_started_at",
+          "survey_completed_at",
+          "methodology_version",
+          "geofence_valid",
+          "geofence_method",
+          "created_at"
+        ],
+        "title": "AuditResponse"
+      },
+      "AuditResultResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          },
+          "methodology_version": {
+            "type": "string",
+            "title": "Methodology Version"
+          },
+          "denominator_definition": {
+            "type": "string",
+            "title": "Denominator Definition"
+          },
+          "estimator_method": {
+            "type": "string",
+            "title": "Estimator Method"
+          },
+          "sampling_units_count": {
+            "type": "integer",
+            "title": "Sampling Units Count"
+          },
+          "alive_total": {
+            "type": "integer",
+            "title": "Alive Total"
+          },
+          "denominator_total": {
+            "type": "integer",
+            "title": "Denominator Total"
+          },
+          "estimated_survival_pct": {
+            "type": "number",
+            "title": "Estimated Survival Pct"
+          },
+          "ci_low_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ci Low Pct"
+          },
+          "ci_high_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ci High Pct"
+          },
+          "ci_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ci Method"
+          },
+          "confidence_level_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence Level Pct"
+          },
+          "computed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Computed At"
+          },
+          "calculator_version": {
+            "type": "string",
+            "title": "Calculator Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "audit_id",
+          "methodology_version",
+          "denominator_definition",
+          "estimator_method",
+          "sampling_units_count",
+          "alive_total",
+          "denominator_total",
+          "estimated_survival_pct",
+          "computed_at",
+          "calculator_version"
+        ],
+        "title": "AuditResultResponse"
+      },
+      "Body_create_plot_from_kmz_api_v1_plots_upload_kmz_post": {
+        "properties": {
+          "cadastral_key": {
+            "type": "string",
+            "title": "Cadastral Key"
+          },
+          "beneficiary_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Beneficiary Id"
+          },
+          "planting_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planting Date"
+          },
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cadastral_key",
+          "beneficiary_id",
+          "file"
+        ],
+        "title": "Body_create_plot_from_kmz_api_v1_plots_upload_kmz_post"
+      },
+      "Body_login_for_access_token_api_v1_auth_token_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^password$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_login_for_access_token_api_v1_auth_token_post"
+      },
+      "Body_sync_evidence_photo_api_v1_sync_evidence_post": {
+        "properties": {
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          },
+          "client_hash_sha256": {
+            "type": "string",
+            "title": "Client Hash Sha256"
+          },
+          "evidence_type": {
+            "type": "string",
+            "title": "Evidence Type",
+            "default": "SAMPLING_UNIT"
+          },
+          "sampling_unit_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampling Unit Id"
+          },
+          "capture_lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capture Lat"
+          },
+          "capture_lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capture Lon"
+          },
+          "capture_accuracy_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capture Accuracy M"
+          },
+          "challenge_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Challenge Id"
+          },
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "audit_id",
+          "client_hash_sha256",
+          "file"
+        ],
+        "title": "Body_sync_evidence_photo_api_v1_sync_evidence_post"
+      },
+      "CarbonAssessmentCreate": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "title": "Method",
+            "default": "FIELD_ALLOMETRY"
+          },
+          "species_id": {
+            "type": "string",
+            "title": "Species Id"
+          },
+          "tree_density_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tree Density Ha"
+          },
+          "total_trees_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Trees Count"
+          },
+          "mean_dbh_cm": {
+            "type": "number",
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Mean Dbh Cm"
+          },
+          "mean_height_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Height M"
+          },
+          "inventory_plots_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inventory Plots Count",
+            "default": 4
+          }
+        },
+        "type": "object",
+        "required": [
+          "species_id",
+          "mean_dbh_cm"
+        ],
+        "title": "CarbonAssessmentCreate"
+      },
+      "CarbonAssessmentResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "plot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Plot Id"
+          },
+          "methodology_version": {
+            "type": "string",
+            "title": "Methodology Version"
+          },
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "area_ha": {
+            "type": "number",
+            "title": "Area Ha"
+          },
+          "allometric_equation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allometric Equation Id"
+          },
+          "field_tree_density_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Field Tree Density Ha"
+          },
+          "total_dry_biomass_t": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Dry Biomass T"
+          },
+          "dry_biomass_t_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dry Biomass T Ha"
+          },
+          "carbon_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Carbon Fraction"
+          },
+          "total_carbon_t": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Carbon T"
+          },
+          "total_co2e_t": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Co2E T"
+          },
+          "uncertainty_low_t": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Low T"
+          },
+          "uncertainty_high_t": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty High T"
+          },
+          "confidence_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence Level"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings",
+            "default": []
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "plot_id",
+          "methodology_version",
+          "method",
+          "area_ha",
+          "created_at"
+        ],
+        "title": "CarbonAssessmentResponse"
+      },
+      "CarbonEstimateRequest": {
+        "properties": {
+          "species_id": {
+            "type": "string",
+            "title": "Species Id",
+            "default": "pinus_hartwegii"
+          },
+          "geometry": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geometry"
+          },
+          "area_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area Ha"
+          },
+          "establishment_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Establishment Year"
+          },
+          "tree_density_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tree Density Ha",
+            "default": 1100.0
+          },
+          "total_trees_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Trees Count"
+          },
+          "mean_dbh_cm": {
+            "type": "number",
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Mean Dbh Cm"
+          },
+          "mean_height_m": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 80.0,
+                "minimum": 0.5
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Height M"
+          },
+          "inventory_plots_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inventory Plots Count",
+            "default": 4
+          }
+        },
+        "type": "object",
+        "required": [
+          "mean_dbh_cm"
+        ],
+        "title": "CarbonEstimateRequest"
+      },
+      "CarbonEstimateResponse": {
+        "properties": {
+          "area_ha": {
+            "type": "number",
+            "title": "Area Ha"
+          },
+          "species_id": {
+            "type": "string",
+            "title": "Species Id"
+          },
+          "species_scientific_name": {
+            "type": "string",
+            "title": "Species Scientific Name"
+          },
+          "total_trees_estimated": {
+            "type": "integer",
+            "title": "Total Trees Estimated"
+          },
+          "biomass_kg_per_tree": {
+            "type": "number",
+            "title": "Biomass Kg Per Tree"
+          },
+          "total_dry_biomass_t": {
+            "type": "number",
+            "title": "Total Dry Biomass T"
+          },
+          "biomass_t_ha": {
+            "type": "number",
+            "title": "Biomass T Ha"
+          },
+          "carbon_fraction": {
+            "type": "number",
+            "title": "Carbon Fraction"
+          },
+          "total_carbon_t": {
+            "type": "number",
+            "title": "Total Carbon T"
+          },
+          "carbon_t_ha": {
+            "type": "number",
+            "title": "Carbon T Ha"
+          },
+          "co2e_factor": {
+            "type": "number",
+            "title": "Co2E Factor"
+          },
+          "total_co2e_t": {
+            "type": "number",
+            "title": "Total Co2E T"
+          },
+          "co2e_t_ha": {
+            "type": "number",
+            "title": "Co2E T Ha"
+          },
+          "uncertainty_percent": {
+            "type": "number",
+            "title": "Uncertainty Percent"
+          },
+          "confidence_interval_low_t": {
+            "type": "number",
+            "title": "Confidence Interval Low T"
+          },
+          "confidence_interval_high_t": {
+            "type": "number",
+            "title": "Confidence Interval High T"
+          },
+          "confidence_level": {
+            "type": "string",
+            "title": "Confidence Level"
+          },
+          "data_quality_level": {
+            "type": "string",
+            "title": "Data Quality Level"
+          },
+          "allometric_equation_code": {
+            "type": "string",
+            "title": "Allometric Equation Code"
+          },
+          "methodology_version": {
+            "type": "string",
+            "title": "Methodology Version"
+          },
+          "source_citation": {
+            "type": "string",
+            "title": "Source Citation"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "disclaimer": {
+            "type": "string",
+            "title": "Disclaimer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "area_ha",
+          "species_id",
+          "species_scientific_name",
+          "total_trees_estimated",
+          "biomass_kg_per_tree",
+          "total_dry_biomass_t",
+          "biomass_t_ha",
+          "carbon_fraction",
+          "total_carbon_t",
+          "carbon_t_ha",
+          "co2e_factor",
+          "total_co2e_t",
+          "co2e_t_ha",
+          "uncertainty_percent",
+          "confidence_interval_low_t",
+          "confidence_interval_high_t",
+          "confidence_level",
+          "data_quality_level",
+          "allometric_equation_code",
+          "methodology_version",
+          "source_citation",
+          "warnings",
+          "disclaimer"
+        ],
+        "title": "CarbonEstimateResponse"
+      },
+      "ChallengeRequest": {
+        "properties": {
+          "device_installation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Device Installation Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "device_installation_id"
+        ],
+        "title": "ChallengeRequest"
+      },
+      "ChallengeResponse": {
+        "properties": {
+          "challenge_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Challenge Id"
+          },
+          "nonce": {
+            "type": "string",
+            "title": "Nonce"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "challenge_id",
+          "nonce",
+          "expires_at"
+        ],
+        "title": "ChallengeResponse"
+      },
+      "DataSourceInfo": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "product": {
+            "type": "string",
+            "title": "Product"
+          },
+          "collection_version": {
+            "type": "string",
+            "title": "Collection Version"
+          },
+          "asset_id": {
+            "type": "string",
+            "title": "Asset Id"
+          },
+          "first_year": {
+            "type": "integer",
+            "title": "First Year"
+          },
+          "last_year": {
+            "type": "integer",
+            "title": "Last Year"
+          },
+          "mvp_first_year": {
+            "type": "integer",
+            "title": "Mvp First Year"
+          },
+          "mvp_last_year": {
+            "type": "integer",
+            "title": "Mvp Last Year"
+          },
+          "resolution_m": {
+            "type": "number",
+            "title": "Resolution M"
+          },
+          "license": {
+            "type": "string",
+            "title": "License"
+          },
+          "citation": {
+            "type": "string",
+            "title": "Citation"
+          },
+          "methodology_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Methodology Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "provider",
+          "product",
+          "collection_version",
+          "asset_id",
+          "first_year",
+          "last_year",
+          "mvp_first_year",
+          "mvp_last_year",
+          "resolution_m",
+          "license",
+          "citation"
+        ],
+        "title": "DataSourceInfo"
+      },
+      "EvidenceResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          },
+          "sampling_unit_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampling Unit Id"
+          },
+          "object_key": {
+            "type": "string",
+            "title": "Object Key"
+          },
+          "mime_type": {
+            "type": "string",
+            "title": "Mime Type"
+          },
+          "file_size_bytes": {
+            "type": "integer",
+            "title": "File Size Bytes"
+          },
+          "hash_sha256": {
+            "type": "string",
+            "title": "Hash Sha256"
+          },
+          "capture_lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capture Lat"
+          },
+          "capture_lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capture Lon"
+          },
+          "capture_accuracy_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capture Accuracy M"
+          },
+          "captured_at_client": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Captured At Client"
+          },
+          "evidence_type": {
+            "type": "string",
+            "title": "Evidence Type"
+          },
+          "metadata_valid": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata Valid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "audit_id",
+          "object_key",
+          "mime_type",
+          "file_size_bytes",
+          "hash_sha256",
+          "capture_lat",
+          "capture_lon",
+          "capture_accuracy_m",
+          "captured_at_client",
+          "evidence_type",
+          "metadata_valid",
+          "created_at"
+        ],
+        "title": "EvidenceResponse"
+      },
+      "ForestMetadataResponse": {
+        "properties": {
+          "application": {
+            "type": "string",
+            "title": "Application",
+            "default": "Probosque Visor Forestal Multitemporal"
+          },
+          "state_code": {
+            "type": "string",
+            "title": "State Code",
+            "default": "15"
+          },
+          "state_name": {
+            "type": "string",
+            "title": "State Name",
+            "default": "Estado de M\u00e9xico"
+          },
+          "municipalities_count": {
+            "type": "integer",
+            "title": "Municipalities Count",
+            "default": 125
+          },
+          "years_available": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Years Available"
+          },
+          "sources": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DataSourceInfo"
+            },
+            "type": "object",
+            "title": "Sources"
+          },
+          "legend_classes": {
+            "items": {
+              "$ref": "#/components/schemas/LegendClass"
+            },
+            "type": "array",
+            "title": "Legend Classes"
+          },
+          "forest_grouping_version": {
+            "type": "string",
+            "title": "Forest Grouping Version"
+          },
+          "methodology_version": {
+            "type": "string",
+            "title": "Methodology Version",
+            "default": "PROBOSQUE-VF-1.0"
+          }
+        },
+        "type": "object",
+        "required": [
+          "years_available",
+          "sources",
+          "legend_classes",
+          "forest_grouping_version"
+        ],
+        "title": "ForestMetadataResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LayerSpec": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "indicator": {
+            "type": "string",
+            "title": "Indicator"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "pair_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pair Year"
+          },
+          "tile_strategy": {
+            "type": "string",
+            "title": "Tile Strategy"
+          },
+          "tile_url_template": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tile Url Template"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "legend": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Legend"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "indicator",
+          "name",
+          "year",
+          "tile_strategy",
+          "status",
+          "legend"
+        ],
+        "title": "LayerSpec"
+      },
+      "LegendClass": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code"
+          },
+          "name_es": {
+            "type": "string",
+            "title": "Name Es"
+          },
+          "name_en": {
+            "type": "string",
+            "title": "Name En"
+          },
+          "hex_color": {
+            "type": "string",
+            "title": "Hex Color"
+          },
+          "is_forest": {
+            "type": "boolean",
+            "title": "Is Forest"
+          },
+          "is_native_forest": {
+            "type": "boolean",
+            "title": "Is Native Forest"
+          },
+          "is_forest_approved": {
+            "type": "boolean",
+            "title": "Is Forest Approved"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name_es",
+          "name_en",
+          "hex_color",
+          "is_forest",
+          "is_native_forest",
+          "is_forest_approved"
+        ],
+        "title": "LegendClass"
+      },
+      "LossStatsResponse": {
+        "properties": {
+          "region_id": {
+            "type": "string",
+            "title": "Region Id"
+          },
+          "region_name": {
+            "type": "string",
+            "title": "Region Name"
+          },
+          "indicator": {
+            "type": "string",
+            "title": "Indicator",
+            "default": "gross_tree_cover_loss"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit",
+            "default": "ha"
+          },
+          "source": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Source"
+          },
+          "canopy_threshold_pct": {
+            "type": "integer",
+            "title": "Canopy Threshold Pct",
+            "default": 30
+          },
+          "scientific_disclaimer": {
+            "type": "string",
+            "title": "Scientific Disclaimer",
+            "default": "La p\u00e9rdida bruta de cobertura arb\u00f3rea (Hansen) mide perturbaciones del dosel arb\u00f3reo y NO equivale autom\u00e1ticamente a deforestaci\u00f3n permanente ni cambio de uso de suelo."
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/LossStatsYear"
+            },
+            "type": "array",
+            "title": "Series"
+          },
+          "data_status": {
+            "type": "string",
+            "title": "Data Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region_id",
+          "region_name",
+          "source",
+          "series",
+          "data_status"
+        ],
+        "title": "LossStatsResponse"
+      },
+      "LossStatsYear": {
+        "properties": {
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "gross_tree_cover_loss_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gross Tree Cover Loss Ha"
+          }
+        },
+        "type": "object",
+        "required": [
+          "year"
+        ],
+        "title": "LossStatsYear"
+      },
+      "PlotCreate": {
+        "properties": {
+          "cadastral_key": {
+            "type": "string",
+            "title": "Cadastral Key"
+          },
+          "beneficiary_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Beneficiary Id"
+          },
+          "planting_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planting Date"
+          },
+          "geojson_geometry": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Geojson Geometry"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cadastral_key",
+          "beneficiary_id",
+          "geojson_geometry"
+        ],
+        "title": "PlotCreate"
+      },
+      "PlotResponse": {
+        "properties": {
+          "cadastral_key": {
+            "type": "string",
+            "title": "Cadastral Key"
+          },
+          "beneficiary_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Beneficiary Id"
+          },
+          "planting_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planting Date"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "area_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area Ha"
+          },
+          "triage_status": {
+            "type": "string",
+            "title": "Triage Status"
+          },
+          "audit_status": {
+            "type": "string",
+            "title": "Audit Status"
+          },
+          "subsidy_status": {
+            "type": "string",
+            "title": "Subsidy Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cadastral_key",
+          "beneficiary_id",
+          "id",
+          "triage_status",
+          "audit_status",
+          "subsidy_status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "PlotResponse"
+      },
+      "RegionDetail": {
+        "properties": {
+          "inegi_code": {
+            "type": "string",
+            "title": "Inegi Code"
+          },
+          "cve_mun": {
+            "type": "string",
+            "title": "Cve Mun"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "area_ha": {
+            "type": "number",
+            "title": "Area Ha"
+          },
+          "bbox": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Bbox",
+            "description": "[min_lon, min_lat, max_lon, max_lat]"
+          },
+          "center": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Center",
+            "description": "[lat, lon]"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "default": "municipality"
+          },
+          "parent_code": {
+            "type": "string",
+            "title": "Parent Code",
+            "default": "15"
+          },
+          "geometry": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geometry"
+          }
+        },
+        "type": "object",
+        "required": [
+          "inegi_code",
+          "cve_mun",
+          "name",
+          "area_ha",
+          "bbox",
+          "center"
+        ],
+        "title": "RegionDetail"
+      },
+      "RegionSummary": {
+        "properties": {
+          "inegi_code": {
+            "type": "string",
+            "title": "Inegi Code"
+          },
+          "cve_mun": {
+            "type": "string",
+            "title": "Cve Mun"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "area_ha": {
+            "type": "number",
+            "title": "Area Ha"
+          },
+          "bbox": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Bbox",
+            "description": "[min_lon, min_lat, max_lon, max_lat]"
+          },
+          "center": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Center",
+            "description": "[lat, lon]"
+          }
+        },
+        "type": "object",
+        "required": [
+          "inegi_code",
+          "cve_mun",
+          "name",
+          "area_ha",
+          "bbox",
+          "center"
+        ],
+        "title": "RegionSummary"
+      },
+      "SamplingUnitCreate": {
+        "properties": {
+          "sequence_no": {
+            "type": "integer",
+            "title": "Sequence No"
+          },
+          "lat": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat"
+          },
+          "lon": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon"
+          },
+          "radius_m": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Radius M",
+            "default": 12.616
+          },
+          "area_m2": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Area M2",
+            "default": 500.0
+          },
+          "sampled_planting_sites": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampled Planting Sites"
+          },
+          "alive_trees": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Alive Trees"
+          },
+          "dead_trees": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Dead Trees"
+          },
+          "unknown_sites": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Unknown Sites",
+            "default": 0
+          },
+          "gps_accuracy_m": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gps Accuracy M"
+          },
+          "captured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Captured At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sequence_no",
+          "lat",
+          "lon",
+          "alive_trees",
+          "dead_trees",
+          "captured_at"
+        ],
+        "title": "SamplingUnitCreate"
+      },
+      "SamplingUnitResponse": {
+        "properties": {
+          "sequence_no": {
+            "type": "integer",
+            "title": "Sequence No"
+          },
+          "lat": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat"
+          },
+          "lon": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon"
+          },
+          "radius_m": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Radius M",
+            "default": 12.616
+          },
+          "area_m2": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Area M2",
+            "default": 500.0
+          },
+          "sampled_planting_sites": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampled Planting Sites"
+          },
+          "alive_trees": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Alive Trees"
+          },
+          "dead_trees": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Dead Trees"
+          },
+          "unknown_sites": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Unknown Sites",
+            "default": 0
+          },
+          "gps_accuracy_m": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gps Accuracy M"
+          },
+          "captured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Captured At"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sequence_no",
+          "lat",
+          "lon",
+          "alive_trees",
+          "dead_trees",
+          "captured_at",
+          "id",
+          "audit_id"
+        ],
+        "title": "SamplingUnitResponse"
+      },
+      "SubsidyDecisionCreate": {
+        "properties": {
+          "plot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Plot Id"
+          },
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          },
+          "program_id": {
+            "type": "string",
+            "title": "Program Id",
+            "default": "PROBOSQUE_REFORESTATION_2026"
+          },
+          "rules_version": {
+            "type": "string",
+            "title": "Rules Version",
+            "default": "RULES-1.0"
+          },
+          "override_decision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "APPROVED",
+                  "REJECTED",
+                  "MANUAL_REVIEW"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Decision"
+          },
+          "override_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "plot_id",
+          "audit_id"
+        ],
+        "title": "SubsidyDecisionCreate"
+      },
+      "SubsidyDecisionResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "plot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Plot Id"
+          },
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          },
+          "audit_result_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Result Id"
+          },
+          "program_id": {
+            "type": "string",
+            "title": "Program Id"
+          },
+          "rules_version": {
+            "type": "string",
+            "title": "Rules Version"
+          },
+          "decision": {
+            "type": "string",
+            "title": "Decision"
+          },
+          "decision_basis": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Decision Basis"
+          },
+          "reason_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reason Codes"
+          },
+          "decided_by": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By"
+          },
+          "decided_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Decided At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "plot_id",
+          "audit_id",
+          "audit_result_id",
+          "program_id",
+          "rules_version",
+          "decision",
+          "decision_basis",
+          "reason_codes",
+          "decided_by",
+          "decided_at"
+        ],
+        "title": "SubsidyDecisionResponse"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "user_id",
+          "username",
+          "role"
+        ],
+        "title": "Token"
+      },
+      "TransitionCell": {
+        "properties": {
+          "class_from": {
+            "type": "integer",
+            "title": "Class From"
+          },
+          "class_to": {
+            "type": "integer",
+            "title": "Class To"
+          },
+          "name_from": {
+            "type": "string",
+            "title": "Name From"
+          },
+          "name_to": {
+            "type": "string",
+            "title": "Name To"
+          },
+          "area_ha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area Ha"
+          }
+        },
+        "type": "object",
+        "required": [
+          "class_from",
+          "class_to",
+          "name_from",
+          "name_to"
+        ],
+        "title": "TransitionCell"
+      },
+      "TransitionStatsResponse": {
+        "properties": {
+          "region_id": {
+            "type": "string",
+            "title": "Region Id"
+          },
+          "region_name": {
+            "type": "string",
+            "title": "Region Name"
+          },
+          "year_from": {
+            "type": "integer",
+            "title": "Year From"
+          },
+          "year_to": {
+            "type": "integer",
+            "title": "Year To"
+          },
+          "source": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Source"
+          },
+          "transitions": {
+            "items": {
+              "$ref": "#/components/schemas/TransitionCell"
+            },
+            "type": "array",
+            "title": "Transitions"
+          },
+          "data_status": {
+            "type": "string",
+            "title": "Data Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region_id",
+          "region_name",
+          "year_from",
+          "year_to",
+          "source",
+          "transitions",
+          "data_status"
+        ],
+        "title": "TransitionStatsResponse"
+      },
+      "UserCreate": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "default": "TECHNICIAN"
+          },
+          "employee_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employee Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password",
+          "display_name"
+        ],
+        "title": "UserCreate"
+      },
+      "UserResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "display_name",
+          "role",
+          "active"
+        ],
+        "title": "UserResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/api/v1/auth/token"
+          }
+        }
+      }
+    }
+  }
+}

@@ -10,6 +10,8 @@ import {
   ArrowLeft,
   RefreshCw,
   Plus,
+  ShieldCheck,
+  Check,
 } from 'lucide-react';
 import { db } from '../../db/dexie';
 import type { PlotRecord, AuditRecord, SamplingUnitRecord, EvidenceRecord } from '../../types';
@@ -183,15 +185,14 @@ export function TechAuditWizard() {
 
     await db.audits.put(completedAudit);
 
-    // Update plot status locally: marked as COMPLETADA in local field inventory
+    // Update plot status locally: marked as GUARDADA_LOCALMENTE in local field inventory
     const updatedPlot: PlotRecord = {
       ...plot,
       auditStatus: 'GUARDADA_LOCALMENTE',
-      // Note: we DO NOT set subsidyStatus to APROBADO. Client is not authority!
     };
     await db.plots.put(updatedPlot);
 
-    alert('¡Auditoría guardada exitosamente en memoria local! Pendiente de sincronización.');
+    alert('Auditoría guardada exitosamente en memoria local. Pendiente de sincronización.');
     navigate('/app/sync');
   }
 
@@ -201,25 +202,25 @@ export function TechAuditWizard() {
   const totalDead = samplingUnits.reduce((acc, u) => acc + u.deadTrees, 0);
 
   return (
-    <div className="space-y-4 max-w-xl mx-auto">
+    <div className="space-y-6 max-w-xl mx-auto font-['Plus_Jakarta_Sans',sans-serif] text-[#1B2A24]">
       {/* Wizard Header Progress */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-xl space-y-3">
+      <div className="rounded-[28px] bg-[#EAE4D3] p-4 sm:p-5 border border-[#6B8B78]/20 shadow-sm space-y-3.5">
         <div className="flex items-center justify-between text-xs">
           <button
             onClick={() => (step > 1 ? setStep(step - 1) : navigate(`/app/plots/${plot?.id}`))}
-            className="flex items-center gap-1 text-slate-400 hover:text-white"
+            className="flex items-center gap-1.5 text-[#355044] hover:text-[#1B2A24] font-medium transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>{step === 1 ? 'Detalle' : 'Anterior'}</span>
+            <span>{step === 1 ? 'Detalle de Parcela' : 'Paso Anterior'}</span>
           </button>
-          <span className="font-mono text-forest-400 font-bold">
-            Auditoría Paso {step} de 5
+          <span className="font-semibold text-[#355044] bg-[#D9D1B8] px-3 py-1 rounded-full">
+            Paso {step} de 5
           </span>
-          <span className="text-[11px] text-slate-400">{plot?.cadastralKey}</span>
+          <span className="text-xs text-[#6B8B78] font-medium">{plot?.cadastralKey}</span>
         </div>
 
         {/* Steps indicator */}
-        <div className="grid grid-cols-5 gap-1.5 text-center text-[10px] font-semibold">
+        <div className="grid grid-cols-5 gap-1.5 text-center text-[11px] font-medium">
           {[
             { num: 1, label: 'Ubicación' },
             { num: 2, label: 'Muestreo' },
@@ -227,86 +228,90 @@ export function TechAuditWizard() {
             { num: 4, label: 'Revisión' },
             { num: 5, label: 'Finalizar' },
           ].map((s) => (
-            <div
+            <button
               key={s.num}
+              type="button"
               onClick={() => setStep(s.num)}
-              className={`py-1.5 rounded-lg cursor-pointer transition-all ${
+              className={`py-2 rounded-xl transition-all cursor-pointer ${
                 step === s.num
-                  ? 'bg-forest-600 text-white font-bold'
+                  ? 'bg-[#355044] text-[#F4F1EA] font-bold shadow-md'
                   : step > s.num
-                  ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800'
-                  : 'bg-slate-950 text-slate-500'
+                  ? 'bg-[#E5ECE3] text-[#355044] font-semibold'
+                  : 'bg-[#D9D1B8]/60 text-[#6B8B78]'
               }`}
             >
               {s.num}. {s.label}
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
       {/* STEP 1: UBICACIÓN */}
       {step === 1 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="rounded-[28px] bg-[#EAE4D3] p-5 sm:p-6 border border-[#6B8B78]/20 shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-[#6B8B78]/15 pb-3">
             <div>
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-forest-400" />
-                Paso 1: Posicionamiento y Geocerca
+              <h2 className="font-['Outfit',sans-serif] text-xl font-medium text-[#1B2A24] flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-[#355044]" />
+                <span>Paso 1: Posicionamiento y Geocerca</span>
               </h2>
-              <p className="text-xs text-slate-400">Verificación de coordenadas en el polígono asignado</p>
+              <p className="text-xs text-[#6B8B78] mt-0.5">
+                Verificación de coordenadas dentro del polígono asignado
+              </p>
             </div>
             <button
               onClick={refreshGPS}
               disabled={gpsLoading}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+              className="p-2.5 rounded-full bg-[#D9D1B8] hover:bg-[#cfc6ab] text-[#355044] transition-colors shadow-sm"
               title="Recalcular señal GPS"
             >
-              <RefreshCw className={`w-4 h-4 ${gpsLoading ? 'animate-spin text-forest-400' : ''}`} />
+              <RefreshCw className={`w-4 h-4 ${gpsLoading ? 'animate-spin text-[#E0643A]' : ''}`} />
             </button>
           </div>
 
-          <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3 text-xs">
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 space-y-3 text-xs shadow-inner">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Estado de Geofence:</span>
-              <span className="flex items-center gap-1.5 font-bold text-emerald-400">
-                <CheckCircle2 className="w-4 h-4" /> Dentro del polígono
+              <span className="text-[#6B8B78]">Estado de Geofence:</span>
+              <span className="flex items-center gap-1.5 font-bold text-[#355044] bg-[#E5ECE3] px-2.5 py-0.5 rounded-full">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Dentro del polígono</span>
               </span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Distancia al centroide:</span>
-              <span className="font-mono text-white font-bold">{geofenceDistance} m</span>
+              <span className="text-[#6B8B78]">Distancia al centroide:</span>
+              <span className="text-[#1B2A24] font-bold tabular-nums">{geofenceDistance} m</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Precisión GPS actual:</span>
-              <span className="font-mono text-slate-200 font-bold">
+              <span className="text-[#6B8B78]">Precisión GPS actual:</span>
+              <span className="text-[#1B2A24] font-bold tabular-nums">
                 ±{gpsPos?.accuracyM || 8.2} m
               </span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Coordenadas del sensor:</span>
-              <span className="font-mono text-slate-300">
+              <span className="text-[#6B8B78]">Coordenadas del sensor:</span>
+              <span className="text-[#355044] font-medium tabular-nums">
                 {gpsPos ? `${gpsPos.lat.toFixed(5)}, ${gpsPos.lon.toFixed(5)}` : '19.24652, -99.71981'}
               </span>
             </div>
           </div>
 
-          {/* Low GPS Accuracy Warning (Non-blocking as per plan section 3.6) */}
+          {/* Low GPS Accuracy Warning */}
           {(gpsPos?.accuracyM || 8.2) > 30 ? (
-            <div className="bg-amber-950/50 border border-amber-800/80 rounded-2xl p-3.5 text-xs text-amber-200 space-y-1">
-              <div className="flex items-center gap-2 font-bold text-amber-300">
-                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                Precisión GPS baja (&gt; 30 m)
+            <div className="rounded-2xl bg-[#F9EDE8] border border-[#E8C8B8] p-4 text-xs text-[#9A381E] space-y-1 shadow-sm">
+              <div className="flex items-center gap-2 font-bold text-[#E0643A]">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>Precisión GPS baja (&gt; 30 m)</span>
               </div>
-              <p className="text-[11px] text-amber-300/80">
-                Puedes continuar. La incidencia quedará registrada con marca de tiempo para revisión del supervisor.
+              <p className="text-[11px] text-[#9A381E]/90 leading-relaxed">
+                Puedes continuar. La incidencia quedará registrada con marca de tiempo criptográfica para supervisión técnica.
               </p>
             </div>
           ) : (
-            <div className="bg-emerald-950/40 border border-emerald-800/60 rounded-2xl p-3 text-xs text-emerald-300 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="rounded-2xl bg-[#E5ECE3] border border-[#B9C8B2] p-3.5 text-xs text-[#355044] flex items-center gap-2 shadow-sm">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>Precisión GPS óptima para inicio de transecto de muestreo.</span>
             </div>
           )}
@@ -314,7 +319,7 @@ export function TechAuditWizard() {
           <div className="pt-2">
             <button
               onClick={() => setStep(2)}
-              className="w-full py-3 bg-forest-600 hover:bg-forest-500 text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+              className="clay-btn-terracotta w-full py-3.5 text-xs text-white shadow-md flex items-center justify-center gap-2"
             >
               <span>Continuar al Muestreo</span>
               <ArrowRight className="w-4 h-4" />
@@ -325,42 +330,46 @@ export function TechAuditWizard() {
 
       {/* STEP 2: MUESTREO */}
       {step === 2 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-          <div className="border-b border-slate-800 pb-3">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Trees className="w-4 h-4 text-forest-400" />
-              Paso 2: Levantamiento de Unidades de Muestreo
+        <div className="rounded-[28px] bg-[#EAE4D3] p-5 sm:p-6 border border-[#6B8B78]/20 shadow-sm space-y-5">
+          <div className="border-b border-[#6B8B78]/15 pb-3">
+            <h2 className="font-['Outfit',sans-serif] text-xl font-medium text-[#1B2A24] flex items-center gap-2">
+              <Trees className="w-5 h-5 text-[#355044]" />
+              <span>Paso 2: Levantamiento de Unidades de Muestreo</span>
             </h2>
-            <p className="text-xs text-slate-400">
-              Círculos de radio 12.62 m (área de 500 m²). Observaciones cuantitativas brutas.
+            <p className="text-xs text-[#6B8B78] mt-0.5">
+              Círculos de radio 12.62 m (área 500 m²). Observaciones cuantitativas brutas.
             </p>
           </div>
 
           {/* Current Unit Editor */}
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-4">
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 space-y-4 shadow-inner">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-forest-400">
+              <span className="text-xs font-bold text-[#355044]">
                 Nueva Unidad #{samplingUnits.length + 1}
               </span>
-              <span className="text-[11px] text-slate-500 font-mono">Radio: 12.62 m</span>
+              <span className="text-xs text-[#6B8B78] font-medium">Radio: 12.62 m</span>
             </div>
 
             {/* Tree counters */}
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+            <div className="grid grid-cols-3 gap-2.5 text-center text-xs">
               {/* Alive */}
-              <div className="bg-slate-900 border border-emerald-900/50 rounded-xl p-3">
-                <span className="text-[11px] font-semibold text-emerald-400">Vivos (y_i)</span>
-                <div className="text-2xl font-black text-emerald-300 my-1">{currentAlive}</div>
+              <div className="rounded-2xl bg-[#EAE4D3] p-3 border border-[#6B8B78]/20 shadow-sm">
+                <span className="text-[11px] font-semibold text-[#355044]">Vivos</span>
+                <div className="font-['Outfit',sans-serif] text-2xl font-light text-[#355044] my-1 tabular-nums">
+                  {currentAlive}
+                </div>
                 <div className="flex justify-center gap-1.5">
                   <button
+                    type="button"
                     onClick={() => setCurrentAlive(Math.max(0, currentAlive - 1))}
-                    className="w-7 h-7 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold"
+                    className="w-7 h-7 rounded-lg bg-[#D9D1B8] hover:bg-[#cfc6ab] text-[#1B2A24] font-bold text-sm shadow-sm"
                   >
                     -
                   </button>
                   <button
+                    type="button"
                     onClick={() => setCurrentAlive(currentAlive + 1)}
-                    className="w-7 h-7 rounded bg-emerald-800 hover:bg-emerald-700 text-white font-bold"
+                    className="w-7 h-7 rounded-lg bg-[#355044] hover:bg-[#2c3e35] text-white font-bold text-sm shadow-sm"
                   >
                     +
                   </button>
@@ -368,19 +377,23 @@ export function TechAuditWizard() {
               </div>
 
               {/* Dead */}
-              <div className="bg-slate-900 border border-rose-900/50 rounded-xl p-3">
-                <span className="text-[11px] font-semibold text-rose-400">Muertos (d_i)</span>
-                <div className="text-2xl font-black text-rose-300 my-1">{currentDead}</div>
+              <div className="rounded-2xl bg-[#EAE4D3] p-3 border border-[#6B8B78]/20 shadow-sm">
+                <span className="text-[11px] font-semibold text-[#E0643A]">Muertos</span>
+                <div className="font-['Outfit',sans-serif] text-2xl font-light text-[#E0643A] my-1 tabular-nums">
+                  {currentDead}
+                </div>
                 <div className="flex justify-center gap-1.5">
                   <button
+                    type="button"
                     onClick={() => setCurrentDead(Math.max(0, currentDead - 1))}
-                    className="w-7 h-7 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold"
+                    className="w-7 h-7 rounded-lg bg-[#D9D1B8] hover:bg-[#cfc6ab] text-[#1B2A24] font-bold text-sm shadow-sm"
                   >
                     -
                   </button>
                   <button
+                    type="button"
                     onClick={() => setCurrentDead(currentDead + 1)}
-                    className="w-7 h-7 rounded bg-rose-800 hover:bg-rose-700 text-white font-bold"
+                    className="w-7 h-7 rounded-lg bg-[#E0643A] hover:bg-[#c9542e] text-white font-bold text-sm shadow-sm"
                   >
                     +
                   </button>
@@ -388,19 +401,23 @@ export function TechAuditWizard() {
               </div>
 
               {/* Unknown */}
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-3">
-                <span className="text-[11px] font-semibold text-slate-400">No Observados</span>
-                <div className="text-2xl font-black text-slate-300 my-1">{currentUnknown}</div>
+              <div className="rounded-2xl bg-[#EAE4D3] p-3 border border-[#6B8B78]/20 shadow-sm">
+                <span className="text-[11px] font-semibold text-[#6B8B78]">No Observados</span>
+                <div className="font-['Outfit',sans-serif] text-2xl font-light text-[#6B8B78] my-1 tabular-nums">
+                  {currentUnknown}
+                </div>
                 <div className="flex justify-center gap-1.5">
                   <button
+                    type="button"
                     onClick={() => setCurrentUnknown(Math.max(0, currentUnknown - 1))}
-                    className="w-7 h-7 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold"
+                    className="w-7 h-7 rounded-lg bg-[#D9D1B8] hover:bg-[#cfc6ab] text-[#1B2A24] font-bold text-sm shadow-sm"
                   >
                     -
                   </button>
                   <button
+                    type="button"
                     onClick={() => setCurrentUnknown(currentUnknown + 1)}
-                    className="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-white font-bold"
+                    className="w-7 h-7 rounded-lg bg-[#6B8B78] hover:bg-[#577263] text-white font-bold text-sm shadow-sm"
                   >
                     +
                   </button>
@@ -409,51 +426,58 @@ export function TechAuditWizard() {
             </div>
 
             <button
+              type="button"
               onClick={handleAddSamplingUnit}
-              className="w-full py-2.5 bg-forest-600 hover:bg-forest-500 text-white rounded-xl text-xs font-bold transition-all shadow flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-[#355044] hover:bg-[#2c3e35] text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5"
             >
               <Plus className="w-4 h-4" />
               <span>Guardar Unidad #{samplingUnits.length + 1}</span>
             </button>
           </div>
 
-          {/* Descriptive Cumulative Summary (Plan section 3.6 rule: captures raw observations without forcing survival %) */}
-          <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs space-y-2">
-            <span className="font-bold text-slate-300 block">
+          {/* Descriptive Cumulative Summary */}
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 text-xs space-y-2.5 shadow-inner">
+            <span className="font-bold text-[#355044] block">
               Acumulados descriptivos ({samplingUnits.length} unidades registradas)
             </span>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div>
-                <span className="text-[10px] text-slate-500 block">Total Observados</span>
-                <span className="font-mono text-sm font-bold text-white">{totalObserved}</span>
+                <span className="text-[10px] text-[#6B8B78] block">Total Observados</span>
+                <span className="font-['Outfit',sans-serif] text-base font-light text-[#1B2A24] tabular-nums">
+                  {totalObserved}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] text-emerald-500 block">Vivos</span>
-                <span className="font-mono text-sm font-bold text-emerald-400">{totalAlive}</span>
+                <span className="text-[10px] text-[#355044] block">Vivos</span>
+                <span className="font-['Outfit',sans-serif] text-base font-light text-[#355044] tabular-nums">
+                  {totalAlive}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] text-rose-500 block">Muertos</span>
-                <span className="font-mono text-sm font-bold text-rose-400">{totalDead}</span>
+                <span className="text-[10px] text-[#E0643A] block">Muertos</span>
+                <span className="font-['Outfit',sans-serif] text-base font-light text-[#E0643A] tabular-nums">
+                  {totalDead}
+                </span>
               </div>
             </div>
-            <p className="text-[10px] text-slate-500 italic pt-1 border-t border-slate-800">
-              Nota: El estimador de razón, varianza e intervalo de confianza son calculados exclusivamente por el servidor.
+            <p className="text-[11px] text-[#6B8B78] pt-2 border-t border-[#6B8B78]/15 leading-relaxed">
+              El estimador de razón Cochran, varianza ponderada e intervalo de confianza son calculados exclusivamente por el servidor.
             </p>
           </div>
 
           {/* Saved units list */}
           {samplingUnits.length > 0 && (
-            <div className="space-y-1.5">
-              <span className="text-xs font-semibold text-slate-400">Unidades capturadas:</span>
-              <div className="space-y-1 max-h-36 overflow-y-auto">
+            <div className="space-y-2">
+              <span className="text-xs font-semibold text-[#355044]">Unidades capturadas:</span>
+              <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                 {samplingUnits.map((u) => (
                   <div
                     key={u.id}
-                    className="flex items-center justify-between bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-xs"
+                    className="flex items-center justify-between bg-[#F4F1EA] p-3 rounded-xl border border-[#6B8B78]/15 text-xs shadow-sm"
                   >
-                    <span className="font-mono font-bold text-forest-400">Unidad #{u.sequenceNo}</span>
-                    <span className="text-slate-300">Vivos: {u.aliveTrees} | Muertos: {u.deadTrees}</span>
-                    <span className="text-slate-500 font-mono text-[10px]">±{u.accuracyM}m</span>
+                    <span className="font-bold text-[#355044]">Unidad #{u.sequenceNo}</span>
+                    <span className="text-[#1B2A24]">Vivos: {u.aliveTrees} · Muertos: {u.deadTrees}</span>
+                    <span className="text-[#6B8B78] text-[11px] tabular-nums">±{u.accuracyM}m</span>
                   </div>
                 ))}
               </div>
@@ -464,7 +488,7 @@ export function TechAuditWizard() {
             <button
               onClick={() => setStep(3)}
               disabled={samplingUnits.length === 0}
-              className="w-full py-3 bg-forest-600 hover:bg-forest-500 text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="clay-btn-terracotta w-full py-3.5 text-xs text-white shadow-md flex items-center justify-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
             >
               <span>Continuar a Evidencias</span>
               <ArrowRight className="w-4 h-4" />
@@ -475,19 +499,19 @@ export function TechAuditWizard() {
 
       {/* STEP 3: EVIDENCIA */}
       {step === 3 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-          <div className="border-b border-slate-800 pb-3">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Camera className="w-4 h-4 text-forest-400" />
-              Paso 3: Captura de Evidencia Fotográfica
+        <div className="rounded-[28px] bg-[#EAE4D3] p-5 sm:p-6 border border-[#6B8B78]/20 shadow-sm space-y-5">
+          <div className="border-b border-[#6B8B78]/15 pb-3">
+            <h2 className="font-['Outfit',sans-serif] text-xl font-medium text-[#1B2A24] flex items-center gap-2">
+              <Camera className="w-5 h-5 text-[#355044]" />
+              <span>Paso 3: Captura de Evidencia Fotográfica</span>
             </h2>
-            <p className="text-xs text-slate-400">
-              Cada fotografía genera telemetría de dispositivo y sello de integridad SHA-256.
+            <p className="text-xs text-[#6B8B78] mt-0.5">
+              Cada fotografía genera telemetría de dispositivo y sello de integridad SHA-256
             </p>
           </div>
 
           {/* Required Photo slots */}
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-3">
             {[
               { type: 'PANORAMICA', label: 'Foto Panorámica' },
               { type: 'MUESTRA_1', label: 'Muestra 1 (Canopia)' },
@@ -500,14 +524,21 @@ export function TechAuditWizard() {
                   key={slot.type}
                   className={`border-2 border-dashed rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
                     hasEvidence
-                      ? 'border-emerald-600 bg-emerald-950/20'
-                      : 'border-slate-800 hover:border-forest-500 bg-slate-950'
+                      ? 'border-[#355044] bg-[#E5ECE3]'
+                      : 'border-[#B9C8B2] hover:border-[#355044] bg-[#F4F1EA]'
                   }`}
                 >
-                  <Camera className={`w-6 h-6 mb-1 ${hasEvidence ? 'text-emerald-400' : 'text-slate-500'}`} />
-                  <span className="text-xs font-bold text-white">{slot.label}</span>
-                  <span className="text-[10px] text-slate-400 mt-0.5">
-                    {hasEvidence ? '✓ Capturada' : 'Toca para capturar'}
+                  <Camera className={`w-6 h-6 mb-1 ${hasEvidence ? 'text-[#355044]' : 'text-[#6B8B78]'}`} />
+                  <span className="text-xs font-bold text-[#1B2A24]">{slot.label}</span>
+                  <span className="text-[11px] text-[#6B8B78] mt-1 flex items-center gap-1">
+                    {hasEvidence ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-[#355044]" />
+                        <span className="text-[#355044] font-semibold">Capturada</span>
+                      </>
+                    ) : (
+                      'Toca para capturar'
+                    )}
                   </span>
                   <input
                     type="file"
@@ -524,13 +555,15 @@ export function TechAuditWizard() {
           {/* Captured Evidences List */}
           {evidences.length > 0 && (
             <div className="space-y-2">
-              <span className="text-xs font-semibold text-slate-400">Evidencias registradas ({evidences.length}):</span>
-              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+              <span className="text-xs font-semibold text-[#355044]">
+                Evidencias registradas ({evidences.length}):
+              </span>
+              <div className="grid grid-cols-2 gap-2.5 max-h-48 overflow-y-auto pr-1">
                 {evidences.map((e) => (
-                  <div key={e.id} className="bg-slate-950 p-2 rounded-xl border border-slate-800 text-[10px] space-y-1">
+                  <div key={e.id} className="bg-[#F4F1EA] p-2.5 rounded-xl border border-[#6B8B78]/15 text-[11px] space-y-1 shadow-sm">
                     <img src={e.dataUrl} alt="Evidencia" className="w-full h-20 object-cover rounded-lg" />
-                    <div className="font-mono text-slate-400 truncate">SHA: {e.hashSha256.slice(0, 10)}...</div>
-                    <div className="text-forest-400">GPS: ±{e.captureAccuracyM}m</div>
+                    <div className="text-[#6B8B78] truncate">SHA: {e.hashSha256.slice(0, 10)}...</div>
+                    <div className="text-[#355044] font-medium">GPS: ±{e.captureAccuracyM}m</div>
                   </div>
                 ))}
               </div>
@@ -540,7 +573,7 @@ export function TechAuditWizard() {
           <div className="pt-2">
             <button
               onClick={() => setStep(4)}
-              className="w-full py-3 bg-forest-600 hover:bg-forest-500 text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+              className="clay-btn-terracotta w-full py-3.5 text-xs text-white shadow-md flex items-center justify-center gap-2"
             >
               <span>Continuar a Revisión</span>
               <ArrowRight className="w-4 h-4" />
@@ -551,53 +584,76 @@ export function TechAuditWizard() {
 
       {/* STEP 4: REVISIÓN */}
       {step === 4 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-          <div className="border-b border-slate-800 pb-3">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-forest-400" />
-              Paso 4: Resumen de Auditoría
+        <div className="rounded-[28px] bg-[#EAE4D3] p-5 sm:p-6 border border-[#6B8B78]/20 shadow-sm space-y-5">
+          <div className="border-b border-[#6B8B78]/15 pb-3">
+            <h2 className="font-['Outfit',sans-serif] text-xl font-medium text-[#1B2A24] flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-[#355044]" />
+              <span>Paso 4: Resumen de Auditoría</span>
             </h2>
-            <p className="text-xs text-slate-400">Verifica la integridad de datos antes del cierre local</p>
+            <p className="text-xs text-[#6B8B78] mt-0.5">
+              Verifica la integridad de datos antes del cierre local inmutable
+            </p>
           </div>
 
-          <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3 text-xs">
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 space-y-3 text-xs shadow-inner">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Ubicación & Geocerca:</span>
-              <span className="font-bold text-emerald-400">✓ Registrada</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Unidades de muestreo:</span>
-              <span className="font-bold text-emerald-400">✓ {samplingUnits.length} capturadas</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Árboles observados en campo:</span>
-              <span className="font-mono font-bold text-white">{totalObserved}</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Fotografías de evidencia:</span>
-              <span className="font-bold text-emerald-400">{evidences.length} capturadas</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Estado de telemetría GPS:</span>
-              <span className="font-mono text-slate-300">
-                {(gpsPos?.accuracyM || 8) > 30 ? '⚠ 1 advertencia >30m' : '✓ Precisión nominal'}
+              <span className="text-[#6B8B78]">Ubicación y Geocerca:</span>
+              <span className="font-bold text-[#355044] flex items-center gap-1">
+                <Check className="w-3.5 h-3.5" />
+                <span>Registrada</span>
               </span>
             </div>
 
-            <div className="flex items-center justify-between border-t border-slate-800 pt-2">
-              <span className="text-slate-400">Destino de almacenamiento:</span>
-              <span className="font-bold text-indigo-400">● Guardado Local (IndexedDB)</span>
+            <div className="flex items-center justify-between">
+              <span className="text-[#6B8B78]">Unidades de muestreo:</span>
+              <span className="font-bold text-[#355044] flex items-center gap-1">
+                <Check className="w-3.5 h-3.5" />
+                <span>{samplingUnits.length} capturadas</span>
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-[#6B8B78]">Árboles observados en campo:</span>
+              <span className="text-[#1B2A24] font-bold tabular-nums">{totalObserved}</span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-[#6B8B78]">Fotografías de evidencia:</span>
+              <span className="font-bold text-[#355044] flex items-center gap-1">
+                <Check className="w-3.5 h-3.5" />
+                <span>{evidences.length} capturadas</span>
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-[#6B8B78]">Estado de telemetría GPS:</span>
+              <span className="text-[#1B2A24] font-medium flex items-center gap-1">
+                {(gpsPos?.accuracyM || 8) > 30 ? (
+                  <>
+                    <AlertTriangle className="w-3.5 h-3.5 text-[#E0643A]" />
+                    <span className="text-[#E0643A]">1 advertencia &gt;30m</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-[#355044]" />
+                    <span className="text-[#355044]">Precisión nominal</span>
+                  </>
+                )}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-[#6B8B78]/15 pt-2.5">
+              <span className="text-[#6B8B78]">Destino de almacenamiento:</span>
+              <span className="font-bold text-[#355044] bg-[#E5ECE3] px-2.5 py-0.5 rounded-full">
+                Guardado Local (IndexedDB)
+              </span>
             </div>
           </div>
 
           <div className="pt-2">
             <button
               onClick={() => setStep(5)}
-              className="w-full py-3 bg-forest-600 hover:bg-forest-500 text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+              className="clay-btn-terracotta w-full py-3.5 text-xs text-white shadow-md flex items-center justify-center gap-2"
             >
               <span>Ir a Finalización</span>
               <ArrowRight className="w-4 h-4" />
@@ -608,30 +664,43 @@ export function TechAuditWizard() {
 
       {/* STEP 5: FINALIZAR */}
       {step === 5 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-          <div className="border-b border-slate-800 pb-3 text-center">
-            <CheckCircle2 className="w-12 h-12 text-forest-400 mx-auto mb-2" />
-            <h2 className="text-lg font-bold text-white">Sellar y Finalizar Auditoría</h2>
-            <p className="text-xs text-slate-400 mt-1">
-              La auditoría quedará sellada como <strong className="text-forest-400">COMPLETADA LOCALMENTE</strong> y en cola de sincronización.
+        <div className="rounded-[28px] bg-[#EAE4D3] p-5 sm:p-6 border border-[#6B8B78]/20 shadow-sm space-y-5 text-center">
+          <div className="border-b border-[#6B8B78]/15 pb-4">
+            <div className="w-16 h-16 mx-auto rounded-3xl bg-[#355044] text-[#F4F1EA] flex items-center justify-center shadow-md mb-3">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+            <h2 className="font-['Outfit',sans-serif] text-2xl font-light text-[#1B2A24]">
+              Sellar y Finalizar Auditoría
+            </h2>
+            <p className="text-xs text-[#6B8B78] mt-1 max-w-sm mx-auto">
+              La auditoría quedará sellada como <strong className="text-[#355044]">COMPLETADA LOCALMENTE</strong> y en cola prioritaria de sincronización.
             </p>
           </div>
 
-          <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 text-xs">
-            <p className="text-slate-300 font-semibold">Garantía de Principio Arquitectónico:</p>
-            <ul className="list-disc pl-4 space-y-1 text-slate-400 text-[11px]">
-              <li>Los datos de campo quedarán protegidos de forma inmutable.</li>
-              <li>El dictamen de subsidio será evaluado por el backend tras la sincronización.</li>
-              <li>Podrás sincronizar cuando tengas enlace de datos o Wi-Fi.</li>
+          <div className="rounded-2xl bg-[#F4F1EA] p-4 text-xs text-left space-y-2 shadow-inner">
+            <p className="text-[#355044] font-bold">Garantía de Principio Arquitectónico:</p>
+            <ul className="space-y-1.5 text-[#6B8B78] text-xs">
+              <li className="flex items-start gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#355044] mt-1.5 shrink-0" />
+                <span>Los datos de campo quedarán protegidos de forma inmutable.</span>
+              </li>
+              <li className="flex items-start gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#355044] mt-1.5 shrink-0" />
+                <span>El dictamen de subsidio será evaluado por el backend tras la sincronización.</span>
+              </li>
+              <li className="flex items-start gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#355044] mt-1.5 shrink-0" />
+                <span>Podrás sincronizar cuando tengas enlace de datos celular o Wi-Fi institucional.</span>
+              </li>
             </ul>
           </div>
 
-          <div className="pt-3">
+          <div className="pt-2">
             <button
               onClick={handleFinalizeAudit}
-              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold shadow-xl transition-all flex items-center justify-center gap-2"
+              className="clay-btn-terracotta w-full py-4 text-sm text-white shadow-lg flex items-center justify-center gap-2"
             >
-              <CheckCircle2 className="w-4 h-4" />
+              <CheckCircle2 className="w-5 h-5" />
               <span>Sellar Auditoría Localmente</span>
             </button>
           </div>

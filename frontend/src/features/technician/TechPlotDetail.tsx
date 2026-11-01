@@ -38,11 +38,11 @@ export function TechPlotDetail() {
 
   if (!plot) {
     return (
-      <div className="text-center py-12 space-y-3">
-        <p className="text-sm text-slate-400">Parcela no encontrada.</p>
+      <div className="text-center py-12 space-y-3 font-['Plus_Jakarta_Sans',sans-serif]">
+        <p className="text-sm text-[#6B8B78]">Parcela no encontrada en la base local.</p>
         <button
           onClick={() => navigate('/app/plots')}
-          className="text-xs text-forest-400 underline font-semibold"
+          className="text-xs text-[#355044] underline font-semibold"
         >
           Regresar a mis parcelas
         </button>
@@ -103,91 +103,94 @@ export function TechPlotDetail() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 font-['Plus_Jakarta_Sans',sans-serif] text-[#1B2A24]">
       {/* Top Back Navigation */}
       <button
         onClick={() => navigate('/app/plots')}
-        className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+        className="clay-pebble px-4 py-2 text-xs font-semibold text-[#1B2A24] flex items-center gap-2 hover:-translate-y-0.5 transition-transform"
       >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Regresar a la lista</span>
+        <ArrowLeft className="w-4 h-4 text-[#355044]" />
+        <span>Regresar a mis parcelas</span>
       </button>
 
       {/* Main Plot Header Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <span className="text-xs font-mono text-forest-400 bg-forest-950/80 px-2.5 py-0.5 rounded-full border border-forest-800">
+      <div className="rounded-[32px] bg-[#EAE4D3] p-6 sm:p-8 shadow-[inset_4px_4px_12px_rgba(107,139,120,0.18),inset_-4px_-4px_12px_rgba(255,255,255,0.85)] space-y-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-[#355044] bg-[#D9D1B8] px-3 py-1 rounded-full">
               {plot.cadastralKey}
             </span>
-            <h1 className="text-xl font-extrabold text-white mt-2">{plot.beneficiaryName}</h1>
-            <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-              <MapPin className="w-3.5 h-3.5 text-slate-500" />
-              {plot.municipality} • {plot.region}
+            <h1 className="font-['Outfit',sans-serif] text-2xl sm:text-3xl font-light text-[#1B2A24] mt-2">
+              {plot.beneficiaryName}
+            </h1>
+            <p className="text-xs text-[#6B8B78] flex items-center gap-1.5 mt-1">
+              <MapPin className="w-4 h-4 text-[#355044]" />
+              <span>{plot.municipality} · {plot.region}</span>
             </p>
           </div>
-          <div className="flex flex-col items-end gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <TriageBadge status={plot.triageStatus} />
             <AuditStatusBadge status={plot.auditStatus} />
           </div>
         </div>
 
         {/* Geometry & Attributes Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F4F1EA] p-4 rounded-2xl text-xs shadow-inner">
           <div>
-            <span className="text-[10px] text-slate-500 block">Superficie Total</span>
-            <span className="font-bold text-white text-sm">{plot.areaHa} ha</span>
+            <span className="text-[11px] text-[#6B8B78] block">Superficie Total</span>
+            <span className="font-['Outfit',sans-serif] text-lg font-medium text-[#1B2A24] tabular-nums">
+              {plot.areaHa} ha
+            </span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-500 block">Fecha de Plantación</span>
-            <span className="font-bold text-white text-sm">{plot.plantingDate || 'Sin registro'}</span>
+            <span className="text-[11px] text-[#6B8B78] block">Fecha de Plantación</span>
+            <span className="font-medium text-[#1B2A24]">{plot.plantingDate || 'Sin registro'}</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-500 block">Técnico Asignado</span>
-            <span className="font-semibold text-slate-300">{plot.assignedTechnicianName}</span>
+            <span className="text-[11px] text-[#6B8B78] block">Técnico Asignado</span>
+            <span className="font-medium text-[#355044]">{plot.assignedTechnicianName}</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-500 block">Subsidio Programado</span>
-            <span className="font-semibold text-slate-300">{plot.subsidyStatus}</span>
+            <span className="text-[11px] text-[#6B8B78] block">Subsidio Programado</span>
+            <span className="font-medium text-[#1B2A24]">{plot.subsidyStatus}</span>
           </div>
         </div>
 
         {/* Geospatial Map Visualization */}
-        <div className="space-y-1.5">
-          <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-forest-400" />
-            Polígono Georreferenciado
+        <div className="space-y-2">
+          <span className="text-xs font-semibold text-[#1B2A24] flex items-center gap-2">
+            <Layers className="w-4 h-4 text-[#355044]" />
+            <span>Polígono Georreferenciado Oficial</span>
           </span>
-          <InteractiveMap
-            plots={[plot]}
-            selectedPlotId={plot.id}
-            heightClass="h-[220px]"
-            showFilters={false}
-          />
+          <div className="rounded-2xl overflow-hidden shadow-inner border border-[#6B8B78]/20">
+            <InteractiveMap
+              plots={[plot]}
+              selectedPlotId={plot.id}
+              heightClass="h-[240px]"
+              showFilters={false}
+            />
+          </div>
         </div>
 
-        {/* Informative Satellite Triage Notice (Technician cannot edit) */}
-        <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 text-xs space-y-2">
+        {/* Informative Satellite Triage Notice */}
+        <div className="rounded-2xl bg-[#D9D1B8]/40 border border-[#6B8B78]/15 p-4 text-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-slate-200 flex items-center gap-1.5">
-              <AlertCircle className="w-4 h-4 text-indigo-400" />
-              Triage Satelital de Contexto (Solo Consulta)
+            <span className="font-semibold text-[#1B2A24] flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-[#355044]" />
+              <span>Contexto Satelital (Informativo)</span>
             </span>
-            <span className="text-[10px] text-slate-500">Sentinel-2 MSI</span>
+            <span className="text-[11px] text-[#6B8B78]">Sentinel-2 MSI</span>
           </div>
-          <p className="text-slate-400">
+          <p className="text-[#6B8B78] leading-relaxed">
             {plot.triageStatus === 'ANOMALY'
               ? 'Se detectó una alteración fenológica previa al despliegue. Realiza muestreo estricto de 5 unidades circulares para verificar supervivencia in situ.'
               : 'Firma espectral uniforme. Procede con el muestreo sistemático de las unidades asignadas.'}
           </p>
-          <div className="flex items-center gap-4 text-[11px] font-mono text-slate-400 pt-1">
-            <span>NDVI Base: <strong className="text-white">{plot.ndviBase ?? 'N/D'}</strong></span>
-            <span>NDVI Actual: <strong className="text-white">{plot.ndviCurrent ?? 'N/D'}</strong></span>
-            <span>ΔNDVI: <strong className={plot.deltaNdvi && plot.deltaNdvi < 0 ? 'text-rose-400' : 'text-emerald-400'}>{plot.deltaNdvi ?? 'N/D'}</strong></span>
+          <div className="flex items-center gap-4 text-xs text-[#6B8B78] pt-1">
+            <span>NDVI Base: <strong className="text-[#1B2A24]">{plot.ndviBase ?? 'N/D'}</strong></span>
+            <span>NDVI Actual: <strong className="text-[#1B2A24]">{plot.ndviCurrent ?? 'N/D'}</strong></span>
+            <span>ΔNDVI: <strong className={plot.deltaNdvi && plot.deltaNdvi < 0 ? 'text-[#E0643A]' : 'text-[#355044]'}>{plot.deltaNdvi ?? 'N/D'}</strong></span>
           </div>
-          <p className="text-[10px] text-slate-500 italic border-t border-slate-800/80 pt-1.5">
-            Nota de seguridad: Como técnico de campo, puedes consultar el triage pero no modificarlo ni autorizar subsidios.
-          </p>
         </div>
 
         {/* Start / Resume Audit Action Button */}
@@ -195,12 +198,12 @@ export function TechPlotDetail() {
           <button
             onClick={handleStartOrResumeAudit}
             disabled={starting}
-            className="w-full py-3.5 bg-forest-600 hover:bg-forest-500 text-white rounded-2xl text-sm font-bold shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="clay-btn-terracotta w-full py-3.5 text-xs text-white shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <Play className="w-4 h-4" />
             <span>
               {starting
-                ? 'Conectando sensor GPS...'
+                ? 'Conectando telemetría GPS...'
                 : activeAudit
                 ? 'Continuar Auditoría de Campo'
                 : 'Iniciar Auditoría de Campo'}

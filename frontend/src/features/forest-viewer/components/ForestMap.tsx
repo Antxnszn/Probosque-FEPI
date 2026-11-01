@@ -451,19 +451,19 @@ export const ForestMap: React.FC<ForestMapProps> = ({
   const isRasterActive = activeRasterLayer?.status === 'ready' && !!activeRasterLayer?.tile_url_template;
 
   return (
-    <div className="relative w-full h-full min-h-0 bg-slate-950 overflow-hidden flex flex-col select-none">
+    <div className="relative w-full h-full min-h-0 bg-[#16251E] overflow-hidden flex flex-col select-none">
       {/* Map Container */}
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full" />
 
       {/* Floating Header Badge / Indicator Overlay */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
-        <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700/70 px-3.5 py-2 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs text-slate-200 pointer-events-auto">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-semibold text-white tracking-wide">
+        <div className="bg-[#EAE4D3]/95 backdrop-blur-md border border-[#6B8B78]/25 px-3.5 py-2 rounded-full shadow-lg flex items-center gap-2.5 text-xs text-[#1B2A24] pointer-events-auto">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#355044] animate-pulse" />
+          <span className="font-semibold text-[#1B2A24] tracking-wide">
             {activeIndicator === 'land_cover' ? 'Cobertura y Uso del Suelo' : 'Pérdida Arbórea Bruta'}
           </span>
-          <span className="text-slate-400">|</span>
-          <span className="font-mono bg-emerald-950/70 text-emerald-300 border border-emerald-700/50 px-2 py-0.5 rounded-md font-bold">
+          <span className="text-[#6B8B78]/40">|</span>
+          <span className="bg-[#D9D1B8] text-[#355044] px-2.5 py-0.5 rounded-full font-bold tabular-nums">
             {isCompareMode ? `${compareYearA} vs ${compareYearB}` : selectedYear}
           </span>
         </div>
@@ -471,16 +471,16 @@ export const ForestMap: React.FC<ForestMapProps> = ({
         {/* Raster Layer Status Pill */}
         <div className="pointer-events-auto">
           {isRasterActive ? (
-            <div className="bg-emerald-950/90 backdrop-blur border border-emerald-500/60 px-3 py-1.5 rounded-xl text-xs text-emerald-200 shadow-xl font-medium flex items-center gap-2 animate-fadeIn">
+            <div className="bg-[#E5ECE3] backdrop-blur border border-[#B9C8B2] px-3.5 py-1.5 rounded-full text-xs text-[#355044] shadow-md font-medium flex items-center gap-2 animate-fadeIn">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6B8B78] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#355044]"></span>
               </span>
               <span>Ráster MapBiomas {selectedYear} activo (30m GEE Oficial)</span>
             </div>
           ) : (
-            <div className="bg-slate-900/90 backdrop-blur border border-slate-700/60 px-3 py-1.5 rounded-xl text-xs text-slate-400 shadow-xl font-medium flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-slate-500" />
+            <div className="bg-[#EAE4D3]/95 backdrop-blur border border-[#6B8B78]/20 px-3.5 py-1.5 rounded-full text-xs text-[#6B8B78] shadow-md font-medium flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#6B8B78]" />
               <span>Ráster: En cola de ingesta masiva</span>
             </div>
           )}
@@ -488,19 +488,19 @@ export const ForestMap: React.FC<ForestMapProps> = ({
 
         {/* Hovered municipality tooltip banner */}
         {hoveredMuniName && (
-          <div className="bg-slate-900/95 backdrop-blur border border-emerald-500/50 px-3 py-1.5 rounded-lg text-xs text-emerald-200 shadow-xl font-medium flex items-center gap-1.5 animate-fadeIn">
-            <span className="text-slate-400">Municipio:</span>
-            <span className="font-semibold text-white">{hoveredMuniName}</span>
+          <div className="bg-[#EAE4D3]/95 backdrop-blur border border-[#6B8B78]/30 px-3.5 py-1.5 rounded-full text-xs text-[#1B2A24] shadow-lg font-medium flex items-center gap-2 animate-fadeIn">
+            <span className="text-[#6B8B78]">Municipio:</span>
+            <span className="font-semibold text-[#1B2A24]">{hoveredMuniName}</span>
           </div>
         )}
       </div>
 
       {/* Top-Right Floating Controls (Basemap Switcher & Opacity & Reset) */}
-      <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md border border-slate-700/70 p-1.5 rounded-xl shadow-xl">
+      <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-[#EAE4D3]/95 backdrop-blur-md border border-[#6B8B78]/25 p-1.5 rounded-full shadow-[6px_10px_20px_rgba(27,42,36,0.1)]">
         {/* Opacity slider for active raster layer */}
         {isRasterActive && (
-          <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-950/70 rounded-lg text-xs text-slate-300 border border-slate-800">
-            <Eye className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-1 bg-[#F4F1EA] rounded-full text-xs text-[#1B2A24] border border-[#6B8B78]/20 shadow-inner">
+            <Eye className="w-3.5 h-3.5 text-[#355044] shrink-0" />
             <input
               type="range"
               min="0.2"
@@ -508,41 +508,41 @@ export const ForestMap: React.FC<ForestMapProps> = ({
               step="0.05"
               value={rasterOpacity}
               onChange={(e) => setRasterOpacity(parseFloat(e.target.value))}
-              className="w-16 h-1.5 accent-emerald-500 cursor-pointer"
+              className="w-16 h-1.5 accent-[#355044] cursor-pointer"
               title={`Opacidad del mosaico: ${Math.round(rasterOpacity * 100)}%`}
             />
-            <span className="text-[10px] font-mono text-emerald-400 w-7 text-right">
+            <span className="text-xs font-semibold text-[#355044] w-8 text-right tabular-nums">
               {Math.round(rasterOpacity * 100)}%
             </span>
-            <div className="w-px h-4 bg-slate-800 mx-0.5" />
+            <div className="w-px h-4 bg-[#6B8B78]/20 mx-0.5" />
           </div>
         )}
 
         <button
           onClick={() => handleBasemapChange('carto_dark')}
-          className={`p-2 rounded-lg transition-all ${basemap === 'carto_dark' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-          title="Mapa Oscuro (Carto Dark)"
+          className={`p-2 rounded-full transition-all ${basemap === 'carto_dark' ? 'bg-[#355044] text-white shadow-sm' : 'text-[#355044] hover:bg-[#D9D1B8]'}`}
+          title="Mapa Oscuro"
         >
           <Moon className="w-4 h-4" />
         </button>
         <button
           onClick={() => handleBasemapChange('carto_positron')}
-          className={`p-2 rounded-lg transition-all ${basemap === 'carto_positron' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-          title="Mapa Claro (Carto Positron)"
+          className={`p-2 rounded-full transition-all ${basemap === 'carto_positron' ? 'bg-[#355044] text-white shadow-sm' : 'text-[#355044] hover:bg-[#D9D1B8]'}`}
+          title="Mapa Claro"
         >
           <Sun className="w-4 h-4" />
         </button>
         <button
           onClick={() => handleBasemapChange('satellite')}
-          className={`p-2 rounded-lg transition-all ${basemap === 'satellite' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-          title="Satélite (Esri World Imagery)"
+          className={`p-2 rounded-full transition-all ${basemap === 'satellite' ? 'bg-[#355044] text-white shadow-sm' : 'text-[#355044] hover:bg-[#D9D1B8]'}`}
+          title="Satélite"
         >
           <Globe className="w-4 h-4" />
         </button>
-        <div className="w-px h-5 bg-slate-700 mx-0.5" />
+        <div className="w-px h-5 bg-[#6B8B78]/20 mx-0.5" />
         <button
           onClick={resetView}
-          className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
+          className="p-2 rounded-full text-[#355044] hover:bg-[#D9D1B8] transition-all"
           title="Centrar en Estado de México"
         >
           <RotateCcw className="w-4 h-4" />
@@ -550,37 +550,37 @@ export const ForestMap: React.FC<ForestMapProps> = ({
       </div>
 
       {/* In-Map Floating Legend Preview */}
-      <div className="absolute bottom-6 right-4 z-10 hidden sm:block max-w-xs bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-xl shadow-2xl text-xs text-slate-300">
-        <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-800">
-          <span className="font-semibold text-white flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-emerald-400" />
-            Leyenda oficial
+      <div className="absolute bottom-6 right-4 z-10 hidden sm:block max-w-xs bg-[#EAE4D3]/95 backdrop-blur-md border border-[#6B8B78]/25 p-3.5 rounded-2xl shadow-xl text-xs text-[#1B2A24]">
+        <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#6B8B78]/20">
+          <span className="font-semibold text-[#1B2A24] flex items-center gap-1.5 font-['Outfit',sans-serif]">
+            <Layers className="w-3.5 h-3.5 text-[#355044]" />
+            <span>Leyenda oficial</span>
           </span>
-          <span className="text-[10px] text-slate-400 font-mono">MapBiomas Col. 1</span>
+          <span className="text-[11px] text-[#355044] bg-[#D9D1B8] px-2 py-0.5 rounded-full font-semibold">MapBiomas</span>
         </div>
-        <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-[#329c5a] shrink-0" />
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#329c5a] shrink-0" />
             <span className="truncate">Bosque templado</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-[#6bd46c] shrink-0" />
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#6bd46c] shrink-0" />
             <span className="truncate">Selva seca</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-[#a89358] shrink-0" />
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#a89358] shrink-0" />
             <span className="truncate">Matorrales</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-[#807a40] shrink-0" />
-            <span className="truncate">Pastizal alpino</span>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#807a40] shrink-0" />
+            <span className="truncate">Pastizal natural</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-[#c27ba0] shrink-0" />
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#c27ba0] shrink-0" />
             <span className="truncate">Agricultura</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-[#d4271e] shrink-0" />
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-[#d4271e] shrink-0" />
             <span className="truncate">Área urbana</span>
           </div>
         </div>

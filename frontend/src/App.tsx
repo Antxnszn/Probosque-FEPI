@@ -33,10 +33,7 @@ import { AdminUsers } from './features/admin/AdminUsers';
 import { AdminReports } from './features/admin/AdminReports';
 import { AdminSystem } from './features/admin/AdminSystem';
 import { ForestViewerPage } from './features/forest-viewer/pages/ForestViewerPage';
-
-function RootRedirect() {
-  return <Navigate to="/visor" replace />;
-}
+import { ProbosqueWorkspace } from './features/home/ProbosqueWorkspace';
 
 export function App() {
   useEffect(() => {
@@ -47,9 +44,9 @@ export function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public Forest Viewer */}
+          {/* Public Forest Portal & Workspace */}
+          <Route path="/" element={<ProbosqueWorkspace />} />
           <Route path="/visor" element={<ForestViewerPage />} />
-          <Route path="/" element={<RootRedirect />} />
 
           {/* Legacy Auth */}
           <Route path="/login" element={<LoginPage />} />

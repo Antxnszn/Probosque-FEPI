@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { History, CheckCircle2, Clock, AlertTriangle, Lock } from 'lucide-react';
+import { History, CheckCircle2, Clock, AlertTriangle, Lock, MapPin, Calendar } from 'lucide-react';
 import { db } from '../../db/dexie';
 import type { AuditRecord, PlotRecord } from '../../types';
 
@@ -109,69 +109,82 @@ export function TechHistory() {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-        <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
+    <div className="space-y-6 font-['Plus_Jakarta_Sans',sans-serif] text-[#1B2A24]">
+      {/* Editorial Header */}
+      <div className="border-b border-[#6B8B78]/20 pb-4">
+        <div className="w-8 h-1 rounded-full bg-[#E0643A] mb-2" />
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <History className="w-5 h-5 text-forest-400" />
-              Historial de Auditorías Realizadas
+            <h1 className="font-['Outfit',sans-serif] text-2xl font-light text-[#1B2A24] flex items-center gap-2">
+              <History className="w-5 h-5 text-[#355044]" />
+              <span>Historial de Auditorías</span>
             </h1>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#6B8B78] mt-0.5">
               Registro inmutable de levantamientos en campo
             </p>
           </div>
-          <span className="flex items-center gap-1 text-[11px] text-slate-500 font-mono">
-            <Lock className="w-3.5 h-3.5 text-slate-500" /> Inmutable
+          <span className="flex items-center gap-1.5 text-xs text-[#355044] bg-[#EAE4D3] px-3 py-1 rounded-full font-medium shadow-inner">
+            <Lock className="w-3.5 h-3.5 text-[#355044]" />
+            <span>Inmutable</span>
           </span>
         </div>
+      </div>
 
-        {/* Audit list matching section 3.8 */}
-        <div className="space-y-2.5">
-          {audits.map((a) => {
-            const plotData = plots[a.plotId];
-            return (
-              <div
-                key={a.id}
-                className="bg-slate-950 p-4 rounded-2xl border border-slate-800/90 flex flex-wrap items-center justify-between gap-3 text-xs"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-forest-400 bg-forest-950/80 px-2 py-0.5 rounded border border-forest-800">
-                      {a.plotCadastralKey || plotData?.cadastralKey || a.plotId}
-                    </span>
-                    <span className="font-semibold text-white">
-                      {plotData?.municipality || 'Estado de México'}
-                    </span>
-                  </div>
-                  <p className="text-slate-400 text-[11px] mt-1">
+      {/* Audit list stream */}
+      <div className="space-y-3">
+        {audits.map((a) => {
+          const plotData = plots[a.plotId];
+          return (
+            <div
+              key={a.id}
+              className="rounded-[22px] bg-[#EAE4D3] p-4 border border-[#6B8B78]/15 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-bold text-[#355044] bg-[#D9D1B8] px-2.5 py-0.5 rounded-full text-xs">
+                    {a.plotCadastralKey || plotData?.cadastralKey || a.plotId}
+                  </span>
+                  <span className="font-medium text-[#1B2A24] flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-[#6B8B78]" />
+                    {plotData?.municipality || 'Estado de México'}
+                  </span>
+                </div>
+                <p className="text-[#6B8B78] text-[11px] flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3 text-[#6B8B78]" />
+                  <span>
                     Iniciado: {new Date(a.startedAt).toLocaleDateString()} {new Date(a.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {a.syncStatus === 'SYNCED' && a.status !== 'CON_INCIDENCIA' ? (
-                    <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold text-[11px]">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Sincronizada
-                    </span>
-                  ) : a.status === 'CON_INCIDENCIA' ? (
-                    <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800 font-semibold text-[11px]">
-                      <AlertTriangle className="w-3.5 h-3.5" /> Incidencia (GPS &gt; 30m)
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold text-[11px]">
-                      <Clock className="w-3.5 h-3.5" /> Guardada Local
-                    </span>
-                  )}
-                </div>
+                  </span>
+                  <span className="text-[#6B8B78]/40">·</span>
+                  <span>{a.evidenceCount} evidencias</span>
+                </p>
               </div>
-            );
-          })}
-        </div>
 
-        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-500 italic">
-          * Regla arquitectónica 4: Las auditorías originales son inmutables y no pueden eliminarse desde la vista móvil. Cualquier corrección genera un evento de revisión.
-        </div>
+              <div className="flex items-center gap-2">
+                {a.syncStatus === 'SYNCED' && a.status !== 'CON_INCIDENCIA' ? (
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E5ECE3] text-[#355044] font-semibold text-xs shadow-sm">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#355044]" />
+                    <span>Sincronizada</span>
+                  </span>
+                ) : a.status === 'CON_INCIDENCIA' ? (
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F9EDE8] text-[#9A381E] font-semibold text-xs shadow-sm">
+                    <AlertTriangle className="w-3.5 h-3.5 text-[#E0643A]" />
+                    <span>Incidencia (GPS &gt; 30m)</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D9D1B8] text-[#1B2A24] font-semibold text-xs shadow-sm">
+                    <Clock className="w-3.5 h-3.5 text-[#6B8B78]" />
+                    <span>Guardada Local</span>
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Architectural Guarantee Note */}
+      <div className="rounded-2xl bg-[#EAE4D3]/70 p-3.5 border border-[#6B8B78]/15 text-xs text-[#6B8B78] leading-relaxed shadow-inner">
+        Las auditorías originales son inmutables y no pueden eliminarse desde la vista móvil. Cualquier observación complementaria genera un evento de revisión criptográfico en el servidor.
       </div>
     </div>
   );
