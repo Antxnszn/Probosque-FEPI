@@ -28,10 +28,19 @@ from app.schemas.forest import (
 
 class ForestService:
     def __init__(self):
-        # Resolve project root
-        self.base_dir = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-        self.config_dir = self.base_dir / "pipelines" / "configs"
-        self.data_dir = self.base_dir / "data" / "inegi"
+        # Resolve module and repo directories
+        self.module_dir = pathlib.Path(__file__).resolve().parent.parent.parent.parent
+        self.base_dir = self.module_dir.parent.parent if self.module_dir.parent.name == "modules" else self.module_dir
+        self.config_dir = (
+            self.module_dir / "pipelines" / "configs"
+            if (self.module_dir / "pipelines" / "configs").exists()
+            else self.base_dir / "pipelines" / "configs"
+        )
+        self.data_dir = (
+            self.base_dir / "data" / "probosque" / "inegi"
+            if (self.base_dir / "data" / "probosque" / "inegi").exists()
+            else self.base_dir / "data" / "inegi"
+        )
 
         self._metadata_cache: Optional[ForestMetadataResponse] = None
         self._catalog_cache: Optional[List[RegionSummary]] = None
