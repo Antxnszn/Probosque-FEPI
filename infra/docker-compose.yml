@@ -66,6 +66,16 @@ services:
       exit 0;
       "
 
+  docs:
+    image: squidfunk/mkdocs-material:latest
+    container_name: probosque-docs
+    restart: unless-stopped
+    ports:
+      - "${DOCS_PORT:-8008}:8000"
+    volumes:
+      - ..:/docs
+
+
 volumes:
   postgres_data:
   redis_data:

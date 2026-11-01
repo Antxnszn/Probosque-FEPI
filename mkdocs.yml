@@ -1,0 +1,80 @@
+site_name: Probosque - Plataforma Forestal y Auditoría
+site_description: Documentación técnica del Visor Forestal Multitemporal y Sistema de Auditoría Forestal del Estado de México.
+site_author: Probosque / Antxnszn
+repo_name: Antxnszn/Probosque-FEPI
+repo_url: https://github.com/Antxnszn/Probosque-FEPI
+copyright: "&copy; 2026 Probosque - Estado de México. Todos los derechos reservados."
+
+theme:
+  name: material
+  language: es
+  palette:
+    - scheme: default
+      primary: green
+      accent: light green
+      toggle:
+        icon: material/weather-night
+        name: Cambiar a modo oscuro
+    - scheme: slate
+      primary: green
+      accent: light green
+      toggle:
+        icon: material/weather-sunny
+        name: Cambiar a modo claro
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Inicio:
+      - Vista General: index.md
+      - Arquitectura del Sistema: architecture.md
+  - Visor Forestal:
+      - Decisiones de Arquitectura (ADR): decisions.md
+      - Fuentes de Datos y Licencias: sources_and_licenses.md
+      - Diccionario de Datos: data_dictionary.md
+  - Auditoría y Campo:
+      - Metodología de Muestreo y Estadística: field_methodology.md
+      - Motor de Reglas de Decisión: decision_rules.md
+      - Protocolo de Sincronización: sync_protocol.md
+  - Operaciones y Referencia:
+      - Referencia de Comandos CLI: cli_reference.md
+      - Protocolo de Limpieza Pre-Lanzamiento: cleanup_protocol.md

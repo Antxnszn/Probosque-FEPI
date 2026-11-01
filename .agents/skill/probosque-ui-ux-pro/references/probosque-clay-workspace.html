@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROBOSQUE · Sistema Forestal del Estado de México (Claymorfismo Orgánico)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..600&family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Paleta Oficial Compartida */
+      --pb-pine-deep: #1B2A24;
+      --pb-canopy-dark: #355044;
+      --pb-moss-sage: #6B8B78;
+      --pb-lichen-mist: #B9C8B2;
+      --pb-earth-sand: #D9D1B8;
+
+      /* Lienzos Respirables */
+      --pb-canvas-cream: #F4F1EA;
+      --pb-canvas-soft: #EAE4D3;
+
+      /* Color Extra Diferenciador: Terracota Resina + Brote Solar */
+      --pb-terracotta-pop: #E0643A;
+      --pb-sprout-glow: #A3C962;
+
+      /* Fuentes Aprobadas (CERO fuentes código/monospace) */
+      --font-display: 'Outfit', sans-serif;
+      --font-sans: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+
+      /* Sombras Claymorfismo Táctil 3D */
+      --clay-dock:
+        10px 16px 32px rgba(27, 42, 36, 0.09),
+        -6px -6px 20px rgba(255, 255, 255, 0.88),
+        inset 3px 3px 7px rgba(255, 255, 255, 0.78),
+        inset -3px -4px 8px rgba(107, 139, 120, 0.24);
+
+      --clay-well:
+        inset 6px 6px 14px rgba(107, 139, 120, 0.24),
+        inset -6px -6px 14px rgba(255, 255, 255, 0.90);
+
+      --clay-terracotta:
+        8px 14px 26px rgba(224, 100, 58, 0.30),
+        -3px -3px 10px rgba(255, 255, 255, 0.65),
+        inset 3px 3px 6px rgba(255, 220, 200, 0.58),
+        inset -3px -4px 8px rgba(145, 48, 18, 0.42);
+
+      --clay-pebble:
+        5px 8px 16px rgba(27, 42, 36, 0.08),
+        -3px -3px 10px rgba(255, 255, 255, 0.80),
+        inset 2px 2px 5px rgba(255, 255, 255, 0.75),
+        inset -2px -3px 5px rgba(107, 139, 120, 0.22);
+
+      --clay-canopy-badge:
+        6px 10px 20px rgba(27, 42, 36, 0.18),
+        inset 2px 2px 5px rgba(185, 200, 178, 0.32),
+        inset -3px -4px 6px rgba(15, 24, 20, 0.50);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--pb-canvas-cream);
+      color: var(--pb-pine-deep);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      padding-bottom: 5rem;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ZONA 1: Isla de Navegación Flotante en Arcilla */
+    .clay-navbar {
+      margin-top: 1.75rem;
+      background-color: var(--pb-earth-sand);
+      border-radius: 9999px;
+      padding: 0.85rem 1.75rem;
+      box-shadow: var(--clay-dock);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .brand-emblem {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background-color: var(--pb-canopy-dark);
+      color: var(--pb-canvas-cream);
+      box-shadow: var(--clay-canopy-badge);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--pb-pine-deep);
+    }
+
+    .brand-subtitle {
+      font-size: 0.875rem;
+      color: var(--pb-canopy-dark);
+      font-weight: 500;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--pb-canopy-dark);
+      font-size: 0.925rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--pb-terracotta-pop);
+    }
+
+    .btn-terracotta {
+      background: linear-gradient(145deg, #EB7147, #D95B30);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 9999px;
+      padding: 0.7rem 1.4rem;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--clay-terracotta);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-terracotta:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-terracotta:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    /* ZONA 2: Hero Editorial Abierto + Métricas Sin Tarjetas */
+    .hero-section {
+      margin-top: 3.75rem;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 3rem;
+      align-items: end;
+    }
+
+    @media (max-width: 900px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .eyebrow {
+      color: var(--pb-terracotta-pop);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.25rem);
+      font-weight: 300;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--pb-pine-deep);
+      margin-bottom: 1rem;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--pb-moss-sage);
+      max-width: 58ch;
+    }
+
+    .open-metrics {
+      display: flex;
+      justify-content: space-between;
+      gap: 1.75rem;
+      border-left: 1px solid rgba(107, 139, 120, 0.25);
+      padding-left: 2rem;
+    }
+
+    .metric-number {
+      font-family: var(--font-display);
+      font-size: 2.65rem;
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      color: var(--pb-canopy-dark);
+    }
+
+    .metric-number.highlight {
+      color: var(--pb-terracotta-pop);
+      font-weight: 400;
+    }
+
+    .metric-label {
+      margin-top: 0.35rem;
+      font-size: 0.825rem;
+      color: var(--pb-moss-sage);
+      line-height: 1.35;
+    }
+
+    /* ZONA 3: Pozo Clay Hundido (Buscador y Asistente) */
+    .clay-well-section {
+      margin-top: 3.25rem;
+      background-color: var(--pb-canvas-soft);
+      border-radius: 32px;
+      padding: 1.75rem 2rem;
+      box-shadow: var(--clay-well);
+    }
+
+    .well-textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 1.125rem;
+      color: var(--pb-pine-deep);
+      resize: none;
+      outline: none;
+      min-height: 76px;
+    }
+
+    .well-textarea::placeholder {
+      color: var(--pb-moss-sage);
+      opacity: 0.85;
+    }
+
+    .well-footer {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(107, 139, 120, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .clay-pebble-selector {
+      background-color: var(--pb-earth-sand);
+      border: none;
+      border-radius: 9999px;
+      padding: 0.55rem 1.15rem;
+      box-shadow: var(--clay-pebble);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--pb-pine-deep);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .clay-pebble-selector:hover {
+      background-color: var(--pb-lichen-mist);
+    }
+
+    .sprout-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--pb-sprout-glow);
+      display: inline-block;
+    }
+
+    /* ZONA 4: Flujo Orgánico de Expedientes (CERO Cuadrícula de Tarjetas) */
+    .stream-section {
+      margin-top: 4rem;
+    }
+
+    .stream-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .accent-pill-bar {
+      width: 42px;
+      height: 6px;
+      border-radius: 9999px;
+      background-color: var(--pb-terracotta-pop);
+      margin-bottom: 0.6rem;
+    }
+
+    .stream-title {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      font-weight: 400;
+      color: var(--pb-pine-deep);
+      letter-spacing: -0.015em;
+    }
+
+    .stream-subtitle {
+      font-size: 0.9rem;
+      color: var(--pb-moss-sage);
+    }
+
+    .editorial-list {
+      border-top: 1px solid rgba(107, 139, 120, 0.22);
+      border-bottom: 1px solid rgba(107, 139, 120, 0.22);
+    }
+
+    .editorial-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 1.75rem 1rem;
+      border-bottom: 1px solid rgba(107, 139, 120, 0.16);
+      border-radius: 24px;
+      transition: background-color 0.2s ease;
+    }
+
+    .editorial-row:last-child {
+      border-bottom: none;
+    }
+
+    .editorial-row:hover {
+      background-color: rgba(234, 228, 211, 0.65);
+    }
+
+    .row-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      max-width: 740px;
+    }
+
+    .clay-icon-stone {
+      width: 50px;
+      height: 50px;
+      border-radius: 18px;
+      background-color: var(--pb-lichen-mist);
+      box-shadow: var(--clay-pebble);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--pb-canopy-dark);
+    }
+
+    .row-meta {
+      font-size: 0.825rem;
+      color: var(--pb-moss-sage);
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .row-meta strong {
+      color: var(--pb-canopy-dark);
+      font-weight: 600;
+    }
+
+    .row-heading {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--pb-pine-deep);
+      margin-bottom: 0.35rem;
+    }
+
+    .row-summary {
+      font-size: 0.95rem;
+      color: var(--pb-moss-sage);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ZONA 1: Isla de Navegación Flotante Clay -->
+    <header class="clay-navbar">
+      <div class="brand-group">
+        <div class="brand-emblem" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3L4 15h6v6h4v-6h6L12 3z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-title">PROBOSQUE</span>
+          <span class="brand-subtitle"> · Protectora de Bosques del Estado de México</span>
+        </div>
+      </div>
+
+      <nav class="nav-actions">
+        <a href="#acervo" class="nav-link">Acervo Forestal</a>
+        <a href="#programas" class="nav-link">Programas de Apoyo</a>
+        <a href="#regiones" class="nav-link">Regiones</a>
+        <button type="button" class="btn-terracotta">
+          Nueva consulta
+        </button>
+      </nav>
+    </header>
+
+    <!-- ZONA 2: Hero Editorial Abierto + Métricas Sin Tarjetas -->
+    <section class="hero-section">
+      <div>
+        <p class="eyebrow">Atención Ciudadana y Gestión Forestal Sustentable</p>
+        <h1 class="hero-title">Información clara y amable para proteger nuestros bosques</h1>
+        <p class="hero-desc">
+          Explora reglas de operación, programas de reforestación y expedientes técnicos del Estado de México en un entorno intuitivo, cálido y libre de saturación.
+        </p>
+      </div>
+
+      <div class="open-metrics">
+        <div>
+          <div class="metric-number">+24%</div>
+          <p class="metric-label">Superficie reforestada este ciclo</p>
+        </div>
+        <div>
+          <div class="metric-number">14.8k</div>
+          <p class="metric-label">Hectáreas en conservación activa</p>
+        </div>
+        <div>
+          <div class="metric-number highlight">10</div>
+          <p class="metric-label">Expedientes oficiales en consulta</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONA 3: Pozo Clay de Consulta -->
+    <section class="clay-well-section" aria-label="Asistente de consulta forestal">
+      <textarea
+        class="well-textarea"
+        placeholder="Escribe aquí tu duda: ¿Cómo solicito planta para reforestación social o apoyo de servicios ambientales?"
+      ></textarea>
+      <div class="well-footer">
+        <button type="button" class="clay-pebble-selector" id="scopeBtn">
+          <span class="sprout-indicator"></span>
+          <span id="scopeLabel">Consultando: Acervo Estatal Completo (10 expedientes)</span>
+        </button>
+
+        <button type="button" class="btn-terracotta">
+          <span>Consultar en PROBOSQUE</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ZONA 4: Flujo Orgánico de Expedientes (Sin tarjetas repetitivas) -->
+    <section id="acervo" class="stream-section">
+      <div class="stream-header">
+        <div>
+          <div class="accent-pill-bar"></div>
+          <h2 class="stream-title">Programas y expedientes forestales vigentes</h2>
+        </div>
+        <span class="stream-subtitle">Lectura directa sin tarjetas · Actualizado 2026</span>
+      </div>
+
+      <div class="editorial-list">
+        <article class="editorial-row">
+          <div class="row-left">
+            <div class="clay-icon-stone">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="row-meta"><strong>Restauración Forestal</strong> · Cuencas Prioritarias del Estado de México</div>
+              <h3 class="row-heading">Programa Estatal de Reforestación y Producción de Planta 2026</h3>
+              <p class="row-summary">Catálogo de viveros forestales, entrega de especies nativas (Pinus hartwegii, Abies religiosa) y acompañamiento técnico a ejidos y comunidades.</p>
+            </div>
+          </div>
+          <button type="button" class="clay-pebble-selector">Abrir expediente →</button>
+        </article>
+
+        <article class="editorial-row">
+          <div class="row-left">
+            <div class="clay-icon-stone">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="row-meta"><strong>Servicios Ambientales</strong> · Convocatoria Anual Vigente</div>
+              <h3 class="row-heading">Pago por Servicios Ambientales Hidrológicos (PSAH)</h3>
+              <p class="row-summary">Incentivos económicos directos para núcleos agrarios que conservan la recarga de mantos acuíferos y biodiversidad forestal.</p>
+            </div>
+          </div>
+          <button type="button" class="clay-pebble-selector">Abrir expediente →</button>
+        </article>
+
+        <article class="editorial-row">
+          <div class="row-left">
+            <div class="clay-icon-stone">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="row-meta"><strong>Protección Forestal</strong> · Operativo Permanente</div>
+              <h3 class="row-heading">Prevención, Combate de Incendios y Sanidad Forestal</h3>
+              <p class="row-summary">Protocolos de brigadas comunitarias, monitoreo en torres de vigilancia y atención a plagas o enfermedades forestales.</p>
+            </div>
+          </div>
+          <button type="button" class="clay-pebble-selector">Abrir expediente →</button>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const scopes = [
+      'Consultando: Acervo Estatal Completo (10 expedientes)',
+      'Consultando: Reglas de Operación Reforestación 2026',
+      'Consultando: Pago por Servicios Ambientales Hidrológicos'
+    ];
+    let idx = 0;
+    document.getElementById('scopeBtn').addEventListener('click', () => {
+      idx = (idx + 1) % scopes.length;
+      document.getElementById('scopeLabel').textContent = scopes[idx];
+    });
+  </script>
+</body>
+</html>

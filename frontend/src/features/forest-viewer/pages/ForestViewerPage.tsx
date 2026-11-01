@@ -12,12 +12,14 @@ import {
   fetchStateGeoJSON,
   fetchAnnualStats,
   fetchLossStats,
+  fetchLayers,
 } from '../services/forestApi';
 import type {
   ForestMetadata,
   RegionSummary,
   AnnualStatsResponse,
   LossStatsResponse,
+  LayerSpec,
 } from '../types/forest';
 
 export const ForestViewerPage: React.FC = () => {
@@ -30,7 +32,7 @@ export const ForestViewerPage: React.FC = () => {
   const [stateGeoJSON, setStateGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
 
   // Selection state (from URL search params or defaults)
-  const initialRegion = searchParams.get('region') || '15'; // Default to entire state
+  const initialRegion = searchParams.get('region') || '15110'; // Default to Valle de Bravo for Phase 2 demo
   const initialYear = Number(searchParams.get('year')) || 2025;
   const initialIndicator = (searchParams.get('indicator') as 'land_cover' | 'tree_cover_loss') || 'land_cover';
 
@@ -47,9 +49,10 @@ export const ForestViewerPage: React.FC = () => {
   const [isMetadataModalOpen, setIsMetadataModalOpen] = useState<boolean>(false);
   const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState<boolean>(false);
 
-  // Stats
+  // Stats & Raster Layers
   const [annualStats, setAnnualStats] = useState<AnnualStatsResponse | null>(null);
   const [lossStats, setLossStats] = useState<LossStatsResponse | null>(null);
+  const [activeRasterLayer, setActiveRasterLayer] = useState<LayerSpec | null>(null);
   const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
 
   // Load initial metadata and geometries
@@ -122,6 +125,25 @@ export const ForestViewerPage: React.FC = () => {
       isMounted = false;
     };
   }, [selectedCode]);
+
+  // Load active raster layer when year or indicator changes
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLayer() {
+      try {
+        const layers = await fetchLayers(selectedYear);
+        if (!isMounted) return;
+        const matched = layers.find((l) => l.indicator === activeIndicator) || layers[0] || null;
+        setActiveRasterLayer(matched);
+      } catch (err) {
+        console.warn('Error loading layers', err);
+      }
+    }
+    loadLayer();
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedYear, activeIndicator]);
 
   const selectedMunicipality = useMemo(() => {
     if (selectedCode === '15') {
@@ -199,6 +221,7 @@ export const ForestViewerPage: React.FC = () => {
               onSelectMunicipality={handleSelectMunicipality}
               activeIndicator={activeIndicator}
               selectedYear={selectedYear}
+              activeRasterLayer={activeRasterLayer}
               isCompareMode={isCompareMode}
               compareYearA={compareYearA}
               compareYearB={compareYearB}
@@ -214,6 +237,8 @@ export const ForestViewerPage: React.FC = () => {
             lossStats={lossStats}
             legendClasses={metadata?.legend_classes || []}
             onOpenMetadataModal={() => setIsMetadataModalOpen(true)}
+            onChangeYear={setSelectedYear}
+            onSelectMunicipality={handleSelectMunicipality}
           />
         </main>
       </div>

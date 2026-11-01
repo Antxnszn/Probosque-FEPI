@@ -6,6 +6,14 @@ from app.models.sync import SyncChallenge, SyncLog
 from app.models.satellite import SatelliteTriageAssessment
 from app.models.carbon import AllometricEquation, CarbonAssessment
 from app.models.subsidy import SubsidyDecision
+from app.models.forest import (
+    GeoRegion,
+    DataSource,
+    LandCoverClass,
+    RasterProduct,
+    RegionYearStat,
+    ProcessingRun,
+)
 
 __all__ = [
     "User",
@@ -23,4 +31,10 @@ __all__ = [
     "AllometricEquation",
     "CarbonAssessment",
     "SubsidyDecision",
+    "GeoRegion",
+    "DataSource",
+    "LandCoverClass",
+    "RasterProduct",
+    "RegionYearStat",
+    "ProcessingRun",
 ]

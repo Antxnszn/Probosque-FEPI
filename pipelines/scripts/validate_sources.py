@@ -83,12 +83,17 @@ def validate_mapbiomas(base_dir: pathlib.Path) -> dict:
     sources = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     mb = sources["sources"].get("mapbiomas_mexico", {})
 
-    expected_asset = "projects/mapbiomas-public/assets/mexico/lulc/collection1/mapbiomas_mexico_collection1_coverage_v1"
+    expected_asset = "projects/mapbiomas-mexico/assets/LAND-COVER/COLLECTION-1/GENERAL/classification-ft/MEX_integration_natstable_lagunas_ft_v1"
     if mb.get("asset_id") != expected_asset:
         result["status"] = "FAIL"
         result["errors"].append(f"Invalid MapBiomas asset ID: {mb.get('asset_id')}. Expected {expected_asset}")
 
+    if mb.get("license") != "CC BY 4.0":
+        result["status"] = "FAIL"
+        result["errors"].append(f"Invalid MapBiomas license: {mb.get('license')}. Expected CC BY 4.0")
+
     result["details"]["asset_id"] = mb.get("asset_id")
+    result["details"]["license"] = mb.get("license")
     result["details"]["collection_version"] = mb.get("collection_version")
     result["details"]["temporal_scope"] = f"{mb.get('first_year')} - {mb.get('last_year')}"
     result["details"]["mvp_scope"] = f"{mb.get('mvp_first_year')} - {mb.get('mvp_last_year')}"
@@ -99,6 +104,7 @@ def validate_mapbiomas(base_dir: pathlib.Path) -> dict:
     result["details"]["classes_count"] = len(classes)
     approved_forest = [c["name_es"] for c in classes if c.get("is_forest_approved")]
     result["details"]["approved_forest_classes"] = approved_forest
+    result["details"]["methodological_decision"] = legend_data.get("methodological_decision")
 
     return result
 
