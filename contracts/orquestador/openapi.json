@@ -1,0 +1,62 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Orquestador del trámite",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "saludPropia",
+        "responses": {
+          "200": {
+            "description": "Disponible"
+          }
+        }
+      }
+    },
+    "/api/tramite/v1/salud": {
+      "get": {
+        "operationId": "saludServicios",
+        "responses": {
+          "200": {
+            "description": "Estado de los servicios"
+          }
+        }
+      }
+    },
+    "/api/tramite/v1/fecha-operacion": {
+      "get": {
+        "operationId": "fechaOperacion",
+        "responses": {
+          "200": {
+            "description": "Fecha de operacion"
+          }
+        }
+      }
+    },
+    "/api/tramite/v1/bus/prueba": {
+      "post": {
+        "operationId": "pruebaBus",
+        "responses": {
+          "200": {
+            "description": "Ida y vuelta del bus"
+          },
+          "503": {
+            "description": "Bus no disponible"
+          }
+        }
+      }
+    },
+    "/api/tramite/v1/{resto}": {
+      "post": {
+        "operationId": "pendiente",
+        "responses": {
+          "501": {
+            "description": "Operacion no implementada"
+          }
+        }
+      }
+    }
+  }
+}

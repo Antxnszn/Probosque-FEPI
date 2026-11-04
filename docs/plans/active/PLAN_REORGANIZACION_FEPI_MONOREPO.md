@@ -1,7 +1,7 @@
 # Plan de reorganización del repositorio FEPI
 
 **Fecha:** 31 de octubre de 2026.  
-**Estado:** propuesta de implementación; no se ha modificado el repositorio.  
+**Estado:** propuesta anterior. El 1 de noviembre de 2026 el trámite se separó en procesos, como muestra el diagrama de arquitectura. La estructura vigente está en `plan-inicial/FASE_0_ESTRUCTURA.md` y en `services/`. La frase de este documento que dice que no se despliegan cinco microservicios quedó superada.  
 **Base:** `FEPI_PROJECT_STRUCTURE.md` y las tres respuestas de alcance del propietario.
 
 ## 1. Resultado que se busca

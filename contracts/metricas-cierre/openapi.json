@@ -1,0 +1,30 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Métricas de desempeño y cierre del programa",
+    "version": "0.1.0",
+    "description": "REQ-05. Métricas de desempeño y cierre del programa"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "salud",
+        "responses": {
+          "200": {
+            "description": "Servicio disponible"
+          }
+        }
+      }
+    },
+    "/api/metricas-cierre/v1/pendiente": {
+      "get": {
+        "operationId": "pendiente",
+        "responses": {
+          "501": {
+            "description": "Operacion no implementada"
+          }
+        }
+      }
+    }
+  }
+}
