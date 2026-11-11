@@ -1,0 +1,30 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Postulación, registro de solicitud y expediente digital",
+    "version": "0.1.0",
+    "description": "REQ-02. Postulación, registro de solicitud y expediente digital"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "salud",
+        "responses": {
+          "200": {
+            "description": "Servicio disponible"
+          }
+        }
+      }
+    },
+    "/api/expediente-digital/v1/pendiente": {
+      "get": {
+        "operationId": "pendiente",
+        "responses": {
+          "501": {
+            "description": "Operacion no implementada"
+          }
+        }
+      }
+    }
+  }
+}

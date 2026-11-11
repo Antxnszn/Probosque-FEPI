@@ -1,0 +1,30 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Formalización contractual, asignación de insumos, dispersión financiera y seguimiento",
+    "version": "0.1.0",
+    "description": "REQ-04. Formalización contractual, asignación de insumos, dispersión financiera y seguimiento"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "salud",
+        "responses": {
+          "200": {
+            "description": "Servicio disponible"
+          }
+        }
+      }
+    },
+    "/api/formalizacion-seguimiento/v1/pendiente": {
+      "get": {
+        "operationId": "pendiente",
+        "responses": {
+          "501": {
+            "description": "Operacion no implementada"
+          }
+        }
+      }
+    }
+  }
+}

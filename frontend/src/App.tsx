@@ -34,6 +34,10 @@ import { AdminReports } from './features/admin/AdminReports';
 import { AdminSystem } from './features/admin/AdminSystem';
 import { ForestViewerPage } from './features/forest-viewer/pages/ForestViewerPage';
 import { ProbosqueWorkspace } from './features/home/ProbosqueWorkspace';
+import { GestionEstructuraPage } from './features/gestion/GestionEstructuraPage';
+import { PuertaCuentas } from './features/tramite/PuertaCuentas';
+import { DetalleConvocatoria, FormularioConvocatoria } from './features/tramite/Convocatorias';
+import { FormularioSolicitud } from './features/tramite/Solicitudes';
 
 export function App() {
   useEffect(() => {
@@ -47,6 +51,13 @@ export function App() {
           {/* Public Forest Portal & Workspace */}
           <Route path="/" element={<ProbosqueWorkspace />} />
           <Route path="/visor" element={<ForestViewerPage />} />
+          <Route path="/gestion" element={<GestionEstructuraPage />} />
+          <Route path="/tramite" element={<PuertaCuentas />} />
+          <Route path="/tramite/convocatorias/nueva" element={<FormularioConvocatoria />} />
+          <Route path="/tramite/convocatorias/:id/editar" element={<FormularioConvocatoria />} />
+          <Route path="/tramite/convocatorias/:id" element={<DetalleConvocatoria />} />
+          <Route path="/tramite/solicitudes/nueva" element={<FormularioSolicitud />} />
+          <Route path="/tramite/solicitudes/:id" element={<FormularioSolicitud />} />
 
           {/* Legacy Auth */}
           <Route path="/login" element={<LoginPage />} />

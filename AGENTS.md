@@ -16,6 +16,6 @@
 - **Dependencias:** Gestionar paquetes con `uv add <pkg>` y `uv remove <pkg>`. Mantener los archivos de bloqueo actualizados con `uv sync`.
 
 ## 3. Límites de Módulos y Arquitectura
-- **Aislamiento de Persistencia:** Cada servicio es el único dueño y escritor de su propia base de datos. Está estrictamente prohibido importar modelos SQLAlchemy o sesiones de base de datos directas entre `services/platform-api` y `modules/probosque`.
+- **Aislamiento de Persistencia:** Cada servicio es el único dueño y escritor de su propia base de datos. Está prohibido importar modelos SQLAlchemy, sesiones o código de aplicación entre `services/orquestador`, `services/convocatorias`, `services/expediente-digital`, `services/dictaminacion`, `services/formalizacion-seguimiento`, `services/metricas-cierre` y `modules/probosque`. `services/platform-api` es el esqueleto anterior y no es el lugar donde se implementa el trámite.
 - **Contratos:** Toda comunicación entre la plataforma principal y los subsistemas debe efectuarse mediante contratos REST/OpenAPI (`contracts/probosque/openapi.json`).
 - **Frontend:** La aplicación web integrará paquetes modulares reutilizables sin acoplarse a rutas internas ni redefinir la sesión compartida.
