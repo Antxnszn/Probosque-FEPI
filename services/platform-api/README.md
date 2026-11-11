@@ -1,6 +1,6 @@
-# FEPI Platform API (Backend Principal)
+# FEPI Platform API (esqueleto anterior)
 
-Servicio backend principal de la plataforma FEPI. Gestiona convocatorias, expedientes administrativos, dictaminación, seguimiento, cierre de trámites y coordinación de operaciones de campo.
+El trámite ya no se implementa en este proceso. Los servicios vigentes son `services/orquestador`, `services/convocatorias`, `services/expediente-digital`, `services/dictaminacion`, `services/formalizacion-seguimiento` y `services/metricas-cierre`. Este directorio se conserva como referencia del primer acomodo. `operacion` sigue sin ser un servicio. El texto siguiente describe ese acomodo viejo; aquí no hay una aplicación en ejecución.
 
 ## Responsabilidades del Servicio
 

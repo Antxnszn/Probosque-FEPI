@@ -1,0 +1,30 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Publicación y consulta de convocatorias",
+    "version": "0.1.0",
+    "description": "REQ-01. Publicación y consulta de convocatorias"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "salud",
+        "responses": {
+          "200": {
+            "description": "Servicio disponible"
+          }
+        }
+      }
+    },
+    "/api/convocatorias/v1/pendiente": {
+      "get": {
+        "operationId": "pendiente",
+        "responses": {
+          "501": {
+            "description": "Operacion no implementada"
+          }
+        }
+      }
+    }
+  }
+}

@@ -19,13 +19,25 @@ FEPI/
 │       ├── pipelines/            # Ingestas y procesamiento cartográfico
 │       └── docs/                 # Documentación metodológica de campo
 ├── services/
-│   └── platform-api/             # Backend principal de FEPI (FastAPI modular)
+│   ├── orquestador/              # Puerta del trámite
+│   ├── convocatorias/            # REQ-01 Publicación y consulta de convocatorias
+│   ├── expediente-digital/       # REQ-02 Postulación, solicitud y expediente digital
+│   ├── dictaminacion/            # REQ-03 Evaluación, dictaminación y asignación colegiada
+│   ├── formalizacion-seguimiento/# REQ-04 Formalización, insumos, dispersión y seguimiento
+│   ├── metricas-cierre/          # REQ-05 Métricas de desempeño y cierre
+│   └── platform-api/             # Esqueleto anterior, ya no es el trámite
 ├── packages/
 │   ├── session/                  # Gestión y provisión de identidad compartida
 │   └── probosque-client/         # Cliente TypeScript para PROBOSQUE
 ├── contracts/
-│   ├── probosque/                # Especificación OpenAPI (openapi.json)
-│   ├── platform/                 # Contratos de la API principal
+│   ├── probosque/                # Especificación OpenAPI del visor
+│   ├── orquestador/              # Contrato del trámite
+│   ├── convocatorias/            # Contrato REQ-01
+│   ├── expediente-digital/       # Contrato REQ-02
+│   ├── dictaminacion/            # Contrato REQ-03
+│   ├── formalizacion-seguimiento/# Contrato REQ-04
+│   ├── metricas-cierre/          # Contrato REQ-05
+│   ├── platform/                 # Lugar del esqueleto anterior
 │   └── session/                  # Contratos de sesión y tokens
 ├── docs/                         # Portal de documentación del proyecto (MkDocs)
 │   ├── architecture/             # Límites funcionales y decisiones (ADR)
@@ -65,7 +77,19 @@ npm --prefix frontend install
 npm --prefix frontend run dev
 ```
 
-### 4. Portal de Documentación (MkDocs)
+### 4. Trámite administrativo
+
+El trámite son seis procesos Python. Compose los construye junto con Nginx y las bases separadas:
+
+```bash
+docker compose -f infra/docker-compose.yml up -d --build
+```
+
+La pantalla que dice si cada servicio responde está en `http://localhost:5173/gestion`. Nginx publica la misma interfaz y las dos APIs en `http://localhost:8080`.
+
+Una operación de negocio del trámite responde pendiente. No hay solicitudes de ejemplo.
+
+### 5. Portal de Documentación (MkDocs)
 ```bash
 uv run --with mkdocs-material mkdocs serve
 ```
