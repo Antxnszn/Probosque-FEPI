@@ -35,9 +35,11 @@ import { AdminSystem } from './features/admin/AdminSystem';
 import { ForestViewerPage } from './features/forest-viewer/pages/ForestViewerPage';
 import { ProbosqueWorkspace } from './features/home/ProbosqueWorkspace';
 import { GestionEstructuraPage } from './features/gestion/GestionEstructuraPage';
-import { PuertaCuentas } from './features/tramite/PuertaCuentas';
-import { DetalleConvocatoria, FormularioConvocatoria } from './features/tramite/Convocatorias';
+import { GuardaSesion } from './features/tramite/Cascaron';
+import { BandejaDelegacion, EntradaRecepcion, PuertaCuentas, SolicitantesDelegacion } from './features/tramite/PuertaCuentas';
+import { DetalleConvocatoria, FormularioConvocatoria, PaginaConvocatorias } from './features/tramite/Convocatorias';
 import { FormularioSolicitud } from './features/tramite/Solicitudes';
+import { AvisosSolicitante, ExpedienteSolicitante, NuevaCuenta, QuejaSolicitante, ResultadosConvocatoria } from './features/tramite/Pantallas';
 
 export function App() {
   useEffect(() => {
@@ -47,12 +49,22 @@ export function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <GuardaSesion />
         <Routes>
           {/* Public Forest Portal & Workspace */}
           <Route path="/" element={<ProbosqueWorkspace />} />
           <Route path="/visor" element={<ForestViewerPage />} />
           <Route path="/gestion" element={<GestionEstructuraPage />} />
           <Route path="/tramite" element={<PuertaCuentas />} />
+          <Route path="/tramite/bandeja" element={<BandejaDelegacion />} />
+          <Route path="/tramite/recepcion" element={<EntradaRecepcion />} />
+          <Route path="/tramite/solicitantes" element={<SolicitantesDelegacion />} />
+          <Route path="/tramite/convocatorias" element={<PaginaConvocatorias />} />
+          <Route path="/tramite/expediente" element={<ExpedienteSolicitante />} />
+          <Route path="/tramite/avisos" element={<AvisosSolicitante />} />
+          <Route path="/tramite/queja" element={<QuejaSolicitante />} />
+          <Route path="/tramite/resultados" element={<ResultadosConvocatoria />} />
+          <Route path="/tramite/cuentas/nueva" element={<NuevaCuenta />} />
           <Route path="/tramite/convocatorias/nueva" element={<FormularioConvocatoria />} />
           <Route path="/tramite/convocatorias/:id/editar" element={<FormularioConvocatoria />} />
           <Route path="/tramite/convocatorias/:id" element={<DetalleConvocatoria />} />

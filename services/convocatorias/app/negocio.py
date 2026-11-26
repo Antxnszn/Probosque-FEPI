@@ -18,6 +18,7 @@ router = APIRouter(prefix="/interno/v1", tags=["convocatorias"])
 class ConvocatoriaEntrada(BaseModel):
     titulo: str
     texto: str = ""
+    tipo: str = "individual"
     vigencia_inicio: date
     vigencia_fin: date
     programas: list[str] = []
@@ -27,6 +28,7 @@ class ConvocatoriaEntrada(BaseModel):
 class ConvocatoriaCambio(BaseModel):
     titulo: str | None = None
     texto: str | None = None
+    tipo: str | None = None
     vigencia_inicio: date | None = None
     vigencia_fin: date | None = None
     programas: list[str] | None = None
@@ -52,6 +54,7 @@ def serializar(fila: Convocatoria) -> dict:
         "texto": fila.texto,
         "vigencia_inicio": fila.vigencia_inicio.isoformat(),
         "vigencia_fin": fila.vigencia_fin.isoformat(),
+        "tipo": fila.tipo,
         "estado": fila.estado,
         "tiene_pdf": bool(fila.ruta_pdf),
         "programas": [
@@ -96,6 +99,15 @@ def marcar(fila: Convocatoria, quien: dict, alta: bool = False) -> None:
 def validar_fechas(inicio: date, fin: date) -> None:
     if fin < inicio:
         raise HTTPException(status_code=422, detail="El fin de la recepción es anterior al inicio")
+
+
+def validar_tipo(tipo: str, programas: list[str], publicar: bool) -> None:
+    if tipo != "individual":
+        raise HTTPException(status_code=422, detail="La convocatoria es de un solo programa")
+    if len(programas) > 1:
+        raise HTTPException(status_code=422, detail="La convocatoria lleva un solo programa")
+    if publicar and len(programas) != 1:
+        raise HTTPException(status_code=422, detail="Elige un programa antes de publicar")
 
 
 def validar_programas(claves: list[str]) -> list[str]:
@@ -165,9 +177,11 @@ def crear(cuerpo: ConvocatoriaEntrada, db: Session = Depends(sesion), quien: dic
     if not titulo:
         raise HTTPException(status_code=422, detail="La convocatoria necesita un título")
     validar_fechas(cuerpo.vigencia_inicio, cuerpo.vigencia_fin)
+    validar_tipo("individual", cuerpo.programas, publicar=False)
     fila = Convocatoria(
         titulo=titulo,
         texto=cuerpo.texto.strip(),
+        tipo="individual",
         vigencia_inicio=cuerpo.vigencia_inicio,
         vigencia_fin=cuerpo.vigencia_fin,
     )
@@ -206,8 +220,10 @@ def cambiar(
     validar_fechas(inicio, fin)
     fila.vigencia_inicio = inicio
     fila.vigencia_fin = fin
+    fila.tipo = "individual"
     if cuerpo.programas is not None:
         reemplazar_programas(db, fila, cuerpo.programas)
+    validar_tipo(fila.tipo, [item.programa for item in fila.programas], publicar=False)
     if cuerpo.documentos is not None:
         reemplazar_documentos(db, fila, cuerpo.documentos)
     marcar(fila, quien)
@@ -219,14 +235,12 @@ def cambiar(
 def publicar(convocatoria_id: int, db: Session = Depends(sesion), quien: dict = Depends(actor)):
     exige(quien, {"convocatorias"})
     fila = exigir_visible(carga(db, convocatoria_id), quien)
-    if not fila.programas:
-        raise HTTPException(status_code=422, detail="Elige al menos un programa antes de publicar")
+    fila.tipo = "individual"
+    validar_tipo(fila.tipo, [item.programa for item in fila.programas], publicar=True)
     if not fila.ruta_pdf:
         raise HTTPException(status_code=422, detail="Falta el PDF de la convocatoria")
     if not fila.texto.strip():
         raise HTTPException(status_code=422, detail="Falta el texto de la convocatoria")
-    if not fila.documentos:
-        raise HTTPException(status_code=422, detail="Escribe al menos un documento que pedirá la solicitud")
     fila.estado = "publicada"
     marcar(fila, quien)
     db.commit()

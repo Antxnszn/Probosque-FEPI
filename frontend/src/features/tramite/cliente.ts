@@ -11,8 +11,31 @@ export type CuentaTramite = {
 
 const CLAVE = 'fepi_tramite_token';
 const CLAVE_CUENTA = 'fepi_tramite_cuenta';
+export const RUTA_PUBLICA = '/tramite/convocatorias';
+
+const SESION_MUERTA = new Set(['La sesión expiró', 'Sesión inválida', 'La cuenta ya no existe', 'Falta la sesión']);
+
+function expiracionDe(token: string) {
+  const cuerpo = token.split('.')[0];
+  if (!cuerpo) return null;
+  try {
+    const relleno = '='.repeat((4 - (cuerpo.length % 4)) % 4);
+    const datos = JSON.parse(atob(cuerpo.replace(/-/g, '+').replace(/_/g, '/') + relleno)) as { exp?: number };
+    return typeof datos.exp === 'number' ? datos.exp : null;
+  } catch {
+    return null;
+  }
+}
+
+export function tokenVencido() {
+  const token = localStorage.getItem(CLAVE);
+  if (!token) return false;
+  const exp = expiracionDe(token);
+  return exp === null || exp * 1000 <= Date.now();
+}
 
 export function leerCuenta(): CuentaTramite | null {
+  if (tokenVencido()) return null;
   const crudo = localStorage.getItem(CLAVE_CUENTA);
   if (!crudo) return null;
   try {
@@ -32,6 +55,13 @@ export function salirTramite() {
   localStorage.removeItem(CLAVE_CUENTA);
 }
 
+export function irAConvocatoriasPublicas() {
+  const ya = window.location.pathname === RUTA_PUBLICA;
+  salirTramite();
+  if (ya) window.location.reload();
+  else window.location.replace(RUTA_PUBLICA);
+}
+
 export async function apiTramite<T>(ruta: string, opciones: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem(CLAVE);
   const headers = new Headers(opciones.headers);
@@ -48,6 +78,7 @@ export async function apiTramite<T>(ruta: string, opciones: RequestInit = {}): P
     } catch {
       mensaje = respuesta.statusText || mensaje;
     }
+    if (token && respuesta.status === 401 && SESION_MUERTA.has(mensaje)) irAConvocatoriasPublicas();
     throw new Error(mensaje);
   }
   const tipo = respuesta.headers.get('content-type') || '';
@@ -85,7 +116,10 @@ export async function abrirArchivo(ruta: string) {
   const respuesta = await fetch(ruta, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
-  if (!respuesta.ok) throw new Error('No se pudo abrir el archivo');
+  if (!respuesta.ok) {
+    if (token && respuesta.status === 401) irAConvocatoriasPublicas();
+    throw new Error('No se pudo abrir el archivo');
+  }
   const blob = await respuesta.blob();
   window.open(URL.createObjectURL(blob));
 }
