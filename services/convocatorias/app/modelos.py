@@ -24,6 +24,7 @@ class Convocatoria(Base):
     texto: Mapped[str] = mapped_column(Text, default="")
     vigencia_inicio: Mapped[date] = mapped_column(Date, nullable=False)
     vigencia_fin: Mapped[date] = mapped_column(Date, nullable=False)
+    tipo: Mapped[str] = mapped_column(String(20), default="individual")
     estado: Mapped[str] = mapped_column(String(20), default="borrador")
     ruta_pdf: Mapped[str] = mapped_column(String(400), default="")
     creado_por: Mapped[int | None] = mapped_column(Integer)

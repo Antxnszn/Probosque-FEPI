@@ -49,6 +49,21 @@ def a_wkt(puntos: list[tuple[float, float]]) -> str:
     return f"POLYGON(({texto}))"
 
 
+def vertices_de(wkt: str | None) -> list[dict]:
+    if not wkt or "POLYGON" not in wkt.upper() or "((" not in wkt:
+        return []
+    cuerpo = wkt[wkt.find("((") + 2: wkt.rfind("))")]
+    puntos = []
+    for parte in cuerpo.split(","):
+        pedazos = parte.split()
+        if len(pedazos) < 2:
+            continue
+        puntos.append({"lng": float(pedazos[0]), "lat": float(pedazos[1])})
+    if len(puntos) > 1 and puntos[0] == puntos[-1]:
+        puntos = puntos[:-1]
+    return puntos
+
+
 def escribir_shapefile(solicitud_id: int, puntos: list[tuple[float, float]]) -> str:
     destino = carpeta_solicitud(solicitud_id) / "predio"
     with shapefile.Writer(str(destino), shapeType=shapefile.POLYGON) as escritor:

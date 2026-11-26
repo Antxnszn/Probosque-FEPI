@@ -5,10 +5,12 @@ type Vertice = { lat: number; lng: number };
 
 type Props = {
   vertices: Vertice[];
-  onChange: (vertices: Vertice[]) => void;
+  onChange?: (vertices: Vertice[]) => void;
+  className?: string;
+  lectura?: boolean;
 };
 
-export function MapaPoligono({ vertices, onChange }: Props) {
+export function MapaPoligono({ vertices, onChange, className, lectura = false }: Props) {
   const nodo = useRef<HTMLDivElement>(null);
   const mapa = useRef<L.Map | null>(null);
   const dibujo = useRef<L.Layer | null>(null);
@@ -23,9 +25,11 @@ export function MapaPoligono({ vertices, onChange }: Props) {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap',
     }).addTo(creado);
-    creado.on('click', (evento: L.LeafletMouseEvent) => {
-      alCambiar.current([...actuales.current, { lat: evento.latlng.lat, lng: evento.latlng.lng }]);
-    });
+    if (!lectura) {
+      creado.on('click', (evento: L.LeafletMouseEvent) => {
+        alCambiar.current?.([...actuales.current, { lat: evento.latlng.lat, lng: evento.latlng.lng }]);
+      });
+    }
     mapa.current = creado;
     return () => {
       creado.remove();
@@ -41,11 +45,18 @@ export function MapaPoligono({ vertices, onChange }: Props) {
     }
     const puntos = vertices.map((vertice) => [vertice.lat, vertice.lng] as [number, number]);
     if (puntos.length >= 3) {
-      dibujo.current = L.polygon(puntos, { color: '#E0643A', weight: 2 }).addTo(mapa.current);
+      const poligono = L.polygon(puntos, { color: '#2f6b45', weight: 2, fillOpacity: 0.35 }).addTo(mapa.current);
+      dibujo.current = poligono;
+      if (lectura) {
+        requestAnimationFrame(() => {
+          mapa.current?.invalidateSize();
+          mapa.current?.fitBounds(poligono.getBounds(), { padding: [16, 16] });
+        });
+      }
     } else if (puntos.length > 0) {
       dibujo.current = L.polyline(puntos, { color: '#355044', weight: 2 }).addTo(mapa.current);
     }
-  }, [vertices]);
+  }, [vertices, lectura]);
 
-  return <div ref={nodo} className="h-80 w-full overflow-hidden rounded-[28px]" />;
+  return <div ref={nodo} className={className || 'h-80 w-full overflow-hidden rounded-[28px]'} />;
 }

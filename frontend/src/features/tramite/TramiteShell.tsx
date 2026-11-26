@@ -1,9 +1,8 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { leerCuenta, salirTramite } from './cliente';
+import { Link, Outlet } from 'react-router-dom';
+import { irAConvocatoriasPublicas, leerCuenta } from './cliente';
 
 export function TramiteShell() {
   const cuenta = leerCuenta();
-  const navegar = useNavigate();
 
   return (
     <div className="min-h-screen bg-[#F4F1EA] text-[#1B2A24] font-['Plus_Jakarta_Sans',sans-serif]">
@@ -22,10 +21,7 @@ export function TramiteShell() {
               <button
                 type="button"
                 className="text-[#E0643A]"
-                onClick={() => {
-                  salirTramite();
-                  navegar('/tramite/entrar');
-                }}
+                onClick={() => irAConvocatoriasPublicas()}
               >
                 Salir
               </button>

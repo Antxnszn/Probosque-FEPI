@@ -128,6 +128,11 @@ async def poligono(solicitud_id: int, cuerpo: dict, cuenta: Cuenta = Depends(cue
     return await pedir("POST", f"/interno/v1/solicitudes/{solicitud_id}/poligono", cuenta, cuerpo)
 
 
+@router.get("/solicitudes/{solicitud_id}/shapefile")
+async def bajar_shapefile(solicitud_id: int, cuenta: Cuenta = Depends(cuenta_actual)):
+    return await pedir("GET", f"/interno/v1/solicitudes/{solicitud_id}/shapefile", cuenta)
+
+
 @router.post("/solicitudes/{solicitud_id}/shapefile")
 async def shapefile(
     solicitud_id: int,
@@ -149,6 +154,16 @@ async def shapefile(
     )
 
 
+@router.post("/solicitudes/{solicitud_id}/comprobante")
+async def comprobante(solicitud_id: int, cuerpo: dict, cuenta: Cuenta = Depends(cuenta_actual)):
+    return await pedir("POST", f"/interno/v1/solicitudes/{solicitud_id}/comprobante", cuenta, cuerpo)
+
+
+@router.post("/solicitudes/{solicitud_id}/correccion")
+async def correccion(solicitud_id: int, cuerpo: dict, cuenta: Cuenta = Depends(cuenta_actual)):
+    return await pedir("POST", f"/interno/v1/solicitudes/{solicitud_id}/correccion", cuenta, cuerpo)
+
+
 @router.post("/solicitudes/{solicitud_id}/enviar")
 async def enviar(solicitud_id: int, cuenta: Cuenta = Depends(cuenta_actual)):
     _solicitante(cuenta)
@@ -156,10 +171,10 @@ async def enviar(solicitud_id: int, cuenta: Cuenta = Depends(cuenta_actual)):
     if actual.status_code != 200:
         return actual
     datos = json.loads(actual.body)
-    documentos = await convocatoria_abierta(datos["convocatoria_id"], datos["programa"], cuenta)
+    await convocatoria_abierta(datos["convocatoria_id"], datos["programa"], cuenta)
     return await pedir(
         "POST",
         f"/interno/v1/solicitudes/{solicitud_id}/enviar",
         cuenta,
-        {"documentos": documentos},
+        {"documentos": []},
     )

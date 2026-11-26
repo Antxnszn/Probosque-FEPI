@@ -1,21 +1,18 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import {
+  PROGRAMAS,
   PUESTOS,
   apiTramite,
   guardarCuenta,
   leerCuenta,
-  salirTramite,
   type CuentaTramite,
 } from './cliente';
-import { AdminConvocatorias, ListaPublica } from './Convocatorias';
-import { TablaConvocatoriasAuditoria, TablaSolicitudes } from './Solicitudes';
+import { ListaPublica } from './Convocatorias';
+import { TablaConvocatoriasAuditoria, TablaSolicitudes, type Solicitud } from './Solicitudes';
+import { Cascaron, accion, campo, secundario } from './Cascaron';
 
-const titulo = "font-['Outfit',sans-serif] text-4xl font-light tracking-tight text-[#1B2A24]";
-const accion = 'rounded-full bg-[#E0643A] px-5 py-2.5 text-sm font-semibold text-white';
-const secundario = 'rounded-full bg-[#D9D1B8] px-5 py-2.5 text-sm font-semibold text-[#1B2A24]';
-const campo = 'mt-1 w-full border-b border-[#6B8B78]/50 bg-transparent py-2 text-[#1B2A24] focus:outline-none';
-const celda = 'w-full min-w-40 rounded-full bg-[#EAE4D3] px-3 py-2 text-sm text-[#1B2A24]';
+const celda = 'w-full min-w-40 rounded-lg border border-[#D3D9E1] bg-white px-3 py-2 text-sm text-[#111827]';
 const POR_PAGINA = 5;
 
 type Personal = {
@@ -55,46 +52,30 @@ export function PuertaCuentas() {
     setError('');
   }
 
-  function salir() {
-    salirTramite();
-    setCuenta(null);
-    setVista('puerta');
-  }
-
-  const ancho = cuenta ? 'max-w-6xl' : 'max-w-3xl';
-
   return (
-    <div className="min-h-screen bg-[#F4F1EA] text-[#1B2A24] font-['Plus_Jakarta_Sans',sans-serif]">
-      <header className={`${ancho} mx-auto px-4 pt-6`}>
-        <nav className="flex items-center justify-between rounded-full bg-[#D9D1B8] px-6 py-3.5">
-          <Link to="/" className="font-['Outfit',sans-serif] text-xl">PROBOSQUE</Link>
-          <span className="text-sm text-[#355044]">Trámite de apoyos</span>
-          {cuenta ? (
-            <button type="button" className="text-sm font-semibold text-[#E0643A]" onClick={salir}>Salir</button>
-          ) : (
-            <Link to="/" className="text-sm text-[#355044]">Consulta forestal</Link>
-          )}
-        </nav>
-      </header>
-      <main className={`${ancho} mx-auto px-4 pt-12 pb-20`}>
+    <Cascaron publico={!cuenta}>
         {cuenta ? (
           <Sesion cuenta={cuenta} />
         ) : vista === 'puerta' ? (
-          <div className="space-y-6">
-            <p className="text-sm font-semibold text-[#E0643A]">Apoyos 2026</p>
-            <h1 className={titulo}>Elige cómo entras</h1>
-            <p className="max-w-xl text-[#355044]">La cuenta de quien solicita y la cuenta de personal son distintas. Esta puerta no es el visor ni la calculadora.</p>
-            <div className="flex flex-wrap gap-3">
-              <button type="button" className={accion} onClick={() => { setVista('solicitante'); setAlta(true); setError(''); }}>Soy solicitante</button>
-              <button type="button" className={secundario} onClick={() => { setVista('personal'); setError(''); }}>Soy personal</button>
-            </div>
-            {!haySuper ? (
-              <button type="button" className="text-sm text-[#355044]" onClick={() => { setVista('arranque'); setError(''); }}>
-                Crear la cuenta de arranque
+          <>
+            <h1>Elige cómo entras</h1>
+            <div className="rejilla">
+              <button type="button" className="card" onClick={() => { setVista('solicitante'); setAlta(true); setError(''); }}>
+                <h2>Soy solicitante</h2>
+                <p>Creo mi cuenta con nombre, correo y contraseña de al menos ocho caracteres. Solo veo mi expediente.</p>
               </button>
-            ) : null}
-            <ListaPublica />
-          </div>
+              <button type="button" className="card" onClick={() => { setVista('personal'); setError(''); }}>
+                <h2>Soy personal</h2>
+                <p>Entro con la cuenta que me dio la cuenta de arranque. El puesto no se elige aquí.</p>
+              </button>
+              {!haySuper ? (
+                <button type="button" className="card" onClick={() => { setVista('arranque'); setError(''); }}>
+                  <h2>Cuenta de arranque</h2>
+                  <p>Crea al personal. No recibe, no dictamina, no publica y no paga. Solo se crea una vez.</p>
+                </button>
+              ) : null}
+            </div>
+          </>
         ) : (
           <Formulario
             vista={vista}
@@ -107,8 +88,7 @@ export function PuertaCuentas() {
             onArranque={() => setHaySuper(true)}
           />
         )}
-      </main>
-    </div>
+    </Cascaron>
   );
 }
 
@@ -153,66 +133,42 @@ function Formulario({
 
   const creando = vista === 'arranque' || (vista === 'solicitante' && alta);
   return (
-    <form onSubmit={enviar} className="max-w-md space-y-5">
-      <button type="button" className="text-sm text-[#355044]" onClick={onVolver}>Volver</button>
-      <h1 className={titulo}>
-        {vista === 'arranque' ? 'Cuenta de arranque' : vista === 'solicitante' ? 'Tu expediente' : 'Cuenta de personal'}
-      </h1>
-      <p className="text-[#355044]">
+    <form onSubmit={enviar}>
+      <button type="button" className="btn btn-outline" onClick={onVolver}>Volver</button>
+      <h1>{vista === 'arranque' ? 'Cuenta de arranque' : vista === 'solicitante' ? 'Tu expediente' : 'Cuenta de personal'}</h1>
+      <p className="subtitle">
         {vista === 'arranque'
           ? 'Esta cuenta administra las cuentas del personal. No dictamina ni paga. Solo se crea una vez.'
           : vista === 'solicitante'
             ? 'Creas tu cuenta. Después verás las convocatorias publicadas y solo lo que tú solicites.'
             : 'Entra con la cuenta que te asignaron. El puesto no se elige aquí.'}
       </p>
-      {creando ? <label className="block text-sm">Nombre<input name="nombre" required className={campo} /></label> : null}
-      <label className="block text-sm">Correo<input name="correo" type="email" required className={campo} /></label>
-      <label className="block text-sm">Contraseña<input name="password" type="password" required minLength={8} className={campo} /></label>
-      {error ? <p className="text-[#E0643A]">{error}</p> : null}
-      <button className={accion} type="submit">{creando ? 'Crear cuenta' : 'Entrar'}</button>
+      <section className="bloque"><div className="grupo">
+      {creando ? <label className="campo">Nombre<input name="nombre" required /></label> : null}
+      <label className="campo">Correo<input name="correo" type="email" required /></label>
+      <label className="campo">Contraseña<input name="password" type="password" required minLength={8} /></label>
+      </div>
+      {error ? <p className="aviso">{error}</p> : null}
+      <button className={accion} type="submit" style={{ marginTop: 14 }}>{creando ? 'Crear cuenta' : 'Entrar'}</button>
       {vista === 'solicitante' ? (
         <button type="button" className="block text-sm text-[#355044]" onClick={onAlta}>
           {alta ? 'Ya tengo cuenta' : 'Crear una cuenta'}
         </button>
       ) : null}
+      </section>
     </form>
   );
 }
 
 function Sesion({ cuenta }: { cuenta: CuentaTramite }) {
   if (cuenta.puesto === 'super_admin') return <PanelSuper cuenta={cuenta} />;
-  if (cuenta.puesto === 'convocatorias') {
-    return (
-      <div className="space-y-16">
-        <AdminConvocatorias />
-        <TablaSolicitudes encabezado="Solicitudes enviadas" texto="Consulta de las convocatorias que publicas. No se reciben ni se corrigen aquí." />
-      </div>
-    );
-  }
-  if (cuenta.clase === 'solicitante') {
-    return (
-      <div className="space-y-12">
-        <div>
-          <h1 className={titulo}>Hola, {cuenta.nombre}</h1>
-          <p className="text-[#355044]">Aplicar aparece solo mientras la recepción está abierta. Cada predio es una solicitud.</p>
-        </div>
-        <ListaPublica aplicar />
-        <TablaSolicitudes encabezado="Tus solicitudes" texto="Solo ves las que abriste con esta cuenta." />
-      </div>
-    );
-  }
-  if (cuenta.puesto === 'delegacion') {
-    return (
-      <div className="space-y-6">
-        <h1 className={titulo}>Hola, {cuenta.nombre}</h1>
-        <TablaSolicitudes encabezado={`Solicitudes de ${cuenta.delegacion || 'tu delegación'}`} texto="Solo las enviadas de esta delegación. El folio se asigna en el siguiente paso." />
-      </div>
-    );
-  }
+  if (cuenta.puesto === 'convocatorias') return <InicioConvocatorias />;
+  if (cuenta.clase === 'solicitante') return <InicioSolicitante cuenta={cuenta} />;
+  if (cuenta.puesto === 'delegacion') return <InicioDelegacion cuenta={cuenta} />;
   if (cuenta.puesto === 'coordinacion_delegaciones') {
     return (
       <div className="space-y-6">
-        <h1 className={titulo}>Hola, {cuenta.nombre}</h1>
+        <h1>Hola, {cuenta.nombre}</h1>
         <TablaSolicitudes encabezado="Solicitudes enviadas" texto="Consulta de todas las delegaciones. No se editan desde aquí." />
       </div>
     );
@@ -220,7 +176,7 @@ function Sesion({ cuenta }: { cuenta: CuentaTramite }) {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h1 className={titulo}>Hola, {cuenta.nombre}</h1>
+        <h1>Hola, {cuenta.nombre}</h1>
         <p className="text-[#355044]">
           Tu puesto es {nombrePuesto(cuenta.puesto)}{cuenta.delegacion ? `, ${cuenta.delegacion}` : ''}. En solicitudes todavía no tienes bandeja.
         </p>
@@ -231,22 +187,100 @@ function Sesion({ cuenta }: { cuenta: CuentaTramite }) {
 }
 
 function PanelSuper({ cuenta }: { cuenta: CuentaTramite }) {
-  const [menu, setMenu] = useState<'cuentas' | 'solicitudes' | 'convocatorias'>('cuentas');
-  const activo = 'rounded-full bg-[#E0643A] px-4 py-2 text-sm font-semibold text-white';
-  const quieto = 'rounded-full bg-[#EAE4D3] px-4 py-2 text-sm font-semibold text-[#1B2A24]';
+  const [ver, setVer] = useState<'cuentas' | 'solicitudes' | 'convocatorias'>('cuentas');
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap gap-2">
-        <button type="button" className={menu === 'cuentas' ? activo : quieto} onClick={() => setMenu('cuentas')}>Cuentas</button>
-        <button type="button" className={menu === 'solicitudes' ? activo : quieto} onClick={() => setMenu('solicitudes')}>Solicitudes</button>
-        <button type="button" className={menu === 'convocatorias' ? activo : quieto} onClick={() => setMenu('convocatorias')}>Convocatorias</button>
+    <>
+      <div className="fila">
+        <div><p className="subtitle">Doce puestos</p><h1>Cuentas</h1></div>
+        <div className="acciones">
+          <button type="button" className={ver === 'solicitudes' ? accion : secundario} onClick={() => setVer('solicitudes')}>Solicitudes</button>
+          <button type="button" className={ver === 'convocatorias' ? accion : secundario} onClick={() => setVer('convocatorias')}>Convocatorias</button>
+          <Link className={accion} to="/tramite/cuentas/nueva">Nueva cuenta</Link>
+        </div>
       </div>
-      {menu === 'cuentas' ? <AdminCuentas cuenta={cuenta} /> : null}
-      {menu === 'solicitudes' ? (
-        <TablaSolicitudes encabezado="Solicitudes" texto="Incluye borradores. Desde aquí no se aprueba, no se publica y no se recibe." />
-      ) : null}
-      {menu === 'convocatorias' ? <TablaConvocatoriasAuditoria /> : null}
-    </div>
+      {ver === 'cuentas' ? <AdminCuentas cuenta={cuenta} /> : null}
+      {ver === 'solicitudes' ? <TablaSolicitudes encabezado="Solicitudes" texto="Incluye borradores. Desde aquí no se aprueba, no se publica y no se recibe." /> : null}
+      {ver === 'convocatorias' ? <TablaConvocatoriasAuditoria /> : null}
+    </>
+  );
+}
+
+function InicioDelegacion({ cuenta }: { cuenta: CuentaTramite }) {
+  return (
+    <>
+      <h1>Recepción</h1>
+      <p className="nota">Solicitudes de {cuenta.delegacion || 'tu delegación'}.</p>
+      <section className="rejilla">
+        <Link className="card" to="/tramite/bandeja"><strong>Bandeja</strong><span>Solicitudes enviadas a esta delegación.</span></Link>
+        <Link className="card" to="/tramite/recepcion"><strong>Recepción</strong><span>Lo que se llenó, el mapa del predio y el shapefile.</span></Link>
+        <Link className="card" to="/tramite/solicitantes"><strong>Solicitantes</strong><span>Quienes enviaron una solicitud.</span></Link>
+      </section>
+    </>
+  );
+}
+
+export function BandejaDelegacion() {
+  const cuenta = leerCuenta();
+  return (
+    <Cascaron>
+      <TablaSolicitudes encabezado={`Solicitudes de ${cuenta?.delegacion || 'tu delegación'}`} texto="Abre una para ver el predio, el mapa y el shapefile." />
+    </Cascaron>
+  );
+}
+
+export function EntradaRecepcion() {
+  const [destino, setDestino] = useState<number | null>(null);
+  const [vacio, setVacio] = useState(false);
+
+  useEffect(() => {
+    apiTramite<Solicitud[]>('/solicitudes')
+      .then((filas) => {
+        if (filas[0]) setDestino(filas[0].id);
+        else setVacio(true);
+      })
+      .catch(() => setVacio(true));
+  }, []);
+
+  if (destino) return <Navigate to={`/tramite/solicitudes/${destino}`} replace />;
+  return (
+    <Cascaron>
+      <h1>Recepción</h1>
+      <p className="nota">{vacio ? 'Todavía no hay una solicitud enviada a esta delegación.' : 'Cargando…'}</p>
+    </Cascaron>
+  );
+}
+
+export function SolicitantesDelegacion() {
+  const [filas, setFilas] = useState<Solicitud[]>([]);
+
+  useEffect(() => {
+    apiTramite<Solicitud[]>('/solicitudes').then(setFilas).catch(() => setFilas([]));
+  }, []);
+
+  return (
+    <Cascaron>
+      <h1>Solicitantes</h1>
+      {filas.length === 0 ? <p className="nota">Todavía no hay solicitudes enviadas.</p> : (
+        <section className="tabla">
+          <table>
+            <thead>
+              <tr><th>Titular</th><th>Predio</th><th>Municipio</th><th>Programa</th><th></th></tr>
+            </thead>
+            <tbody>
+              {filas.map((fila) => (
+                <tr key={fila.id}>
+                  <td>{fila.personas.find((persona) => persona.rol === 'titular')?.nombre || '—'}</td>
+                  <td>{fila.nombre_predio || '—'}</td>
+                  <td>{fila.municipio || '—'}</td>
+                  <td>{PROGRAMAS.find((programa) => programa.clave === fila.programa)?.nombre || fila.programa}</td>
+                  <td><Link to={`/tramite/solicitudes/${fila.id}`}>Ver</Link></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+    </Cascaron>
   );
 }
 
@@ -268,23 +302,6 @@ function AdminCuentas({ cuenta }: { cuenta: CuentaTramite }) {
     apiTramite<string[]>('/delegaciones').then(setDelegaciones).catch(() => setDelegaciones([]));
   }, []);
 
-  async function crear(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault();
-    setError('');
-    setAviso('');
-    const formulario = evento.currentTarget;
-    const datos = Object.fromEntries(new FormData(formulario).entries());
-    try {
-      await apiTramite('/cuentas', { method: 'POST', body: JSON.stringify(datos) });
-      formulario.reset();
-      setAviso('La cuenta quedó creada.');
-      const lista = await cargar();
-      setPagina(Math.max(0, Math.ceil(lista.length / POR_PAGINA) - 1));
-    } catch (causa) {
-      setError(mensajeDe(causa));
-    }
-  }
-
   async function cambiar(fila: Personal, cuerpo: Record<string, unknown>) {
     setError('');
     try {
@@ -301,42 +318,22 @@ function AdminCuentas({ cuenta }: { cuenta: CuentaTramite }) {
   const visibles = filas.slice(inicio, inicio + POR_PAGINA);
 
   return (
-    <div className="space-y-10">
-      <div>
-        <p className="text-sm font-semibold text-[#E0643A]">Super admin</p>
-        <h1 className={titulo}>Cuentas de personal</h1>
-        <p className="text-[#355044]">{cuenta.nombre}, desde aquí abres y corriges las cuentas del personal.</p>
-      </div>
-      {error ? <p className="text-[#E0643A]">{error}</p> : null}
-      {aviso ? <p className="text-[#355044]">{aviso}</p> : null}
-      <form onSubmit={crear} className="max-w-md space-y-4">
-        <h2 className="font-['Outfit',sans-serif] text-2xl font-light">Nueva cuenta</h2>
-        <input name="nombre" required placeholder="Nombre" className={campo} />
-        <input name="correo" type="email" required placeholder="Correo" className={campo} />
-        <input name="password" type="password" required minLength={8} placeholder="Contraseña" className={campo} />
-        <select name="puesto" className={campo} defaultValue="convocatorias">
-          {PUESTOS.map((puesto) => <option key={puesto.id} value={puesto.id}>{puesto.nombre}</option>)}
-        </select>
-        <select name="delegacion" className={campo} defaultValue="">
-          <option value="">Delegación, solo si el puesto es delegación</option>
-          {delegaciones.map((nombre) => <option key={nombre} value={nombre}>{nombre}</option>)}
-        </select>
-        <button className={accion} type="submit">Crear cuenta</button>
-      </form>
+    <>
+      {error ? <p className="aviso">{error}</p> : null}
+      {aviso ? <p className="nota">{aviso}</p> : null}
       {filas.length === 0 ? (
-        <p className="text-[#355044]">Todavía no hay cuentas de personal.</p>
+        <p className="nota">Todavía no hay cuentas de personal.</p>
       ) : (
-        <div className="space-y-4">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm">
+        <section className="tabla">
+            <table>
               <thead>
-                <tr className="border-b border-[#6B8B78]/40 text-[#355044]">
-                  <th className="px-3 py-3 font-medium">Nombre</th>
-                  <th className="px-3 py-3 font-medium">Correo</th>
-                  <th className="px-3 py-3 font-medium">Puesto</th>
-                  <th className="px-3 py-3 font-medium">Delegación</th>
-                  <th className="px-3 py-3 font-medium">Estado</th>
-                  <th className="px-3 py-3 font-medium">Acciones</th>
+                <tr>
+                  <th>Persona</th>
+                  <th>Correo</th>
+                  <th>Puesto</th>
+                  <th>Delegación</th>
+                  <th>Estado</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -380,28 +377,86 @@ function AdminCuentas({ cuenta }: { cuenta: CuentaTramite }) {
                 }}
               />
             ))}
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm tabular-nums text-[#355044]">
-              {inicio + 1}–{inicio + visibles.length} de {filas.length}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" className={`${secundario} disabled:opacity-40`} disabled={paginaSegura === 0} onClick={() => setPagina(paginaSegura - 1)}>Anterior</button>
-              {Array.from({ length: paginas }, (_, indice) => (
-                <button
-                  key={indice}
-                  type="button"
-                  className={indice === paginaSegura ? accion : secundario}
-                  onClick={() => setPagina(indice)}
-                >
-                  {indice + 1}
-                </button>
-              ))}
-              <button type="button" className={`${secundario} disabled:opacity-40`} disabled={paginaSegura >= paginas - 1} onClick={() => setPagina(paginaSegura + 1)}>Siguiente</button>
-            </div>
-          </div>
-        </div>
+        </section>
       )}
-    </div>
+      <div className="acciones" style={{ marginTop: 16 }}>
+        <button type="button" className={secundario} disabled={paginaSegura === 0} onClick={() => setPagina(paginaSegura - 1)}>Anterior</button>
+        <button type="button" className={secundario} disabled={paginaSegura >= paginas - 1} onClick={() => setPagina(paginaSegura + 1)}>Siguiente</button>
+      </div>
+    </>
   );
+}
+
+function InicioSolicitante({ cuenta }: { cuenta: CuentaTramite }) {
+  const [filas, setFilas] = useState<{ id: number; programa: string; nombre_predio?: string; municipio: string; delegacion: string; estado: string }[]>([]);
+  const [avisos, setAvisos] = useState(0);
+
+  useEffect(() => {
+    apiTramite<typeof filas>('/solicitudes').then((lista) => setFilas(lista)).catch(() => setFilas([]));
+  }, []);
+
+  const primera = filas[0];
+  return (
+    <>
+      <div className="fila">
+        <div>
+          <p className="subtitle">{cuenta.nombre}{primera ? ` · ${PROGRAMAS[primera.programa] || primera.programa}` : ''}</p>
+          <h1>Tu trámite</h1>
+        </div>
+        <Link className="btn btn-primary" to="/tramite/expediente">Ver expediente</Link>
+      </div>
+      <div className="rejilla">
+        <article className="card">
+          {primera ? <span className="estado">{etiquetaEstado(primera.estado)}</span> : null}
+          <h2>{primera?.nombre_predio || 'Sin predio'}</h2>
+          <p>{primera ? `${primera.municipio}, delegación ${primera.delegacion}.` : 'Todavía no abres una solicitud.'}</p>
+        </article>
+        <article className="card">
+          <span className="num">{avisos}</span>
+          <h2>{avisos === 1 ? 'Aviso nuevo' : 'Avisos'}</h2>
+          <p>Se leen en Avisos. El correo se guarda y no se envía.</p>
+        </article>
+        <article className="card">
+          <h2>Otra solicitud</h2>
+          <p>Puedes abrir otra del mismo programa mientras la recepción siga abierta.</p>
+          <Link className="btn btn-outline" to="/tramite/convocatorias" style={{ marginTop: 12 }}>Ver convocatorias</Link>
+        </article>
+      </div>
+    </>
+  );
+}
+
+function InicioConvocatorias() {
+  const [abiertas, setAbiertas] = useState(0);
+  const [listas, setListas] = useState(0);
+
+  useEffect(() => {
+    apiTramite<{ lectura: string; anexos: { tipo: string }[] }[]>('/convocatorias').then((lista) => {
+      setAbiertas(lista.filter((fila) => fila.lectura === 'Recepción abierta').length);
+      setListas(lista.filter((fila) => fila.anexos.some((anexo) => anexo.tipo === 'resultado') || fila.lectura === 'Lista publicada').length);
+    }).catch(() => {
+      setAbiertas(0);
+      setListas(0);
+    });
+  }, []);
+
+  return (
+    <>
+      <div className="fila">
+        <div><p className="subtitle">Ejercicio 2026</p><h1>Convocatorias</h1></div>
+        <Link className="btn btn-primary" to="/tramite/convocatorias/nueva">Crear convocatoria</Link>
+      </div>
+      <div className="rejilla">
+        <article className="card"><span className="num">{abiertas}</span><h2>En recepción</h2><p>La fecha de operación manda, no el día del servidor.</p></article>
+        <article className="card"><span className="num">{listas}</span><h2>Con lista</h2><p>La lista de personas beneficiarias se anexa como resultado.</p></article>
+        <article className="card"><h2>Si queda recurso</h2><p>Puedes abrir una segunda convocatoria. La primera sigue consultable.</p></article>
+      </div>
+    </>
+  );
+}
+
+function etiquetaEstado(estado: string) {
+  if (estado === 'enviada') return 'Enviada';
+  if (estado === 'borrador') return 'Borrador';
+  return estado;
 }
